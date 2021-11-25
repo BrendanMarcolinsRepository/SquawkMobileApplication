@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.a321projectprototype.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_Home_to_nav_Record"
+            app:destination="@id/nav_Record" />
+        <action
+            android:id="@+id/action_nav_Home_to_nav_Discover"
+            app:destination="@id/nav_Discover" />
+        <action
+            android:id="@+id/action_nav_Home_to_nav_Reward"
+            app:destination="@id/nav_Reward" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Record"
+        android:name="com.example.a321projectprototype.ui.Record.RecordFragment"
+        android:label="@string/menu_record"
+        tools:layout="@layout/fragment_record" />
+
+    <fragment
+        android:id="@+id/nav_PastRecording"
+        android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsFragment"
+        android:label="@string/menu_PastRecordings"
+        tools:layout="@layout/fragment_pastrecordings" />
+
+    <fragment
+        android:id="@+id/nav_Discover"
+        android:name="com.example.a321projectprototype.ui.Discover.DiscoverFragment"
+        android:label="@string/menu_Discover"
+        tools:layout="@layout/fragement_discover" />
+    <fragment
+        android:id="@+id/nav_Forum"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumFragment"
+        android:label="@string/menu_Forum"
+        tools:layout="@layout/fragment_forum" />
+    <fragment
+        android:id="@+id/nav_Flock"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockFragment"
+        android:label="@string/menu_Flocks"
+        tools:layout="@layout/fragment_flock" />
+    <fragment
+        android:id="@+id/nav_Reward"
+        android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"
+        android:label="@string/menu_Reward"
+        tools:layout="@layout/fragment_rewards" />
+    <fragment
+        android:id="@+id/nav_Settings"
+        android:name="com.example.a321projectprototype.ui.Settings.SettingsFragment"
+        android:label="@string/menu_Settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

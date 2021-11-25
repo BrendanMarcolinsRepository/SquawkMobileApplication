@@ -1,0 +1,26 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">321ProjectPrototype</string>
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_record">Record</string>
+    <string name="menu_PastRecordings">Past Recordings</string>
+    <string name="menu_Discover">Discover</string>
+    <string name="menu_Forum">Forum</string>
+    <string name="menu_Flocks">Flock</string>
+    <string name="menu_Reward">Reward</string>
+    <string name="menu_Settings">Settings</string>
+
+    <string name="recordChirp">Press to Record Your Chirps</string>
+    <string name="recordRequest">Permission to use recording device</string>
+
+    <string name="DiscoverAustralianBirds">Discover Australian Birds</string>
+
+
+</resources>

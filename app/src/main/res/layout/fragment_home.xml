@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greenBackground"
+    android:id="@+id/homeFragment"
+    tools:context=".ui.home.HomeFragment">
+
+    <View
+        android:id="@+id/viewHomePage"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeTextView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/homeButton1"
+        android:layout_width="311dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/et_style"
+        android:text="@string/menu_record"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHomePage" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/homeButton2"
+        android:layout_width="311dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/menu_Discover"
+        android:background="@drawable/et_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeButton1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/homeButton3"
+        android:layout_width="311dp"
+        android:layout_height="96dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/menu_Reward"
+        android:background="@drawable/et_style"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeButton2" />
+
+    <TextView
+        android:id="@+id/homeTextView"
+        android:layout_width="314dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="60dp"
+        android:text="Welcome: "
+        android:textSize="20dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
