@@ -38,7 +38,6 @@ public class Prototype extends AppCompatActivity
         password = findViewById(R.id.editTextTextPassword);
         signUp = findViewById(R.id.signUp);
         login = findViewById(R.id.button);
-
         login.setOnClickListener(loginAccount);
         signUp.setOnClickListener(signUpAccount);
 

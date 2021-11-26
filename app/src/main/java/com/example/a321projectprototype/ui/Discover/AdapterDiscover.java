@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.ui.Discover;
 
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,18 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
 public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> {
-    ArrayList<ItemDataModel> FullList;
-    ArrayList<ItemDataModel> dataSet;
+    List<ItemDataModel> FullList;
+    List<ItemDataModel> dataSet;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
@@ -30,7 +34,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         }
     }
 
-    AdapterDiscover(ArrayList<ItemDataModel> listItem) {
+    AdapterDiscover(List<ItemDataModel> listItem) {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
     }
@@ -85,6 +89,17 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         }
 
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void reverseOrder(List<ItemDataModel> list)
+    {
+        Collections.sort(list, Comparator.comparing(ItemDataModel::getTxtname));
+        dataSet = list;
+    }
+
+
+
+
 }
 
 

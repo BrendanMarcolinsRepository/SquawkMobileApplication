@@ -1,9 +1,13 @@
 package com.example.a321projectprototype.ui.Discover;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -34,8 +39,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static androidx.core.content.ContextCompat.getSystemService;
@@ -47,13 +55,18 @@ public class DiscoverFragment extends Fragment
     private DiscoverViewModel discoverViewModel;
     private SearchView discoverSearchView;
     private RecyclerView recyclerView;
-    private ArrayList<ItemDataModel> list;
+    private List<ItemDataModel> list;
     private AdapterDiscover adapterDiscover;
     private PopupWindow popupWindow;
     private ConstraintLayout constraintLayout;
     private Button filterButton;
     private TextView filterOkayTextView;
     private View root;
+    private String s = "No Change", filterOrder = "o";
+
+
+    public DiscoverFragment() {
+    }
 
     @SuppressLint("RtlHardcoded")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -101,16 +114,20 @@ public class DiscoverFragment extends Fragment
         discoverSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                if(list.contains(query)){
+            public boolean onQueryTextSubmit(String query)
+            {
+                if(list.contains(query))
+                {
                     adapterDiscover.getFilter().filter(query);
-                }else{
+                }
+                else {
                     Toast.makeText(getContext(), "No Match found",Toast.LENGTH_LONG).show();
                 }
                 return false;
             }
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String newText)
+            {
                 adapterDiscover.getFilter().filter(newText);
                 return false;
             }
@@ -119,34 +136,82 @@ public class DiscoverFragment extends Fragment
         return root;
     }
 
-    private final View.OnClickListener filterButtonMethod = new View.OnClickListener() {
+    private final View.OnClickListener filterButtonMethod = new View.OnClickListener()
+    {
         @Override
         public void onClick(View v)
         {
             onButtonShowPopupWindowClick(v);
+            Snackbar.make(v, s, Snackbar.LENGTH_LONG);
         }
     };
     private void onButtonShowPopupWindowClick(View view)
     {
 
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popupView = layoutInflater.inflate(R.layout.discover_popup_filter, null);
-        popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAtLocation(constraintLayout,Gravity.CENTER,0,0);
 
-        filterOkayTextView = root.findViewById(R.id.discover_filter_okay_textview);
-        root.setOnClickListener(closepopWindow);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        View mView = getLayoutInflater().inflate(R.layout.discover_popup_filter,null);
+        alert.setView(mView);
+
+        Button popular  = (Button) mView.findViewById(R.id.discoverFilter1Button);
+        Button alphabetical = (Button) mView.findViewById(R.id.discoverFilter2Button);
+        Button reverseAlphabetical = (Button) mView.findViewById(R.id.discoverFilter3Button);
+        Button exitPopup = (Button) mView.findViewById(R.id.exitFilterDiscover);
+
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(true);
+        popular.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                s = "Populer Order";
+                filterOrder = "p";
+                alertDialog.dismiss();
+            }
+        });
+
+
+        alphabetical.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                s = "Alphabetical Order";
+                filterOrder = "o";
+                alertDialog.dismiss();
+            }
+        });
+        reverseAlphabetical.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                s = "Reverse Alphabetical Order";
+                filterOrder = "r";
+                alertDialog.dismiss();
+            }
+        });
+        exitPopup.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                s = "No Change";
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+
 
     }
 
-
-    private final View.OnClickListener closepopWindow = new View.OnClickListener()
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void changeOrder()
     {
-        @Override
-        public void onClick(View v) {
-            popupWindow.dismiss();
-        }
-
-    };
-
+        Collections.sort(list, Comparator.comparing(ItemDataModel::getTxtname));
+        list.stream().sorted((p1, p2) -> p1.getTxtname().compareTo(p2.getTxtname()));
+        adapterDiscover = new  AdapterDiscover(list);
+        recyclerView.setAdapter(adapterDiscover);
+    }
 }
