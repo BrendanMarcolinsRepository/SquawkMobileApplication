@@ -11,15 +11,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -38,25 +43,38 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 public class DiscoverFragment extends Fragment
 {
+
     private DiscoverViewModel discoverViewModel;
     private SearchView discoverSearchView;
     private RecyclerView recyclerView;
     private ArrayList<ItemDataModel> list;
     private AdapterDiscover adapterDiscover;
+    private PopupWindow popupWindow;
+    private ConstraintLayout constraintLayout;
+    private Button filterButton;
+    private TextView filterOkayTextView;
+    private View root;
 
     @SuppressLint("RtlHardcoded")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
-        View root = inflater.inflate(R.layout.fragement_discover, container, false);
+        root = inflater.inflate(R.layout.fragement_discover, container, false);
 
         discoverSearchView = root.findViewById(R.id.discover_search_bar);
         recyclerView = root.findViewById(R.id.recycleDiscover);
+
+        filterButton = root.findViewById(R.id.discoverFillterButton);
+        filterButton.setOnClickListener(filterButtonMethod);
+
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+
+        constraintLayout = root.findViewById(R.id.discoverConstraintLayout);
 
 
         ItemDataModel item1 = new ItemDataModel("Australian Magpie");
@@ -101,8 +119,34 @@ public class DiscoverFragment extends Fragment
         return root;
     }
 
+    private final View.OnClickListener filterButtonMethod = new View.OnClickListener() {
+        @Override
+        public void onClick(View v)
+        {
+            onButtonShowPopupWindowClick(v);
+        }
+    };
+    private void onButtonShowPopupWindowClick(View view)
+    {
+
+        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.discover_popup_filter, null);
+        popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAtLocation(constraintLayout,Gravity.CENTER,0,0);
+
+        filterOkayTextView = root.findViewById(R.id.discover_filter_okay_textview);
+        root.setOnClickListener(closepopWindow);
+
+    }
 
 
+    private final View.OnClickListener closepopWindow = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v) {
+            popupWindow.dismiss();
+        }
 
+    };
 
 }

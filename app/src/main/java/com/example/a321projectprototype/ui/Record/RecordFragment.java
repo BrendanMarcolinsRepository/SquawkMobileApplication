@@ -69,12 +69,10 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 if(isGranted)
                 {
                     System.out.println("5");
-                    isRecording = true;
-                    startRecord();
                 }
                 else
                 {
-                    isRecording = false;
+
                     System.out.println("6");
 
 
