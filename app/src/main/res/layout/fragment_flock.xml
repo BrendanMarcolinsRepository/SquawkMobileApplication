@@ -11,9 +11,94 @@
         android:id="@+id/text_flocks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="356dp"
-        android:text="Flocks"
+        android:layout_marginTop="12dp"
+        android:text="Currently Not in A Flock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
+
+    <View
+        android:id="@+id/viewFlock1"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="92dp"
+        android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <View
+        android:id="@+id/viewFlock2"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
+
+    <TextView
+        android:id="@+id/create_flocks_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Create a Flock"
+        app:layout_constraintEnd_toStartOf="@+id/appCompatButton"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlock2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/appCompatButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="144dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlock2" />
+
+    <TextView
+        android:id="@+id/search_flocks_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Search for an Existing Flock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_flocks_text" />
+
+    <SearchView
+        android:id="@+id/flock_search_bar"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="44dp"
+        android:background="@drawable/white_search"
+        android:layoutDirection="rtl"
+        android:queryHint="Find Flocks..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_flocks_text" />
+
+    <View
+        android:id="@+id/viewFlock3"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flock_search_bar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleFlock"
+        android:layout_width="match_parent"
+        android:layout_height="460dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlock3" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

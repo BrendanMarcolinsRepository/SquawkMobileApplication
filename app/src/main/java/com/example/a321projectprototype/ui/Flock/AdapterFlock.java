@@ -1,57 +1,54 @@
-package com.example.a321projectprototype.ui.Discover;
+package com.example.a321projectprototype.ui.Flock;
 
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
+import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
+import com.example.a321projectprototype.ui.Discover.ItemDataModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-
-public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> {
-    List<ItemDataModel> FullList;
-    List<ItemDataModel> dataSet;
+public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder> {
+    List<FlockModelData> FullList;
+    List<FlockModelData> dataSet;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.past_recording_dates_textview);
+            tvName = itemView.findViewById(R.id.flock_namesearch_textview);
         }
     }
 
-    AdapterDiscover(List<ItemDataModel> listItem) {
+    AdapterFlock(List<FlockModelData> listItem) {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
     }
 
     @NonNull
     @Override
-    public com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_discover_items, parent, false);
-        return new MyViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_flock_items, parent, false);
+        return new AdapterFlock.MyViewHolder(view);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position) {
-        ItemDataModel currentItem = dataSet.get(position);
-        holder.tvName.setText(currentItem.getTxtname());
+    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, int position) {
+        FlockModelData currentItem = dataSet.get(position);
+        holder.tvName.setText(currentItem.getName());
     }
 
     public Filter getFilter() {
@@ -65,13 +62,13 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     private Filter Searched_Filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<ItemDataModel> filteredList = new ArrayList<>();
+            ArrayList<FlockModelData> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(FullList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (ItemDataModel item : FullList) {
-                    if (item.getTxtname().toLowerCase().contains(filterPattern)) {
+                for (FlockModelData item : FullList) {
+                    if (item.getName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -95,5 +92,3 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
 
 }
-
-

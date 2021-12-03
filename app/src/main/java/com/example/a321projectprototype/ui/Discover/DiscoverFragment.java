@@ -62,11 +62,11 @@ public class DiscoverFragment extends Fragment
     private Button filterButton;
     private TextView filterOkayTextView;
     private View root;
+    private boolean reversed = false;
     private String s = "No Change", filterOrder = "o";
 
 
-    public DiscoverFragment() {
-    }
+    
 
     @SuppressLint("RtlHardcoded")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -91,9 +91,9 @@ public class DiscoverFragment extends Fragment
 
 
         ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
-        ItemDataModel item3 = new ItemDataModel("Australian Crake");
-        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
+        ItemDataModel item2 = new ItemDataModel("Australian Crake");
+        ItemDataModel item3 = new ItemDataModel("Australian Brushturkey");
+        ItemDataModel item4 = new ItemDataModel("Australian Swiftlet");
         ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
 
 
@@ -177,8 +177,7 @@ public class DiscoverFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                s = "Alphabetical Order";
-                filterOrder = "o";
+                order();
                 alertDialog.dismiss();
             }
         });
@@ -187,8 +186,7 @@ public class DiscoverFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                s = "Reverse Alphabetical Order";
-                filterOrder = "r";
+                reverseOrder();
                 alertDialog.dismiss();
             }
         });
@@ -206,11 +204,34 @@ public class DiscoverFragment extends Fragment
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void changeOrder()
+
+
+    private void reverseOrder()
     {
-        Collections.sort(list, Comparator.comparing(ItemDataModel::getTxtname));
-        list.stream().sorted((p1, p2) -> p1.getTxtname().compareTo(p2.getTxtname()));
+        if(!reversed)
+        {
+            reversed = true;
+            theChange();
+        }
+    }
+
+    private void order()
+    {
+        if(reversed)
+        {
+            reversed = false;
+            theChange();
+        }
+    }
+
+    private void theChange()
+    {
+        System.out.println("worked");
+        Collections.reverse(list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
         adapterDiscover = new  AdapterDiscover(list);
         recyclerView.setAdapter(adapterDiscover);
     }

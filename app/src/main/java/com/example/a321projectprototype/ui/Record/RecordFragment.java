@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -60,6 +62,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private FragmentActivity fragmentActivity;
     private String fileName;
     private boolean isRecording  = false;
+
 
 
 
