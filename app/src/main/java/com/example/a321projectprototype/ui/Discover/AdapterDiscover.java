@@ -25,33 +25,40 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     List<ItemDataModel> FullList;
     List<ItemDataModel> dataSet;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName;
+    class MyViewHolder extends RecyclerView.ViewHolder
+    {
+        TextView pastRecordingsDates;
 
-        MyViewHolder(View itemView) {
+
+        MyViewHolder(View itemView)
+        {
             super(itemView);
-            tvName = itemView.findViewById(R.id.past_recording_dates_textview);
+            pastRecordingsDates = itemView.findViewById(R.id.past_recording_dates_textview);
+
+
         }
     }
 
-    AdapterDiscover(List<ItemDataModel> listItem) {
+    AdapterDiscover(List<ItemDataModel> listItem)
+    {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
     }
 
     @NonNull
     @Override
-    public com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_discover_items, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position)
+    {
         ItemDataModel currentItem = dataSet.get(position);
-        holder.tvName.setText(currentItem.getTxtname());
+        holder.pastRecordingsDates.setText(currentItem.getTxtname());
     }
 
     public Filter getFilter() {

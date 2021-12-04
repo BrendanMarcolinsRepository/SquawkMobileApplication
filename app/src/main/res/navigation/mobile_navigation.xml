@@ -47,7 +47,23 @@
         android:id="@+id/nav_Flock"
         android:name="com.example.a321projectprototype.ui.Flock.FlockFragment"
         android:label="@string/menu_Flocks"
-        tools:layout="@layout/fragment_flock" />
+        tools:layout="@layout/fragment_flock">
+        <action
+            android:id="@+id/info_fragment_nav"
+            app:destination="@id/nav_Flock_Info" >
+            <argument
+                android:name="myArg"
+                app:argType="integer"
+                android:defaultValue="1"/>
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Flock_Info"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockInfoFragment"
+        android:label="@string/menu_Flocks_Info"
+        tools:layout="@layout/fragement_flock_info"/>
     <fragment
         android:id="@+id/nav_Reward"
         android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"

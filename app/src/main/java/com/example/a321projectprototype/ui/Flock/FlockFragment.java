@@ -16,9 +16,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
 import com.example.a321projectprototype.ui.Discover.DiscoverViewModel;
@@ -42,12 +45,19 @@ public class FlockFragment extends Fragment
     private View root;
     private boolean reversed = false;
     private String s = "No Change", filterOrder = "o";
+    private HomePage homePage;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState)
+    {
         flockViewModel = new ViewModelProvider(this).get(FlockViewModel.class);
         View root = inflater.inflate(R.layout.fragment_flock, container, false);
+
+
+
         final TextView textView = root.findViewById(R.id.text_flocks);
+
 
         flockViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
         {
@@ -60,10 +70,15 @@ public class FlockFragment extends Fragment
         flockSearchView = root.findViewById(R.id.flock_search_bar);
         recyclerView = root.findViewById(R.id.recycleFlock);
 
+
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+
+        homePage = (HomePage) getActivity();
+
 
 
         FlockModelData flock1 = new FlockModelData("Sydney Flockers",200);
@@ -77,7 +92,7 @@ public class FlockFragment extends Fragment
         flockList.add(flock3);
         flockList.add(flock4);
 
-        adapterFlock = new  AdapterFlock(flockList);
+        adapterFlock = new  AdapterFlock(flockList,homePage);
         recyclerView.setAdapter(adapterFlock);
 
         flockSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
@@ -105,4 +120,6 @@ public class FlockFragment extends Fragment
 
         return root;
     }
+
+
 }
