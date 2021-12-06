@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flock_info_fragment"
+    android:background="@color/greenBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -64,26 +66,74 @@
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock2" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleFlockInfo"
-        android:layout_width="342dp"
-        android:layout_height="269dp"
-        android:layout_marginTop="16dp"
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="314dp"
+        android:layout_margin="8dp"
+        android:stretchColumns="1,2,3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_groupmember_info_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/flock_groupmember_info_textview">
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_column="1"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Members Name" />
+
+            <TextView
+
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_column="1"
+                android:background="@drawable/vertical_line"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_column="1"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Points" />
+        </TableRow>
+
+        <View
+            android:layout_width="375dp"
+            android:layout_height="5dp"
+            android:background="@color/black" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleFlockInfo"
+            android:layout_width="342dp"
+            android:layout_height="269dp"
+            android:layout_marginTop="16dp" />
+    </TableLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flock_info_join"
         android:layout_width="178dp"
         android:layout_height="43dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="116dp"
+        android:layout_marginTop="68dp"
         android:background="@drawable/green"
         android:text="join"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <TextView
+        android:id="@+id/flock_info_score"
+        android:layout_width="205dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="20dp"
+        android:text="Total Points: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

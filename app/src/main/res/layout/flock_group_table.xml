@@ -3,16 +3,28 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:stretchColumns="1,2">
+    android:stretchColumns="1,2, 3">
     <TableRow>
+
         <TextView
+            android:id="@+id/memberFockName"
             android:layout_width="50dp"
-            android:text="Members Name"
-            android:padding="10dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_column="1"
-            />
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Members Name" />
+
         <TextView
+
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:gravity="center"
+            android:background="@drawable/vertical_line"/>
+
+        <TextView
+            android:id="@+id/memberFockScore"
             android:layout_width="50dp"
             android:text="Points"
             android:padding="10dp"
@@ -20,4 +32,9 @@
             android:layout_column="1"
             />
     </TableRow>
+
+
+
+
 </TableLayout>
+
