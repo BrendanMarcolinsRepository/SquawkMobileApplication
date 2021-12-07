@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
-import com.example.a321projectprototype.ui.Discover.ItemDataModel;
+import com.example.a321projectprototype.User.FlockModelData;
 
 import java.util.ArrayList;
 import java.util.List;

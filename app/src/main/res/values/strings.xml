@@ -15,6 +15,7 @@
     <string name="menu_Forum">Forum</string>
     <string name="menu_Flocks">Flock</string>
     <string name="menu_Flocks_Info">Flock Information</string>
+    <string name="menu_Flocks_Create">Flock Create</string>
     <string name="menu_Reward">Reward</string>
     <string name="menu_Settings">Settings</string>
 
@@ -22,6 +23,8 @@
     <string name="recordRequest">Permission to use recording device</string>
 
     <string name="DiscoverAustralianBirds">Discover Australian Birds</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

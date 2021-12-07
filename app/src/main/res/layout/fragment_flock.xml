@@ -39,16 +39,28 @@
         app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/appCompatButton"
+        android:id="@+id/flockCreateButton"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/green"
         android:text="Make a Flock"
         android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/flockLeaderBoards"
+        app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flockLeaderBoards"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="52dp"
+        android:background="@drawable/green"
+        android:text="LeaderBoards"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFlock2" />
+        app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
 
     <SearchView
         android:id="@+id/flock_search_bar"
@@ -60,7 +72,7 @@
         android:layoutDirection="rtl"
         android:queryHint="Find Flocks..."
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatButton" />
+        app:layout_constraintTop_toBottomOf="@+id/flockCreateButton" />
 
     <View
         android:id="@+id/viewFlock3"

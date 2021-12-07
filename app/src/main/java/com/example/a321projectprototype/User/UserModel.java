@@ -3,15 +3,18 @@ package com.example.a321projectprototype.User;
 public class UserModel
 {
     private int id;
+    private String name;
+    private String username;
+    private String password;
+    private String email;
+    private FlockModelData userFlock;
 
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public UserModel(int id, String name, String password, String email) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        userFlock = null;
     }
 
     public int getId() {
@@ -46,15 +49,19 @@ public class UserModel
         this.email = email;
     }
 
-    private String name;
-    private String username;
-    private String password;
-    private String email;
+    public FlockModelData getUserFlock() { return userFlock; }
 
-    public UserModel(int id, String name, String password, String email) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.email = email;
+    public void setUserFlock(FlockModelData userFlock) { this.userFlock = userFlock; }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
+
+
 }

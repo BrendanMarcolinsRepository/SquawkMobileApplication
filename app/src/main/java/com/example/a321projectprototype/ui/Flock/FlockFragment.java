@@ -17,15 +17,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
-import com.example.a321projectprototype.ui.Discover.DiscoverViewModel;
-import com.example.a321projectprototype.ui.Discover.ItemDataModel;
+import com.example.a321projectprototype.User.FlockModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +37,13 @@ public class FlockFragment extends Fragment
     private AdapterFlock adapterFlock;
     private PopupWindow popupWindow;
     private ConstraintLayout constraintLayout;
-    private Button filterButton;
+    private Button filterButton, createFlockButton;
     private TextView filterOkayTextView;
     private View root;
     private boolean reversed = false;
     private String s = "No Change", filterOrder = "o";
     private HomePage homePage;
-
+    private NavController navController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -54,9 +51,11 @@ public class FlockFragment extends Fragment
         flockViewModel = new ViewModelProvider(this).get(FlockViewModel.class);
         View root = inflater.inflate(R.layout.fragment_flock, container, false);
 
-
+        homePage = (HomePage) getActivity();
+        navController = homePage.getNav();
 
         final TextView textView = root.findViewById(R.id.text_flocks);
+        createFlockButton = root.findViewById(R.id.flockCreateButton);
 
 
         flockViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
@@ -77,7 +76,7 @@ public class FlockFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        homePage = (HomePage) getActivity();
+
 
 
 
@@ -94,6 +93,9 @@ public class FlockFragment extends Fragment
 
         adapterFlock = new  AdapterFlock(flockList,homePage);
         recyclerView.setAdapter(adapterFlock);
+
+        createFlockButton.setOnClickListener(createFlockFragement);
+
 
         flockSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
@@ -120,6 +122,16 @@ public class FlockFragment extends Fragment
 
         return root;
     }
+
+    private final View.OnClickListener createFlockFragement = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            navController.navigate(R.id.nav_Flock_Create);
+
+        }
+    };
 
 
 }

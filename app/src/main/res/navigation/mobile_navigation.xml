@@ -56,6 +56,10 @@
                 app:argType="integer"
                 android:defaultValue="1"/>
         </action>
+        <action
+            android:id="@+id/create_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
 
     </fragment>
 
@@ -64,6 +68,17 @@
         android:name="com.example.a321projectprototype.ui.Flock.FlockInfoFragment"
         android:label="@string/menu_Flocks_Info"
         tools:layout="@layout/fragement_flock_info"/>
+    <fragment
+        android:id="@+id/nav_Flock_Create"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockCreationFragment"
+        android:label="@string/menu_Flocks_Create"
+        tools:layout="@layout/fragment_flock_create">
+
+        <action
+            android:id="@+id/flock_fragment_nav_return"
+            app:destination="@id/nav_Flock" >
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/nav_Reward"
         android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"
