@@ -13,15 +13,20 @@ import android.widget.TextView;
 import android.widget.Toolbar;
 
 
+import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserModel;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Prototype extends AppCompatActivity
 {
     private Button login;
     private TextView username, password, signUp;
     private String stringUserpassword, stringUsername;
+    private UserDatabase userDatabase;
     private UserModel userModel;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -33,7 +38,7 @@ public class Prototype extends AppCompatActivity
         getSupportActionBar().hide();
 
 
-        userModel = new  UserModel(1,"Brendan","s","m@gmail.com");
+        userDatabase = new UserDatabase(this);
         username = findViewById(R.id.editTextTextPersonName);
         password = findViewById(R.id.editTextTextPassword);
         signUp = findViewById(R.id.signUp);
@@ -43,6 +48,8 @@ public class Prototype extends AppCompatActivity
 
     }
 
+
+
     private final View.OnClickListener loginAccount = new View.OnClickListener()
     {
         @Override
@@ -50,23 +57,33 @@ public class Prototype extends AppCompatActivity
         {
             stringUsername = username.getText().toString();
             stringUserpassword = password.getText().toString();
-            if(stringUsername.equals(userModel.getName()))
-            {
-                if(userModel.getPassword().equals(stringUserpassword))
-                {
-                    Intent homepage  = new Intent(Prototype.this, HomePage.class);
-                    homepage.putExtra("userName", stringUsername);
-                    startActivity(homepage);
-                }
-                else
-                {
-                    username.setError("Incorrect Password");
-                }
-            }
-            else
-            {
-                username.setError("Incorrect Username");
-            }
+
+            userModel = userDatabase.getUser(stringUsername);
+            System.out.println("username :" + userModel.getUsername() + "\n  password :" + userModel.getPassword());
+
+           if(userModel != null)
+           {
+               if(userDatabase.checkUser(userModel.getUsername(),userModel.getPassword()))
+               {
+
+                   System.out.println("worked");
+                   Intent homepage  = new Intent(Prototype.this, HomePage.class);
+                   Bundle b = new Bundle();
+                   b.putSerializable("serialzable", (Serializable) userModel);
+                   homepage.putExtras(b);
+                   startActivity(homepage);
+
+               }
+               else
+               {
+                   System.out.println("didntwork");
+               }
+           }
+           else
+           {
+               username.setError("Incorrect Username");
+               password.setError("Incorrect Password");
+           }
         }
     };
 

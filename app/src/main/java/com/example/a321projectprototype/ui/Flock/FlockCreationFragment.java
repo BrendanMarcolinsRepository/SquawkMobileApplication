@@ -15,9 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import com.example.a321projectprototype.Database.FlockDatabase;
+import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
+import com.example.a321projectprototype.User.UserModel;
+
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -29,8 +34,15 @@ public class FlockCreationFragment extends Fragment
     private Button create, photoButton;
     private int SELECT_PICTURE = 200;
     private String flockNameString,flockDescriptionString;
+    private boolean privateFlock = true;
     private HomePage homePage;
     private NavController navController;
+    private ArrayList<FlockModelData> flockModelDataArrayList;
+    private FlockDatabase flockDatabase;
+    private UserModel userModel;
+    private UserDatabase userDatabase;
+    private int flockCount;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -39,13 +51,19 @@ public class FlockCreationFragment extends Fragment
 
         homePage = (HomePage)getActivity();
 
+        flockDatabase = new FlockDatabase(homePage);
+        flockModelDataArrayList = flockDatabase.getAllUsers();
+        flockCount = getFlockCount(flockModelDataArrayList);
+        userModel = homePage.getUserModel();
+        userDatabase = new UserDatabase(homePage);
+
 
         name = root.findViewById(R.id.flock_name_editText);
         description = root.findViewById(R.id.flock_description_editText);
         flockImage = root.findViewById(R.id.flock_create_image);
         create = root.findViewById(R.id.flock_Create_Button);
         photoButton = root.findViewById(R.id.flockCreateButton);
-
+        privateFlockSwitch = root.findViewById(R.id.flock_create_private_switch);
         photoButton.setOnClickListener(selectPhotoMethod);
         create.setOnClickListener(createFlockMethod);
 
@@ -119,10 +137,31 @@ public class FlockCreationFragment extends Fragment
         }
         else
         {
-            FlockModelData flockRequest = new FlockModelData(flockNameString,0,flockDescriptionString);
+            privateFlock = privateFlockSwitch.getSplitTrack();
+            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock);
+            flockDatabase.addFlock(flockRequest);
+            userModel.setUserFlock(flockNameString);
+            userDatabase.updateUserCritical(userModel);
 
             navController = homePage.getNav();
             navController.navigate(R.id.flock_fragment_nav_return);
         }
+    }
+
+    private int getFlockCount(ArrayList<FlockModelData> flockModelDataArrayList)
+    {
+        for(int i = 0; i <= flockModelDataArrayList.size();i++)
+        {
+            if(i == flockModelDataArrayList.size() && flockModelDataArrayList.size() > 0)
+            {
+                return flockModelDataArrayList.get(i - 1).getId() + 1;
+            }
+            else
+            {
+                return  1;
+            }
+        }
+
+        return 0;
     }
 }

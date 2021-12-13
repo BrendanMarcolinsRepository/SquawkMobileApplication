@@ -126,6 +126,7 @@ public class FlockInfoFragment extends Fragment
         Button no = (Button) mView.findViewById(R.id.flockFilterButtonNo);
 
 
+
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
         yes.setOnClickListener(new View.OnClickListener()

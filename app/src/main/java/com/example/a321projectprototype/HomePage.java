@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -18,7 +19,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class HomePage extends AppCompatActivity {
+import java.io.Serializable;
+
+public class HomePage extends AppCompatActivity implements Serializable
+{
 
     private AppBarConfiguration mAppBarConfiguration;
     private HomeViewModel homeViewModel;
@@ -27,11 +31,12 @@ public class HomePage extends AppCompatActivity {
     private TextView headName, headEmail;
     private Button recordButton, discoverButton,rewardButton;
     private  NavController navController;
+    private UserModel userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent homeIntent = getIntent();
-        name = homeIntent.getStringExtra("userName");
+        userModel = (UserModel) getIntent().getSerializableExtra("serialzable");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -40,7 +45,7 @@ public class HomePage extends AppCompatActivity {
 
 
 
-        System.out.println(name.toString());
+
 
         recordButton = findViewById(R.id.homeButton1);
         recordButton.setOnClickListener(record);
@@ -68,7 +73,7 @@ public class HomePage extends AppCompatActivity {
         //use to display the users details in the navigation header
         headName = (TextView) header.findViewById(R.id.navhead_name);
         headEmail = (TextView) header.findViewById(R.id.navhead_email);
-        headName.setText(name);
+        headName.setText(userModel.getName());
         headEmail.setText("m@gmail.com");
     }
 
@@ -83,7 +88,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     public String getName() {
-        return name;
+        return userModel.getUsername();
     }
 
     private final View.OnClickListener record = new View.OnClickListener()
@@ -115,6 +120,11 @@ public class HomePage extends AppCompatActivity {
 
 
     public NavController getNav(){return navController;}
+
+    public UserModel getUserModel()
+    {
+        return userModel;
+    }
 
 
 

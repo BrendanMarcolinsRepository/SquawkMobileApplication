@@ -1,20 +1,34 @@
 package com.example.a321projectprototype.User;
 
-public class UserModel
+import java.io.Serializable;
+
+public class UserModel implements Serializable
 {
     private int id;
     private String name;
     private String username;
     private String password;
     private String email;
-    private FlockModelData userFlock;
+    private String userFlock;
 
-    public UserModel(int id, String name, String password, String email) {
+    public UserModel() { }
+
+    public UserModel(int id, String name, String username, String password, String email) {
         this.id = id;
         this.name = name;
+        this.username = username;
         this.password = password;
         this.email = email;
         userFlock = null;
+    }
+
+    public UserModel(int id, String name,String username,String email, String password, String userFlock ) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.userFlock = userFlock;
     }
 
     public int getId() {
@@ -49,9 +63,9 @@ public class UserModel
         this.email = email;
     }
 
-    public FlockModelData getUserFlock() { return userFlock; }
+    public String getUserFlock() { return userFlock; }
 
-    public void setUserFlock(FlockModelData userFlock) { this.userFlock = userFlock; }
+    public void setUserFlock(String userFlock) { this.userFlock = userFlock; }
 
     @Override
     public String toString() {
@@ -64,4 +78,11 @@ public class UserModel
     }
 
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
