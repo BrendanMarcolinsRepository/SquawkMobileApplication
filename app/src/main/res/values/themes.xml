@@ -26,6 +26,6 @@
 
     <style name="Theme.321ProjectPrototype.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-
+    <style name="MyApp" parent="Theme.MaterialComponents"/>
 
 </resources>

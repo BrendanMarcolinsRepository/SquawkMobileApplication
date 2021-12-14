@@ -42,6 +42,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flockInfoSettings"
+        android:layout_width="98dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/green"
+        android:text="Settings"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/flock_groupname_info_textview"
+        app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
+
     <View
         android:id="@+id/viewInfoFlock2"
         android:layout_width="375dp"
@@ -119,6 +132,19 @@
         android:layout_marginTop="68dp"
         android:background="@drawable/green"
         android:text="join"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flock_info_invite"
+        android:layout_width="178dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="68dp"
+        android:background="@drawable/green"
+        android:text="Invite"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

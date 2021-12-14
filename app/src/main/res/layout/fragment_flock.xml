@@ -8,35 +8,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <TextView
         android:id="@+id/text_flocks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="132dp"
+        android:layout_marginTop="20dp"
         android:text="Currently Not in A Flock"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/flockSettings"
-        android:layout_width="98dp"
-        android:layout_height="22dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/green"
-        android:text="Settings"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
 
     <ImageView
         android:id="@+id/flockImage"
-        android:layout_width="65dp"
-        android:layout_height="31dp"
+        android:layout_width="77dp"
+        android:layout_height="43dp"
         android:layout_marginTop="8dp"
+        android:src="@drawable/ic_account_profile_picture"
         app:layout_constraintEnd_toStartOf="@+id/text_flocks"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.214"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
 
@@ -44,18 +35,17 @@
         android:id="@+id/viewFlock1"
         android:layout_width="375dp"
         android:layout_height="5dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="76dp"
         android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <View
         android:id="@+id/viewFlock2"
         android:layout_width="375dp"
         android:layout_height="5dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

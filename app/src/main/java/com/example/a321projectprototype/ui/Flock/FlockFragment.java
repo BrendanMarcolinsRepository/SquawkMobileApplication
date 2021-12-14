@@ -41,7 +41,7 @@ public class FlockFragment extends Fragment
     private AdapterFlock adapterFlock;
     private PopupWindow popupWindow;
     private ConstraintLayout constraintLayout;
-    private Button filterButton, createFlockButton,myflock,settings;
+    private Button filterButton, createFlockButton,myflock,leaderboard;
     private TextView filterOkayTextView, textViewFlockName;
     private ImageView flockImage;
     private View root;
@@ -66,8 +66,8 @@ public class FlockFragment extends Fragment
         recyclerView = root.findViewById(R.id.recycleFlock);
         createFlockButton = root.findViewById(R.id.flockCreateButton);
         myflock = root.findViewById(R.id.flockMyFlock);
-        settings = root.findViewById(R.id.flockSettings);
         flockImage = root.findViewById(R.id.flockImage);
+        leaderboard = root.findViewById(R.id.flockLeaderBoards);
 
 
         checkFlockName();
@@ -80,12 +80,14 @@ public class FlockFragment extends Fragment
 
         flockList = flockDatabase.getAllUsers();
         FlockModelData flockModelData = flockDatabase.getFlock(homePage.getUserModel().getUserFlock());
-        System.out.println("Flock name 1 " + flockModelData.getName());
+//        System.out.println("Flock name 1 " + flockModelData.getName());
 
         adapterFlock = new  AdapterFlock(flockList,homePage,getContext(),flockDatabase, root);
         recyclerView.setAdapter(adapterFlock);
 
         createFlockButton.setOnClickListener(createFlockFragement);
+        leaderboard.setOnClickListener(flockLeaderboardMethod);
+        myflock.setOnClickListener(myFlockMethod);
 
 
         flockSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
@@ -125,14 +127,12 @@ public class FlockFragment extends Fragment
             createFlockButton.setVisibility(View.GONE);
             createFlockButton.setOnClickListener(null);
             myflock.setVisibility(View.VISIBLE);
-            settings.setVisibility(View.VISIBLE);
             flockImage.setVisibility(View.VISIBLE);
 
         }
         else
         {
             myflock.setVisibility(View.GONE);
-            settings.setVisibility(View.GONE);
             flockImage.setVisibility(View.GONE);
             createFlockButton.setVisibility(View.VISIBLE);
         }
@@ -144,6 +144,26 @@ public class FlockFragment extends Fragment
         public void onClick(View v)
         {
             navController.navigate(R.id.nav_Flock_Create);
+
+        }
+    };
+
+    private final View.OnClickListener flockLeaderboardMethod = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            navController.navigate(R.id.nav_Flock_Leaderboards);
+
+        }
+    };
+
+    private final View.OnClickListener myFlockMethod = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            navController.navigate(R.id.nav_Flock_Info);
 
         }
     };

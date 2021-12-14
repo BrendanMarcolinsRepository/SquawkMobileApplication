@@ -59,7 +59,7 @@ public class Prototype extends AppCompatActivity
             stringUserpassword = password.getText().toString();
 
             userModel = userDatabase.getUser(stringUsername);
-            System.out.println("username :" + userModel.getUsername() + "\n  password :" + userModel.getPassword());
+           // System.out.println("username :" + userModel.getUsername() + "\n  password :" + userModel.getPassword());
 
            if(userModel != null)
            {

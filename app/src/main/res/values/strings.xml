@@ -16,6 +16,8 @@
     <string name="menu_Flocks">Flock</string>
     <string name="menu_Flocks_Info">Flock Information</string>
     <string name="menu_Flocks_Create">Flock Create</string>
+    <string name="menu_Flocks_LeaderBoard">Flock Leaderboard</string>
+    <string name="menu_Flocks_Settings">Flock Settings</string>
     <string name="menu_Reward">Reward</string>
     <string name="menu_Settings">Settings</string>
 

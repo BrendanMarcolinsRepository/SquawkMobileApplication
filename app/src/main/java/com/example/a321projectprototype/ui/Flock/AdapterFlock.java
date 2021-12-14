@@ -69,8 +69,17 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             System.out.println(countNumber);
 
             FlockModelData flockModelData = flockDatabase.getFlock(name);
-            count = flockModelData.getGroupNumber();
-            System.out.println("Flock name 2 " + name);
+
+            if(flockModelData == null)
+            {
+                count = 0;
+            }
+            else
+            {
+                count = flockModelData.getGroupNumber();
+            }
+
+            //System.out.println("Flock name 2 " + name);
 
             infoButton.setOnClickListener(new View.OnClickListener()
             {

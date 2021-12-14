@@ -31,7 +31,7 @@ public class FlockCreationFragment extends Fragment
     private EditText name, description;
     private ImageView flockImage;
     private Switch privateFlockSwitch;
-    private Button create, photoButton;
+    private Button create, photoButton,update;
     private int SELECT_PICTURE = 200;
     private String flockNameString,flockDescriptionString;
     private boolean privateFlock = true;
@@ -64,8 +64,13 @@ public class FlockCreationFragment extends Fragment
         create = root.findViewById(R.id.flock_Create_Button);
         photoButton = root.findViewById(R.id.flockCreateButton);
         privateFlockSwitch = root.findViewById(R.id.flock_create_private_switch);
+        update = root.findViewById(R.id.flock_update_Button);
+
+        checkFlockName();
+
         photoButton.setOnClickListener(selectPhotoMethod);
         create.setOnClickListener(createFlockMethod);
+        update.setOnClickListener(updateFlockMethod);
 
 
 
@@ -118,12 +123,22 @@ public class FlockCreationFragment extends Fragment
         @Override
         public void onClick(View v)
         {
-           confirmNewFlock();
+           confirmNewFlock(v);
 
         }
     };
 
-    private void confirmNewFlock()
+    private final View.OnClickListener updateFlockMethod = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            confirmNewFlock(v);
+
+        }
+    };
+
+    private void confirmNewFlock(View v)
     {
         flockNameString = name.getText().toString();
         flockDescriptionString = name.getText().toString();
@@ -137,16 +152,46 @@ public class FlockCreationFragment extends Fragment
         }
         else
         {
+            String ownerUsername = homePage.getName();
             privateFlock = privateFlockSwitch.getSplitTrack();
-            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock);
-            flockDatabase.addFlock(flockRequest);
-            userModel.setUserFlock(flockNameString);
-            userDatabase.updateUserCritical(userModel);
 
-            navController = homePage.getNav();
-            navController.navigate(R.id.flock_fragment_nav_return);
+            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
+            boolean typeOfUpdate = false;
+
+            if(v.getId() == update.getId())
+            {
+                typeOfUpdate = true;
+                updateFlock(typeOfUpdate,ownerUsername);
+            }
+            else
+            {
+                updateFlock(typeOfUpdate,ownerUsername);
+            }
+
         }
     }
+    private void updateFlock(boolean typeOfUpdate, String ownerUsername)
+    {
+        if(typeOfUpdate)
+        {
+            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
+            flockDatabase.updateUserCritical(flockRequest);
+        }
+        else
+        {
+            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
+            flockDatabase.addFlock(flockRequest);
+        }
+
+
+        userModel.setUserFlock(flockNameString);
+        userDatabase.updateUserCritical(userModel);
+
+        navController = homePage.getNav();
+        navController.navigate(R.id.flock_fragment_nav_return);
+
+    }
+
 
     private int getFlockCount(ArrayList<FlockModelData> flockModelDataArrayList)
     {
@@ -163,5 +208,28 @@ public class FlockCreationFragment extends Fragment
         }
 
         return 0;
+    }
+
+    private void checkFlockName()
+    {
+        UserModel userModel = homePage.getUserModel();
+        System.out.println(userModel.getUserFlock());
+
+        if(userModel.getUserFlock() != null)
+        {
+
+            create.setVisibility(View.GONE);
+            create.setOnClickListener(null);
+            update.setVisibility(View.VISIBLE);
+
+
+        }
+        else
+        {
+            update.setVisibility(View.GONE);
+            update.setOnClickListener(null);
+            create.setVisibility(View.VISIBLE);
+
+        }
     }
 }

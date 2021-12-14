@@ -39,7 +39,7 @@ public class SignUp extends AppCompatActivity {
         userDatabase = new UserDatabase(this);
         usersArrayList = userDatabase.getAllUsers();
 
-        amountOfUsers = getUserCount(usersArrayList) + 1;
+        amountOfUsers = getUserCount(usersArrayList) + 2;
 
         System.out.println(amountOfUsers);
 

@@ -60,6 +60,14 @@
             android:id="@+id/create_fragment_nav"
             app:destination="@id/nav_Flock_Create" >
         </action>
+        <action
+            android:id="@+id/leaderboards_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
+        <action
+            android:id="@+id/settings_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
 
     </fragment>
 
@@ -79,6 +87,18 @@
             app:destination="@id/nav_Flock" >
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/nav_Flock_Leaderboards"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockLeaderboardFragment"
+        android:label="@string/menu_Flocks_LeaderBoard"
+        tools:layout="@layout/fragment_flock_leaderboards">
+
+        <action
+            android:id="@+id/flock_fragment_nav_return"
+            app:destination="@id/nav_Flock" >
+        </action>
+    </fragment>
+
     <fragment
         android:id="@+id/nav_Reward"
         android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.a321projectprototype.User.FlockModelData;
-import com.example.a321projectprototype.User.UserModel;
 
 import java.util.ArrayList;
 
@@ -25,6 +24,8 @@ public class FlockDatabase extends SQLiteOpenHelper
     public static final String USERS_COLUMN_GROUPNUMBER = "groupNumber";
     public static final String USERS_COLUMN_DESCRIPTION = "description";
     public static final String USERS_COLUMN_PRIVATEFLOCK = "privateFlock";
+    public static final String USERS_COLUMN_OWNERUSERNAME = "ownerUsername";
+    public static final String USERS_COLUMN_SCORE= "score";
 
     // constructor needed for the database
     public FlockDatabase(Context context)
@@ -40,7 +41,8 @@ public class FlockDatabase extends SQLiteOpenHelper
     {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + USERS_TABLE_NAME + "("
                 + USERS_COLUMN_ID + " INTEGER  PRIMARY KEY," + USERS_COLUMN_NAME + " TEXT,"
-                + USERS_COLUMN_GROUPNUMBER + " TEXT," + USERS_COLUMN_DESCRIPTION + " TEXT," + USERS_COLUMN_PRIVATEFLOCK + " TEXT" + ")";
+                + USERS_COLUMN_GROUPNUMBER + " TEXT," + USERS_COLUMN_DESCRIPTION + " TEXT," + USERS_COLUMN_PRIVATEFLOCK + " TEXT," +
+                USERS_COLUMN_OWNERUSERNAME + " TEXT," + USERS_COLUMN_SCORE + " TEXT" +")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -63,6 +65,8 @@ public class FlockDatabase extends SQLiteOpenHelper
         contentValues.put(USERS_COLUMN_GROUPNUMBER, flock.getGroupNumber());
         contentValues.put(USERS_COLUMN_DESCRIPTION, flock.getDescription());
         contentValues.put(USERS_COLUMN_PRIVATEFLOCK, flock.isPrivateFlock());;
+        contentValues.put(USERS_COLUMN_OWNERUSERNAME, flock.getOwnerUsername());
+        contentValues.put(USERS_COLUMN_SCORE, flock.getScore());;
         database.insert(USERS_TABLE_NAME, null, contentValues);
         database.close();
 
@@ -115,6 +119,8 @@ public class FlockDatabase extends SQLiteOpenHelper
             flock.setGroupNumber(Integer.parseInt(cursor.getString(2)));
             flock.setDescription(cursor.getString(3));
             flock.setPrivateFlock(isPrivateFlock(cursor.getString(4)));
+            flock.setOwnerUsername(cursor.getString(5));
+            flock.setScore(Integer.parseInt(cursor.getString(6)));
             flockModelDataArrayList.add(flock);
         }
 
@@ -136,7 +142,7 @@ public class FlockDatabase extends SQLiteOpenHelper
         //query on the database table that match these variables amd gets the selection passed
         Cursor cursor = database.query(USERS_TABLE_NAME, new String[] { USERS_COLUMN_ID,
                         USERS_COLUMN_NAME, USERS_COLUMN_GROUPNUMBER,USERS_COLUMN_DESCRIPTION,
-                        USERS_COLUMN_PRIVATEFLOCK}, USERS_COLUMN_NAME + "=?",
+                        USERS_COLUMN_PRIVATEFLOCK,USERS_COLUMN_OWNERUSERNAME,USERS_COLUMN_SCORE}, USERS_COLUMN_NAME + "=?",
                 new String[] { String.valueOf(name) }, null, null, null, null);
 
         //cursor will move if not null
@@ -144,7 +150,7 @@ public class FlockDatabase extends SQLiteOpenHelper
         {
             //returns curso selections into a new user object
             FlockModelData flock = new FlockModelData(Integer.parseInt(cursor.getString(0)),cursor.getString(1),Integer.parseInt(cursor.getString(2)),
-                    cursor.getString(3),isPrivateFlock(cursor.getString(4)));
+                    cursor.getString(3),isPrivateFlock(cursor.getString(4)), cursor.getString(5), Integer.parseInt(cursor.getString(6)));
 
             cursor.close();
 
@@ -178,6 +184,8 @@ public class FlockDatabase extends SQLiteOpenHelper
         contentValues.put(USERS_COLUMN_GROUPNUMBER, flockModelData.getGroupNumber());
         contentValues.put(USERS_COLUMN_DESCRIPTION, flockModelData.getDescription());
         contentValues.put(USERS_COLUMN_PRIVATEFLOCK, putPrivate(flockModelData));
+        contentValues.put(USERS_COLUMN_OWNERUSERNAME, flockModelData.getOwnerUsername());
+        contentValues.put(USERS_COLUMN_SCORE, flockModelData.getScore());
 
 
         database.update(USERS_TABLE_NAME, contentValues,USERS_COLUMN_ID + " = ?",
