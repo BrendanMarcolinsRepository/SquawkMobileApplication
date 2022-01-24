@@ -37,12 +37,44 @@
         android:id="@+id/nav_Discover"
         android:name="com.example.a321projectprototype.ui.Discover.DiscoverFragment"
         android:label="@string/menu_Discover"
-        tools:layout="@layout/fragement_discover" />
+        tools:layout="@layout/fragement_discover">
+
+        <action
+            android:id="@+id/action_nav_discover_to_bird"
+            app:destination="@id/nav_Discover_Choice" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Discover_Choice"
+        android:name="com.example.a321projectprototype.ui.Discover.DiscoverChoice"
+        android:label="DiscoverChoice"
+        tools:layout="@layout/fragment_discover_choice" />
+
     <fragment
         android:id="@+id/nav_Forum"
         android:name="com.example.a321projectprototype.ui.Forum.ForumFragment"
         android:label="@string/menu_Forum"
-        tools:layout="@layout/fragment_forum" />
+        tools:layout="@layout/fragment_forum" >
+
+        <action
+            android:id="@+id/action_nav_forum_to_add"
+            app:destination="@id/nav_Forum_Add" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Forum_Add"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumAdd"
+        android:label="ForumAdd"
+        tools:layout="@layout/fragment_forum_add" >
+
+        <action
+            android:id="@+id/action_nav_add_to_forum"
+            app:destination="@id/nav_Forum" />
+
+    </fragment>
+
     <fragment
         android:id="@+id/nav_Flock"
         android:name="com.example.a321projectprototype.ui.Flock.FlockFragment"
@@ -85,6 +117,10 @@
         <action
             android:id="@+id/flock_fragment_nav_return"
             app:destination="@id/nav_Flock" >
+            <argument
+                android:name="myArg"
+                app:argType="integer"
+                android:defaultValue="1"/>
         </action>
     </fragment>
     <fragment

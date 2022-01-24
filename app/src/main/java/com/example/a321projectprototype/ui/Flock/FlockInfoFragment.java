@@ -45,7 +45,7 @@ public class FlockInfoFragment extends Fragment
     {
 
         View root = inflater.inflate(R.layout.fragement_flock_info, container, false);
-//        System.out.println(getArguments().getInt("Position"));
+        System.out.println("Flock Number: " + getArguments().getInt("Position"));
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();

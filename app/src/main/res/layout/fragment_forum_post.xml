@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/forumTopicRv"
+        android:layout_width="142dp"
+        android:layout_height="39dp"
+        android:text="Topic"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="9dp" />
+
+    <TextView
+        android:id="@+id/forumUserRv"
+        android:layout_width="174dp"
+        android:layout_height="29dp"
+        android:text="Cherper:"
+        android:textSize="16dp"
+
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="38dp" />
+
+    <TextView
+        android:id="@+id/forumDescriptionRv"
+        android:layout_width="349dp"
+        android:layout_height="198dp"
+        android:text="Description"
+        android:textSize="16dp"
+        android:textStyle="normal"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="64dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleDiscover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewForum"
+        android:layout_width="384dp"
+        android:layout_height="401dp"
+        tools:layout_editor_absoluteX="11dp"
+        tools:layout_editor_absoluteY="336dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/forumAddPost"
+        android:layout_width="126dp"
+        android:layout_height="29dp"
+        android:background="@drawable/green"
+        android:text="Post"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="269dp"
+        tools:layout_editor_absoluteY="776dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="232dp"
+        android:layout_height="32dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="773dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

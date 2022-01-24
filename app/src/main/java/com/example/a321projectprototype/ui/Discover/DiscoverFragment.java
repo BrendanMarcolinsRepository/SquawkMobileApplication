@@ -34,11 +34,15 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
+import com.example.a321projectprototype.ui.Past_Recordings.onClickInterface;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -64,7 +68,9 @@ public class DiscoverFragment extends Fragment
     private View root;
     private boolean reversed = false;
     private String s = "No Change", filterOrder = "o";
-
+    private DiscoverChoiceInterface discoverChoiceInterface;
+    private HomePage homePage;
+    private NavController navigation;
 
     
 
@@ -73,6 +79,9 @@ public class DiscoverFragment extends Fragment
                              ViewGroup container, Bundle savedInstanceState) {
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
         root = inflater.inflate(R.layout.fragement_discover, container, false);
+
+        homePage = (HomePage) getActivity();
+        navigation = homePage.getNav();
 
         discoverSearchView = root.findViewById(R.id.discover_search_bar);
         recyclerView = root.findViewById(R.id.recycleDiscover);
@@ -87,13 +96,11 @@ public class DiscoverFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        constraintLayout = root.findViewById(R.id.discoverConstraintLayout);
-
 
         ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-        ItemDataModel item2 = new ItemDataModel("Australian Crake");
-        ItemDataModel item3 = new ItemDataModel("Australian Brushturkey");
-        ItemDataModel item4 = new ItemDataModel("Australian Swiftlet");
+        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
+        ItemDataModel item3 = new ItemDataModel("Australian Crake");
+        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
         ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
 
 
@@ -106,8 +113,10 @@ public class DiscoverFragment extends Fragment
         list.add(item4);
         list.add(item5);
 
-        adapterDiscover = new  AdapterDiscover(list);
+
+        adapterDiscover = new  AdapterDiscover(list,homePage);
         recyclerView.setAdapter(adapterDiscover);
+
 
 
 
@@ -232,7 +241,7 @@ public class DiscoverFragment extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        adapterDiscover = new  AdapterDiscover(list);
+        adapterDiscover = new  AdapterDiscover(list,homePage);
         recyclerView.setAdapter(adapterDiscover);
     }
 }
