@@ -61,6 +61,10 @@
             android:id="@+id/action_nav_forum_to_add"
             app:destination="@id/nav_Forum_Add" />
 
+        <action
+            android:id="@+id/action_nav_forum_to_comment"
+            app:destination="@id/nav_Forum_Comment" />
+
     </fragment>
 
     <fragment
@@ -72,6 +76,33 @@
         <action
             android:id="@+id/action_nav_add_to_forum"
             app:destination="@id/nav_Forum" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_Forum_Comment"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumPost"
+        android:label="ForumComment"
+        tools:layout="@layout/fragment_forum_post" >
+
+        <action
+            android:id="@+id/action_nav_comment_to_forum"
+            app:destination="@id/nav_Forum" />
+
+        <action
+            android:id="@+id/action_nav_comment_to_commentsPost"
+            app:destination="@id/nav_Forum_Comment_Post" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Forum_Comment_Post"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumComments"
+        android:label="ForumCommentPost"
+        tools:layout="@layout/fragment_forum_comments" >
+
+        <action
+            android:id="@+id/action_nav_commentPost_to_comment"
+            app:destination="@id/nav_Forum_Comment" />
 
     </fragment>
 

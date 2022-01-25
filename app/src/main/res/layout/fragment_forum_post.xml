@@ -1,68 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/greenBackground">
 
 
-    <TextView
-        android:id="@+id/forumTopicRv"
-        android:layout_width="142dp"
-        android:layout_height="39dp"
-        android:text="Topic"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="9dp" />
+    <include
+        android:id="@+id/forumTopicComment"
+        layout="@layout/rv_forum_topic"
+        android:layout_width="405dp"
+        android:layout_height="201dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/forumUserRv"
-        android:layout_width="174dp"
-        android:layout_height="29dp"
-        android:text="Cherper:"
-        android:textSize="16dp"
-
-        android:textStyle="bold"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="38dp" />
-
-    <TextView
-        android:id="@+id/forumDescriptionRv"
-        android:layout_width="349dp"
-        android:layout_height="198dp"
-        android:text="Description"
-        android:textSize="16dp"
-        android:textStyle="normal"
-        tools:layout_editor_absoluteX="10dp"
-        tools:layout_editor_absoluteY="64dp" />
+    <View
+        android:id="@+id/viewCommentPost"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forumTopicComment" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleDiscover"
+        android:id="@+id/recycleForumComments"
+        android:layout_width="match_parent"
+        android:layout_height="383dp"
+        android:layout_marginTop="11dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewForum"
-        android:layout_width="384dp"
-        android:layout_height="401dp"
-        tools:layout_editor_absoluteX="11dp"
-        tools:layout_editor_absoluteY="336dp" />
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewCommentPost" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/forumAddPost"
-        android:layout_width="126dp"
-        android:layout_height="29dp"
+        android:id="@+id/commentForumComments"
+        android:layout_width="266dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/green"
-        android:text="Post"
+        android:text="Comment..."
+        android:textAlignment="textStart"
         android:textColor="@color/white"
-        tools:layout_editor_absoluteX="269dp"
-        tools:layout_editor_absoluteY="776dp" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="232dp"
-        android:layout_height="32dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="773dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleForumComments" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

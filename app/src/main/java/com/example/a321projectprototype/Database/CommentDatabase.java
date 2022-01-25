@@ -3,30 +3,32 @@ package com.example.a321projectprototype.Database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.ForumModel;
 
 import java.util.ArrayList;
 
-public class ForumDatabase extends SQLiteOpenHelper
+public class CommentDatabase extends SQLiteOpenHelper
 {
     private String name;
     private int groupNumber;
     private String description;
     private boolean privateFlock = true;
 
-    public static final String DATABASE_NAME = "ForumDatabase";
+    public static final String DATABASE_NAME = "CommentDatabase";
     public static final String USERS_TABLE_NAME = "users";
     public static final String USERS_COLUMN_ID = "id";
     public static final String USERS_COLUMN_NAME = "username";
     public static final String USERS_COLUMN_TOPIC = "topic";
-    public static final String USERS_COLUMN_DESCRIPTION = "description";
+    public static final String USERS_COLUMN_COMMENT = "comment";
 
     // constructor needed for the database
-    public ForumDatabase(Context context)
+    public CommentDatabase(Context context)
     {
         super(context,DATABASE_NAME,null,1);
 
@@ -39,7 +41,7 @@ public class ForumDatabase extends SQLiteOpenHelper
     {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + USERS_TABLE_NAME + "("
                 + USERS_COLUMN_ID + " INTEGER  PRIMARY KEY," + USERS_COLUMN_NAME + " TEXT,"
-                + USERS_COLUMN_TOPIC + " TEXT," + USERS_COLUMN_DESCRIPTION +  ", TEXT" +")";
+                + USERS_COLUMN_TOPIC + " TEXT," + USERS_COLUMN_COMMENT +  ", TEXT" +")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -53,14 +55,14 @@ public class ForumDatabase extends SQLiteOpenHelper
 
 
     //used to add the users to the tables of the database by passing a user object
-    public void addFlock(ForumModel forum ) {
+    public void addFlock(CommentModel commentModel ) {
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(USERS_COLUMN_ID, forum.getId());
-        contentValues.put(USERS_COLUMN_NAME, forum.getUsername());
-        contentValues.put(USERS_COLUMN_TOPIC, forum.getTopic());
-        contentValues.put(USERS_COLUMN_DESCRIPTION, forum.getDescription());
+        contentValues.put(USERS_COLUMN_ID, commentModel.getId());
+        contentValues.put(USERS_COLUMN_NAME, commentModel.getUsername());
+        contentValues.put(USERS_COLUMN_TOPIC, commentModel.getTopic());
+        contentValues.put(USERS_COLUMN_COMMENT, commentModel.getDescription());
         database.insert(USERS_TABLE_NAME, null, contentValues);
         database.close();
 
@@ -92,60 +94,71 @@ public class ForumDatabase extends SQLiteOpenHelper
     }
 
     //returns all the users in the database
-    public ArrayList<ForumModel> getAllUsers()
+    public ArrayList<CommentModel> getAllUsers(String topic)
     {
         //Array List needed
-        ArrayList<ForumModel> forumModelDataArrayList = new ArrayList<ForumModel>();
+        ArrayList<CommentModel> commentModellDataArrayList = new ArrayList<CommentModel>();
 
         //string query to selete the table name
-        String selectQuery = "SELECT * FROM " + USERS_TABLE_NAME;
 
-        //used to make the query
-        SQLiteDatabase database = this.getWritableDatabase();
-        Cursor cursor = database.rawQuery(selectQuery,null);
-
-        //adds the users to the arraylist and returns it
-        while(cursor.moveToNext())
+        try
         {
-            ForumModel forum = new ForumModel();
-            forum.setId(Integer.parseInt(cursor.getString(0)));
-            forum.setUsername(cursor.getString(1));
-            forum.setTopic(cursor.getString(2));
-            forum.setDescription(cursor.getString(3));
-            forumModelDataArrayList.add(forum);
+            String selectQuery = "SELECT * FROM " + USERS_TABLE_NAME + " WHERE " + USERS_COLUMN_TOPIC + "= '"  + topic + "'";
+
+
+            //used to make the query
+            SQLiteDatabase database = this.getWritableDatabase();
+            Cursor cursor = database.rawQuery(selectQuery,null);
+
+            //adds the users to the arraylist and returns it
+            while(cursor.moveToNext())
+            {
+
+
+                CommentModel comment = new CommentModel();
+                comment.setId(Integer.parseInt(cursor.getString(0)));
+                comment.setUsername(cursor.getString(1));
+                comment.setTopic(cursor.getString(2));
+                comment.setDescription(cursor.getString(3));
+                commentModellDataArrayList.add(comment);
+            }
+        }
+        catch(SQLException e)
+        {
+
         }
 
 
-        return forumModelDataArrayList;
+        return commentModellDataArrayList;
     }
 
 
 
     //used to get one particular user
-    public ForumModel getFlock(String name)
+    public CommentModel getFlock(String name)
     {
 
         //used to get the specified selection query
         SQLiteDatabase database = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + USERS_TABLE_NAME
-                + " WHERE " + USERS_COLUMN_TOPIC + " = '" + name + "'";
+                + " WHERE " + USERS_COLUMN_NAME + " = " + name;
 
         //query on the database table that match these variables amd gets the selection passed
         Cursor cursor = database.query(USERS_TABLE_NAME, new String[] { USERS_COLUMN_ID,
-                        USERS_COLUMN_NAME, USERS_COLUMN_TOPIC,USERS_COLUMN_DESCRIPTION}, USERS_COLUMN_TOPIC + "=?",
+                        USERS_COLUMN_NAME, USERS_COLUMN_TOPIC,USERS_COLUMN_COMMENT}, USERS_COLUMN_NAME + "=?",
                 new String[] { String.valueOf(name) }, null, null, null, null);
 
         //cursor will move if not null
         if (cursor != null && cursor.moveToFirst())
         {
             //returns curso selections into a new user object
-            ForumModel forum = new ForumModel(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),
+            CommentModel comment = new CommentModel(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),
                     cursor.getString(3));
 
             cursor.close();
 
             //returns the user object
-            return forum;
+            return comment;
         }
 
         return null;
@@ -165,17 +178,17 @@ public class ForumDatabase extends SQLiteOpenHelper
 
 
     //used to update a user in the database by passing an object user
-    public void updateUserCritical(FlockModelData flockModelData)
+    public void updateUserCritical(CommentModel comment)
     {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(USERS_COLUMN_ID, flockModelData.getId());
-        contentValues.put(USERS_COLUMN_NAME, flockModelData.getName());
-        contentValues.put(USERS_COLUMN_TOPIC, flockModelData.getGroupNumber());
-        contentValues.put(USERS_COLUMN_DESCRIPTION, flockModelData.getDescription());
+        contentValues.put(USERS_COLUMN_ID, comment.getId());
+        contentValues.put(USERS_COLUMN_NAME, comment.getUsername());
+        contentValues.put(USERS_COLUMN_TOPIC, comment.getTopic());
+        contentValues.put(USERS_COLUMN_COMMENT, comment.getDescription());
 
         database.update(USERS_TABLE_NAME, contentValues,USERS_COLUMN_ID + " = ?",
-                new String[] {String.valueOf(flockModelData.getId())});
+                new String[] {String.valueOf(comment.getId())});
 
     }
 

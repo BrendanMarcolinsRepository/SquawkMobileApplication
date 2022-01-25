@@ -46,6 +46,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     private UserDatabase userDatabase;
     private ConstraintLayout registerLayout;
     private View view;
+    private ForumModel currentItem;
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -68,8 +69,8 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
 
             //System.out.println("Flock name 2 " + name);
-            /*
-            infoButton.setOnClickListener(new View.OnClickListener()
+
+            itemView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -77,11 +78,11 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
                     picked = getLayoutPosition();
                     System.out.println("worked");
                     Bundle bundle = new Bundle();
-                    bundle.putInt("Position",picked );
-                    navigation.navigate(R.id.info_fragment_nav,bundle);
+                    bundle.putString("topic",currentItem.getTopic());
+                    navigation.navigate(R.id.action_nav_forum_to_comment,bundle);
                 }
             });
-            */
+
         }
 
     }
@@ -111,7 +112,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, int position)
     {
-        ForumModel currentItem = dataSet.get(position);
+        currentItem = dataSet.get(position);
         holder.topic.setText("Topic: " + currentItem.getTopic());
         holder.username.setText("Cherper: " + currentItem.getTopic());
         holder.description.setText(currentItem.getDescription());

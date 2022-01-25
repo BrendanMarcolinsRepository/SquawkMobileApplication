@@ -2,34 +2,34 @@ package com.example.a321projectprototype.User;
 
 import java.io.Serializable;
 
-public class ForumModel implements Serializable
+public class CommentModel implements Serializable
 {
     private int id;
     private String username;
     private String topic;
-    private String description;
+    private String comment;
     private boolean privatePost;
 
-    public ForumModel()
+    public CommentModel()
     {
 
     }
 
-    public ForumModel(int id, String username, String topic, String description, boolean privatePost)
+    public CommentModel(int id, String username, String topic, String comment, boolean privatePost)
     {
         this.id = id;
         this.username = username;
         this.topic = topic;
-        this.description = description;
+        this.comment = comment;
         this.privatePost = privatePost;
     }
 
-    public ForumModel(int id, String username, String topic, String description)
+    public CommentModel(int id, String username, String topic, String comment)
     {
         this.id = id;
         this.username = username;
         this.topic = topic;
-        this.description = description;
+        this.comment = comment;
 
     }
 
@@ -58,11 +58,11 @@ public class ForumModel implements Serializable
     }
 
     public String getDescription() {
-        return description;
+        return comment;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String comment) {
+        this.comment = comment;
     }
 
     public boolean getPrivatePost() {
