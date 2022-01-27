@@ -7,10 +7,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Layout;
@@ -19,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 
@@ -44,24 +48,29 @@ import com.example.a321projectprototype.ui.home.HomeFragment;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.activity.result.contract.ActivityResultContracts.*;
 
-public class RecordFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class RecordFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
+{
 
 
 
     private RecordViewModel recordViewModel;
     private Button recordButton;
+    private ImageView recordImage;
     private MediaRecorder mediaRecorder;
     private File file;
     private HomePage homePage;
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private boolean recording = false;
     private FragmentActivity fragmentActivity;
-    private String fileName;
+    private static String fileName = null;
     private boolean isRecording  = false;
+    private Context context;
 
 
 
@@ -88,31 +97,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                              ViewGroup container, Bundle savedInstanceState)
     {
         View root = inflater.inflate(R.layout.fragment_record, container, false);
-        recordButton = root.findViewById(R.id.recordFragmentButton);
+        recordImage = root.findViewById(R.id.recordIcon);
 
-        recordButton.setOnClickListener(record);
+        recordImage.setOnClickListener(record);
 
         recordViewModel =
                 new ViewModelProvider(this).get(RecordViewModel.class);
 
         homePage = (HomePage)getActivity();
 
-
-
-
-        final TextView textView = root.findViewById(R.id.text_gallery);
-
-
-
-
-        recordViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
-        {
-            @Override
-            public void onChanged(@Nullable String s)
-            {
-
-            }
-        });
+        context = homePage.getApplicationContext();
 
 
 
@@ -130,14 +124,15 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
                if (ContextCompat.checkSelfPermission(
                        getContext(), Manifest.permission.RECORD_AUDIO) ==
-                       PackageManager.PERMISSION_GRANTED)
+                       PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                       getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+               PackageManager.PERMISSION_GRANTED)
 
                {
                    // You can use the API that requires the permission.
                    isRecording = true;
                    startRecord();
-                   recordButton.setText("Recording Now...Press to Stop");
-                   recordButton.setBackgroundColor(getResources().getColor(R.color.red));
+                   recordImage.setImageResource(android.R.drawable.presence_audio_busy);
                    System.out.println("1");
                }
 
@@ -159,27 +154,24 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void startRecord()
     {
-        System.out.println("Recording Started...");
-        //recordButton.setText("Recording...");
 
-        
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        System.out.println("Location: " + getRecordingFilePath());
+        mediaRecorder.setOutputFile(getRecordingFilePath());
 
         try
         {
-            System.out.println("it work");
-            mediaRecorder = new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setOutputFile(getRecordingFilePath());
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mediaRecorder.prepare();
             mediaRecorder.start();
 
-
+            System.out.println("Recording Started...");
         }
         catch (IOException e)
         {
-            System.out.println("Didnt work");
+            System.out.println("Didnt work" + e);
         }
 
     }
@@ -188,14 +180,37 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     {
         System.out.println("it stopped");
         mediaRecorder.stop();
+        mediaRecorder.reset();
         mediaRecorder.release();
-        recordButton.setText("Press To Record");
-        recordButton.setBackgroundColor(getResources().getColor(R.color.darkerGreen));
+        mediaRecorder = null;
+        recordImage.setImageResource(android.R.drawable.presence_audio_online);
+
+        if(haveNetwork())
+        {
+            System.out.println("ready to be pushed");
+        }
+        else
+        {
+            System.out.println("ready to be saved");
+        }
+
+    }
+
+    private boolean haveNetwork()
+    {
+        ConnectivityManager cm = (ConnectivityManager)
+                context.getSystemService(context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     private void requestPermission()
     {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO))
+        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+                && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) )
         {
             System.out.println("3");
 
@@ -208,6 +223,10 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                         {
                             requestPermissionLauncher.launch(
                                     Manifest.permission.RECORD_AUDIO);
+
+                            requestPermissionLauncher.launch(
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
 
                         }
                     });
@@ -227,8 +246,11 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             System.out.println("4");
             requestPermissionLauncher.launch(
                     Manifest.permission.RECORD_AUDIO);
+            requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        // You can directly ask for the permission.
+
+            // You can directly ask for the permission.
             // The registered ActivityResultCallback gets the result of this request.
 
         }
@@ -238,11 +260,15 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     private String getRecordingFilePath()
     {
+        Date date = new Date();
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory,"birdRecordingFile" + ".mp3");
+        File file = new File(musicDirectory,"birdRecordingFile-" + date.getDate() +".mp3");
         return file.getPath();
     }
+
+
+
 
 }
 

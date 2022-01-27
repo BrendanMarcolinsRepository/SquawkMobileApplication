@@ -25,14 +25,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.323" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/recordFragmentButton"
-        android:layout_width="311dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/et_style"
-        android:text="@string/menu_record"
+    <ImageView
+        android:id="@+id/recordIcon"
+        android:layout_width="214dp"
+        android:layout_height="221dp"
+        android:layout_marginTop="44dp"
+        android:src="@android:drawable/presence_audio_online"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
 

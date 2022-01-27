@@ -76,7 +76,7 @@ public class ForumComments extends Fragment
                 commentDatabase.addFlock(commentModel);
                 Bundle bundle = new Bundle();
                 bundle.putString("topic",topicString);
-                navController.navigate(R.id.action_nav_commentPost_to_comment,bundle);
+                navController.popBackStack();
             }
         }
     };

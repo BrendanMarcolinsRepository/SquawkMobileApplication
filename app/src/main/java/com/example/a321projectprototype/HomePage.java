@@ -127,6 +127,4 @@ public class HomePage extends AppCompatActivity implements Serializable
     }
 
 
-
-
 }

@@ -1,6 +1,7 @@
 package com.example.a321projectprototype.ui.Past_Recordings;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.ui.Discover.ItemDataModel;
 
 import java.text.SimpleDateFormat;
+import java.time.chrono.HijrahChronology;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +38,15 @@ public class PastRecordingsFragment extends Fragment {
     private TextView date;
     private SimpleDateFormat formatter;
     private String dateString;
+    private HomePage homePage;
+    private List<String> listItem;
+
+    ItemDataModel item1 = new ItemDataModel("Australian Magpie");
+    ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
+    ItemDataModel item3 = new ItemDataModel("Australian Crake");
+    ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
+    ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,13 +66,14 @@ public class PastRecordingsFragment extends Fragment {
 
         formatter = new SimpleDateFormat("E, MMM dd yyyy");
 
+        homePage = (HomePage) getActivity();
 
         recyclerView.setHasFixedSize(true);
         recyclerView2.setHasFixedSize(true);
 
         List<Date> dateList = getDates();
 
-        List<String> listItem = new ArrayList<>();
+        listItem = new ArrayList<>();
 
 
 
@@ -74,29 +89,37 @@ public class PastRecordingsFragment extends Fragment {
 
         onClickInterface = new onClickInterface() {
             @Override
-            public void setClick(int click)
+            public void setClick(int click, View view)
             {
                 date.setText(listItem.get(click));
 
-                List<String> listItem2 = new ArrayList<>();
-                listItem2.add(String.format("Random Bird"));
-                listItem2.add(String.format("Random Bird"));
-                listItem2.add(String.format("Random Bird"));
-                listItem2.add(String.format("Random Bird"));
-                listItem2.add(String.format("Random Bird"));
-                listItem2.add(String.format("Random Bird"));
-                recyclerView2.setAdapter(new PastRecordingsCardviewAdpator(listItem2));
 
+                setAdaptor2();
 
             }
         };
 
 
+        MyRvAdapter rvAdapter = new MyRvAdapter(listItem, getContext(),onClickInterface,homePage);
 
-        recyclerView.setAdapter(new MyRvAdapter(listItem, getContext(),onClickInterface));
+        recyclerView.setAdapter(rvAdapter);
 
+        setAdaptor2();
 
         return root;
+    }
+
+    private void setAdaptor2()
+    {
+        List<String> listItem2 = new ArrayList<>();
+        listItem2.add(String.format(item1.getTxtname()));
+        listItem2.add(String.format(item2.getTxtname()));
+        listItem2.add(String.format(item3.getTxtname()));
+        listItem2.add(String.format(item4.getTxtname()));
+        listItem2.add(String.format(item5.getTxtname()));
+
+        recyclerView2.setAdapter(new PastRecordingsCardviewAdpator(listItem2,homePage));
+
     }
 
     public List<Date> getDates()

@@ -31,7 +31,13 @@
         android:id="@+id/nav_PastRecording"
         android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsFragment"
         android:label="@string/menu_PastRecordings"
-        tools:layout="@layout/fragment_pastrecordings" />
+        tools:layout="@layout/fragment_pastrecordings" >
+
+        <action
+            android:id="@+id/action_nav_discover_to_bird"
+            app:destination="@id/nav_Discover_Choice" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_Discover"
