@@ -18,7 +18,7 @@ public class FlockDatabase extends SQLiteOpenHelper
     private boolean privateFlock = true;
 
     public static final String DATABASE_NAME = "FlockDatabase";
-    public static final String USERS_TABLE_NAME = "users";
+    public static final String USERS_TABLE_NAME = "flock";
     public static final String USERS_COLUMN_ID = "id";
     public static final String USERS_COLUMN_NAME = "name";
     public static final String USERS_COLUMN_GROUPNUMBER = "groupNumber";

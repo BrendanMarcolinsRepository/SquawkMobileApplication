@@ -19,7 +19,7 @@ public class ForumDatabase extends SQLiteOpenHelper
     private boolean privateFlock = true;
 
     public static final String DATABASE_NAME = "ForumDatabase";
-    public static final String USERS_TABLE_NAME = "users";
+    public static final String USERS_TABLE_NAME = "forum";
     public static final String USERS_COLUMN_ID = "id";
     public static final String USERS_COLUMN_NAME = "username";
     public static final String USERS_COLUMN_TOPIC = "topic";

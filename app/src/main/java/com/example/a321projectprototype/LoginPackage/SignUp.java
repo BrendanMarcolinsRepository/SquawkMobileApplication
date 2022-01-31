@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.LoginPackage;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -8,12 +9,19 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -27,6 +35,10 @@ public class SignUp extends AppCompatActivity {
     private UserDatabase userDatabase;
     private int amountOfUsers;
     private ArrayList<UserModel> usersArrayList;
+    private FirebaseDatabase rootNode;
+    private DatabaseReference reference;
+    private ProgressBar progressBar;
+    private FirebaseAuth auth;
 
 
     @Override
@@ -43,7 +55,7 @@ public class SignUp extends AppCompatActivity {
 
         System.out.println(amountOfUsers);
 
-
+        auth = FirebaseAuth.getInstance();
 
         fullNameEditText = findViewById(R.id.fullNameRegister);
         usernameEditText = findViewById(R.id.usernameRegister);
@@ -53,6 +65,8 @@ public class SignUp extends AppCompatActivity {
         register = findViewById(R.id.registerButton);
         registerLayout = findViewById(R.id.registerlayer);
         returnText = findViewById(R.id.registerSignIn);
+        progressBar = findViewById(R.id.signUpProgressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         returnText.setOnClickListener(returnMethod);
         register.setOnClickListener(registerMethod);
@@ -108,13 +122,31 @@ public class SignUp extends AppCompatActivity {
 
             if(password1Input.matches(password2Input) && !password1Input.isEmpty())
             {
-                System.out.println("worked");
-                user = new UserModel(amountOfUsers, fullNameInput, usernameInput, password1Input, emailInput);
-                System.out.printf("User Id: %s", user.getId());
-                Snackbar.make(registerLayout, "Contact Has Been Saved ", Snackbar.LENGTH_LONG).show();
-                userDatabase.addUsers(user);
+                auth.createUserWithEmailAndPassword(emailInput,password2Input).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            user = new UserModel(amountOfUsers, fullNameInput, usernameInput, password1Input, emailInput);
+                            FirebaseDatabase.getInstance().getReference("Users").child(auth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task)
+                                {
+                                    Snackbar.make(registerLayout, "Contact Has Been Saved ", Snackbar.LENGTH_LONG).show();
+                                    returnToLogin();
+                                }
+                            });
 
-                returnToLogin();
+                        }
+                    }
+                });
+
+
+
+
             }
             else
             {
@@ -126,6 +158,8 @@ public class SignUp extends AppCompatActivity {
                 System.out.println("noworked");
 
             }
+
+
 
         }
 

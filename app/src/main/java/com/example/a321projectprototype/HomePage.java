@@ -7,10 +7,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,11 +41,16 @@ public class HomePage extends AppCompatActivity implements Serializable
     private Button recordButton, discoverButton,rewardButton;
     private  NavController navController;
     private UserModel userModel;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
+    private String userID;
+    private Button logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent homeIntent = getIntent();
-        userModel = (UserModel) getIntent().getSerializableExtra("serialzable");
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -56,6 +70,16 @@ public class HomePage extends AppCompatActivity implements Serializable
         rewardButton = findViewById(R.id.homeButton3);
         rewardButton.setOnClickListener(reward);
 
+        logout = findViewById(R.id.buttonLogout);
+        logout.setOnClickListener(logoutMethod);
+
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        userID = firebaseUser.getUid();
+
+
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -71,10 +95,33 @@ public class HomePage extends AppCompatActivity implements Serializable
         NavigationUI.setupWithNavController(navigationView, navController);
         View header = navigationView.getHeaderView(0);
         //use to display the users details in the navigation header
-        headName = (TextView) header.findViewById(R.id.navhead_name);
-        headEmail = (TextView) header.findViewById(R.id.navhead_email);
-        headName.setText(userModel.getName());
-        headEmail.setText("m@gmail.com");
+
+
+        databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userModel = snapshot.getValue(UserModel.class);
+
+                if(userModel != null)
+                {
+                    headName = (TextView) header.findViewById(R.id.navhead_name);
+                    headEmail = (TextView) header.findViewById(R.id.navhead_email);
+                    headName.setText(userModel.getUsername());
+                    headEmail.setText(userModel.getEmail());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                System.out.println("=======================> did cancled");
+            }
+
+
+        });
+
+
     }
 
 
@@ -125,6 +172,16 @@ public class HomePage extends AppCompatActivity implements Serializable
     {
         return userModel;
     }
+
+    private final View.OnClickListener logoutMethod = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(HomePage.this, Prototype.class));
+        }
+    };
 
 
 }
