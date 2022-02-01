@@ -31,6 +31,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class HomeFragment extends Fragment
 {
@@ -46,6 +51,8 @@ public class HomeFragment extends Fragment
     private String userID;
     private UserModel userModel;
     private Button logout;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -81,25 +88,19 @@ public class HomeFragment extends Fragment
         userID = firebaseUser.getUid();
 
 
-        databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
+        documentReference.addSnapshotListener(homePage, new EventListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userModel = snapshot.getValue(UserModel.class);
-
-                if(userModel != null)
-                {
-                    greetings.setText(userModel.getUsername());
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error)
             {
-                System.out.println("=======================> did cancled");
+                greetings.setText("Welcome: " + value.getString("username"));
             }
-
-
         });
 
 

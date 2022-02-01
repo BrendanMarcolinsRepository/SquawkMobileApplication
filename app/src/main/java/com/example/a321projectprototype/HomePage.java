@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.home.HomeViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,8 +20,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -35,7 +45,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     private AppBarConfiguration mAppBarConfiguration;
     private HomeViewModel homeViewModel;
-    private String name;
+    private String name, email;
     private ImageView imageView;
     private TextView headName, headEmail;
     private Button recordButton, discoverButton,rewardButton;
@@ -46,6 +56,9 @@ public class HomePage extends AppCompatActivity implements Serializable
     private String userID;
     private Button logout;
 
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private final String USERS_KEY = "qbPjDm73CVIUz63gDu8D";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +87,6 @@ public class HomePage extends AppCompatActivity implements Serializable
         logout.setOnClickListener(logoutMethod);
 
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        userID = firebaseUser.getUid();
-
-
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -94,32 +101,48 @@ public class HomePage extends AppCompatActivity implements Serializable
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         View header = navigationView.getHeaderView(0);
+        headName = (TextView) header.findViewById(R.id.navhead_name);
+        headEmail = (TextView) header.findViewById(R.id.navhead_email);
+
         //use to display the users details in the navigation header
 
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        databaseReference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userModel = snapshot.getValue(UserModel.class);
-
-                if(userModel != null)
-                {
-                    headName = (TextView) header.findViewById(R.id.navhead_name);
-                    headEmail = (TextView) header.findViewById(R.id.navhead_email);
-                    headName.setText(userModel.getUsername());
-                    headEmail.setText(userModel.getEmail());
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                System.out.println("=======================> did cancled");
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
+                        headName.setText(document.getString("username"));
+                        headEmail.setText(document.getString("email"));
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
             }
-
-
         });
+
+   ;
+
+
+
 
 
     }

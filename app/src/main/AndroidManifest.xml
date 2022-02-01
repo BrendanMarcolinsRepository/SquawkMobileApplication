@@ -18,7 +18,9 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.321ProjectPrototype"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
+        >
         <activity
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
