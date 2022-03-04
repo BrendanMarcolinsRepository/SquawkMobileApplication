@@ -149,7 +149,7 @@ public class FlockDatabase extends SQLiteOpenHelper
         if (cursor != null && cursor.moveToFirst())
         {
             //returns curso selections into a new user object
-            FlockModelData flock = new FlockModelData(Integer.parseInt(cursor.getString(0)),cursor.getString(1),Integer.parseInt(cursor.getString(2)),
+            FlockModelData flock = new FlockModelData(cursor.getString(1),Integer.parseInt(cursor.getString(2)),
                     cursor.getString(3),isPrivateFlock(cursor.getString(4)), cursor.getString(5), Integer.parseInt(cursor.getString(6)));
 
             cursor.close();

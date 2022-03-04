@@ -65,10 +65,19 @@
         android:layout_width="314dp"
         android:layout_height="73dp"
         android:layout_marginTop="60dp"
-        android:text="Welcome: "
+        android:text=""
         android:textSize="20dp"
         android:gravity="center"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="60dp"
+        android:id="@+id/usernameHomepageProgressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

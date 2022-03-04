@@ -22,9 +22,18 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder>
@@ -38,6 +47,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     private int picked;
     private Context context;
     private FlockModelData flockModelData;
+    private FlockModelData currentItem;
     private FlockDatabase flockDatabase;
     private UserModel userModel;
     private String name, countNumber;
@@ -45,6 +55,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     private UserDatabase userDatabase;
     private ConstraintLayout registerLayout;
     private View view;
+    private FirebaseFirestore firebaseFirestore;
+
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -62,7 +74,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             infoButton = itemView.findViewById(R.id.flock_info_button);
             registerLayout = view.findViewById(R.id.registerlayerFlock);
 
-            name = homePage.getUserModel().getUserFlock();
+
             countNumber = groupCountNumber.getText().toString();
 
             System.out.println(name);
@@ -70,14 +82,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
             FlockModelData flockModelData = flockDatabase.getFlock(name);
 
-            if(flockModelData == null)
-            {
-                count = 0;
-            }
-            else
-            {
-                count = flockModelData.getGroupNumber();
-            }
+
 
             //System.out.println("Flock name 2 " + name);
 
@@ -104,7 +109,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             @Override
             public void onClick(View v)
             {
-
+                name = homePage.getUserModel().getUserFlock();
                 if(count <= 200 && name == null)
                 {
                     popUp();
@@ -144,7 +149,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, int position)
     {
-        FlockModelData currentItem = dataSet.get(position);
+        currentItem = dataSet.get(position);
         holder.groupName.setText(currentItem.getName());
         holder.groupCountNumber.setText(currentItem.getGroupNumber() + "/200");
 
@@ -204,16 +209,89 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
         yes.setOnClickListener(new View.OnClickListener()
         {
+            private int amount;
             @Override
             public void onClick(View v)
             {
-                homePage.getUserModel().setUserFlock(name);
-                userDatabase = new UserDatabase(context);
-                userDatabase.updateUserCritical(userModel);
-                count = Integer.parseInt(countNumber);
-                flockModelData.setGroupNumber(count);
-                flockDatabase.updateUserCritical(flockModelData);
-                alertDialog.dismiss();
+                firebaseFirestore = FirebaseFirestore.getInstance();
+
+                DocumentReference documentReference = firebaseFirestore.collection("Flock").document("A1m2nmOrG3WISGp2jUOp");
+
+                documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists())
+                            {
+                                if(task.getResult().getString("name").equals(currentItem.getName()))
+                                {
+                                    amount = Integer.parseInt(task.getResult().getString("groupNumber"));
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("no document");
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("not successfull");
+
+                        }
+                    }
+                });
+
+
+                firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+
+
+                HashMap<String,Object> myMap = new HashMap<>();
+                myMap.put("groupNumber",amount);
+
+
+                documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    { }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+
+                    }
+                });
+
+                DocumentReference documentReference1 = firebaseFirestore.collection("flockMember").document();
+
+
+                HashMap<String,Object> myMap1 = new HashMap<>();
+                myMap1.put("name",homePage.getUserModel().getName());
+                myMap1.put("ownerUsername", name);
+
+                documentReference1.set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        alertDialog.dismiss();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+
+                    }
+                });
             }
         });
 

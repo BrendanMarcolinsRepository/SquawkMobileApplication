@@ -136,7 +136,7 @@ public class SignUp extends AppCompatActivity {
 
 
                     userFirebaseId = auth.getCurrentUser().getUid();
-                    DocumentReference documentReference = firebaseFirestore.collection("users").document();
+                    DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
                     HashMap<String,Object> userMap = new HashMap<>();
                     userMap.put("fullname",fullNameInput);
                     userMap.put("username",usernameInput);

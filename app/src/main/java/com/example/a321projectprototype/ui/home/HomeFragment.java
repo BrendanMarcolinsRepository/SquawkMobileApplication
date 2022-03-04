@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsFragment;
 import com.example.a321projectprototype.ui.Record.RecordFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +56,7 @@ public class HomeFragment extends Fragment
     private Button logout;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    private ProgressBar progressBar;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,6 +72,9 @@ public class HomeFragment extends Fragment
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        progressBar = root.findViewById(R.id.usernameHomepageProgressBar);
 
 
         recordButton = root.findViewById(R.id.homeButton1);
@@ -94,15 +101,35 @@ public class HomeFragment extends Fragment
 
         userID = auth.getCurrentUser().getUid();
 
-        DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
-        documentReference.addSnapshotListener(homePage, new EventListener<DocumentSnapshot>() {
+        DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
+
+        progressBar.setVisibility(View.VISIBLE);
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error)
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                greetings.setText("Welcome: " + value.getString("username"));
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        greetings.setText("Welcome: " + document.getString("username"));
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
             }
         });
-
 
 
 

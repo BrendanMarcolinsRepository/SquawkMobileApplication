@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,20 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +65,10 @@ public class FlockFragment extends Fragment
     private HomePage homePage;
     private NavController navController;
     private FlockDatabase flockDatabase;
+    private FirebaseFirestore firebaseFirestore;
+    private ProgressBar progressBar;
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -68,6 +87,8 @@ public class FlockFragment extends Fragment
         myflock = root.findViewById(R.id.flockMyFlock);
         flockImage = root.findViewById(R.id.flockImage);
         leaderboard = root.findViewById(R.id.flockLeaderBoards);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        progressBar = root.findViewById(R.id.flockListProgressBar);
 
 
         checkFlockName();
@@ -78,13 +99,16 @@ public class FlockFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        flockList = flockDatabase.getAllUsers();
-        FlockModelData flockModelData = flockDatabase.getFlock(homePage.getUserModel().getUserFlock());
-//        System.out.println("Flock name 1 " + flockModelData.getName());
-
+        flockList = new ArrayList<>();
         adapterFlock = new  AdapterFlock(flockList,homePage,getContext(),flockDatabase, root);
         recyclerView.setAdapter(adapterFlock);
 
+
+//        System.out.println("Flock name 1 " + flockModelData.getName());
+
+
+        progressBar.setVisibility(View.VISIBLE);
+        EventChangeListener();
         createFlockButton.setOnClickListener(createFlockFragement);
         leaderboard.setOnClickListener(flockLeaderboardMethod);
         myflock.setOnClickListener(myFlockMethod);
@@ -116,26 +140,90 @@ public class FlockFragment extends Fragment
         return root;
     }
 
+
+    private void EventChangeListener()
+    {
+
+        firebaseFirestore.collection("Flock").orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>()
+                {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+                    {
+
+                        if(error != null)
+                        {
+                            System.out.println("ERROR ================> " + error.getMessage());
+                        }
+
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+
+                                flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
+                                progressBar.setVisibility(View.INVISIBLE);
+
+
+                            }
+
+                            adapterFlock.notifyDataSetChanged();
+                        }
+                    }
+                });
+    }
+
+
+
     private void checkFlockName()
     {
-        UserModel userModel = homePage.getUserModel();
-        System.out.println(userModel.getUserFlock());
+        DocumentReference  documentReference = firebaseFirestore.collection("Flock").document("4OIcTerZfrxWSLMZYX1O");
 
-        if(userModel.getUserFlock() != null)
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
-            textViewFlockName.setText(userModel.getUserFlock());
-            createFlockButton.setVisibility(View.GONE);
-            createFlockButton.setOnClickListener(null);
-            myflock.setVisibility(View.VISIBLE);
-            flockImage.setVisibility(View.VISIBLE);
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
+                        UserModel userModel = homePage.getUserModel();
+                        if(userModel.getUsername() != task.getResult().getString("ownerUsername"))
+                        {
+                            userModel.setUserFlock(task.getResult().getString("name"));
+                            textViewFlockName.setText(userModel.getUserFlock());
+                            createFlockButton.setVisibility(View.GONE);
+                            createFlockButton.setOnClickListener(null);
+                            myflock.setVisibility(View.VISIBLE);
+                            flockImage.setVisibility(View.VISIBLE);
 
-        }
-        else
-        {
-            myflock.setVisibility(View.GONE);
-            flockImage.setVisibility(View.GONE);
-            createFlockButton.setVisibility(View.VISIBLE);
-        }
+
+                        }
+                        else
+                        {
+                            myflock.setVisibility(View.GONE);
+                            flockImage.setVisibility(View.GONE);
+                            createFlockButton.setVisibility(View.VISIBLE);
+
+                        }
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
+            }
+        });
+
     }
 
     private final View.OnClickListener createFlockFragement = new View.OnClickListener()

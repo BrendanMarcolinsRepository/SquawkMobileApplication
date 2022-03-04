@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
@@ -21,8 +23,28 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -42,6 +64,9 @@ public class FlockCreationFragment extends Fragment
     private UserModel userModel;
     private UserDatabase userDatabase;
     private int flockCount;
+    private FirebaseFirestore firebaseFirestore;
+    private String ownerUsername;
+
 
 
 
@@ -51,9 +76,8 @@ public class FlockCreationFragment extends Fragment
 
         homePage = (HomePage)getActivity();
 
-        flockDatabase = new FlockDatabase(homePage);
-        flockModelDataArrayList = flockDatabase.getAllUsers();
-        flockCount = getFlockCount(flockModelDataArrayList);
+
+
         userModel = homePage.getUserModel();
         userDatabase = new UserDatabase(homePage);
 
@@ -65,6 +89,8 @@ public class FlockCreationFragment extends Fragment
         photoButton = root.findViewById(R.id.flockCreateButton);
         privateFlockSwitch = root.findViewById(R.id.flock_create_private_switch);
         update = root.findViewById(R.id.flock_update_Button);
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         checkFlockName();
 
@@ -152,84 +178,117 @@ public class FlockCreationFragment extends Fragment
         }
         else
         {
-            String ownerUsername = homePage.getName();
+            ownerUsername = homePage.getName();
             privateFlock = privateFlockSwitch.getSplitTrack();
 
-            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
-            boolean typeOfUpdate = false;
 
-            if(v.getId() == update.getId())
+
+            DocumentReference documentReference = firebaseFirestore.collection("Flock").document();
+            FlockModelData flockModelData = new FlockModelData(flockNameString,0,flockDescriptionString,privateFlock,ownerUsername,0);
+
+            HashMap<String,Object> myMap = new HashMap<>();
+            myMap.put("name",flockNameString);
+            myMap.put("groupNumber",  1);
+            myMap.put("description",flockDescriptionString);
+            myMap.put("ownerUsername",ownerUsername);
+            myMap.put("privateFlock",privateFlock);
+            myMap.put("score",0);
+
+            documentReference.collection("Flock").document("4OIcTerZfrxWSLMZYX1O")
+                    .set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
             {
-                typeOfUpdate = true;
-                updateFlock(typeOfUpdate,ownerUsername);
-            }
-            else
+                @Override
+                public void onSuccess(Void aVoid)
+                {
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener()
             {
-                updateFlock(typeOfUpdate,ownerUsername);
-            }
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
 
-        }
-    }
-    private void updateFlock(boolean typeOfUpdate, String ownerUsername)
-    {
-        if(typeOfUpdate)
-        {
-            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
-            flockDatabase.updateUserCritical(flockRequest);
-        }
-        else
-        {
-            FlockModelData flockRequest = new FlockModelData(flockCount, flockNameString,0,flockDescriptionString,privateFlock, ownerUsername, 0);
-            flockDatabase.addFlock(flockRequest);
-        }
+                }
+            });
 
 
-        userModel.setUserFlock(flockNameString);
-        userDatabase.updateUserCritical(userModel);
-
-        navController = homePage.getNav();
-        navController.navigate(R.id.flock_fragment_nav_return);
-
-    }
+            DocumentReference documentReference1 = firebaseFirestore.collection("flockMember").document();
 
 
-    private int getFlockCount(ArrayList<FlockModelData> flockModelDataArrayList)
-    {
-        for(int i = 0; i <= flockModelDataArrayList.size();i++)
-        {
-            if(i == flockModelDataArrayList.size() && flockModelDataArrayList.size() > 0)
+            HashMap<String,Object> myMap1 = new HashMap<>();
+            myMap1.put("name",flockNameString);
+            myMap1.put("ownerUsername", ownerUsername);
+
+            documentReference1.collection("flockMembers").document()
+                    .set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
             {
-                return flockModelDataArrayList.get(i - 1).getId() + 1;
-            }
-            else
+                @Override
+                public void onSuccess(Void aVoid)
+                {
+                    navController = homePage.getNav();
+                    navController.navigate(R.id.flock_fragment_nav_return);
+
+                }
+            }).addOnFailureListener(new OnFailureListener()
             {
-                return  1;
-            }
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+
+                }
+            });
         }
 
-        return 0;
+
+
     }
 
     private void checkFlockName()
     {
-        UserModel userModel = homePage.getUserModel();
-        System.out.println(userModel.getUserFlock());
+        DocumentReference  documentReference = firebaseFirestore.collection("flockMembers").document("4OIcTerZfrxWSLMZYX1O");
 
-        if(userModel.getUserFlock() != null)
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
 
-            create.setVisibility(View.GONE);
-            create.setOnClickListener(null);
-            update.setVisibility(View.VISIBLE);
+                        if(userModel.getUsername() != task.getResult().getString("ownerUsername"))
+                        {
+
+                            create.setVisibility(View.GONE);
+                            create.setOnClickListener(null);
+                            update.setVisibility(View.VISIBLE);
 
 
-        }
-        else
-        {
-            update.setVisibility(View.GONE);
-            update.setOnClickListener(null);
-            create.setVisibility(View.VISIBLE);
+                        }
+                        else
+                        {
+                            update.setVisibility(View.GONE);
+                            update.setOnClickListener(null);
+                            create.setVisibility(View.VISIBLE);
 
-        }
+                        }
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
+            }
+        });
+
     }
 }

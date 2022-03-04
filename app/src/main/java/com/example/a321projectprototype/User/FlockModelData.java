@@ -12,12 +12,17 @@ public class FlockModelData
 
     public FlockModelData(){}
 
-    public FlockModelData(int id, String name, int groupNumber, String description, boolean privateFlock, String ownerUsername, int score) { this.id = id;this.name = name; this.groupNumber = groupNumber; this.description = description; this.privateFlock = privateFlock;
+    public FlockModelData( String name, int groupNumber, String description, boolean privateFlock, String ownerUsername, int score)
+    {
+        this.name = name;
+        this.groupNumber = groupNumber;
+        this.description = description;
+        this.privateFlock = privateFlock;
         this.ownerUsername = ownerUsername;
         this.score = score;
     }
 
-    public FlockModelData(int id, String name, int groupNumber) { this.id = id;this.name = name;this.groupNumber = groupNumber; }
+    public FlockModelData( String name, int groupNumber) { this.id = id;this.name = name;this.groupNumber = groupNumber; }
 
     public String getName() {
         return name;
