@@ -1,11 +1,13 @@
 package com.example.a321projectprototype;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.UserModel;
@@ -68,6 +70,8 @@ public class HomePage extends AppCompatActivity implements Serializable
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        checkUserSession();
+
 
         recordButton = findViewById(R.id.homeButton1);
         recordButton.setOnClickListener(record);
@@ -104,6 +108,15 @@ public class HomePage extends AppCompatActivity implements Serializable
 
 
     }
+
+    private void checkUserSession()
+    {
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -149,6 +162,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     {
         return userModel;
     }
+
 
     private final View.OnClickListener logoutMethod = new View.OnClickListener()
     {
@@ -200,6 +214,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         });
 
     }
+
 
 }
 

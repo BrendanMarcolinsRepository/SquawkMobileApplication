@@ -26,7 +26,6 @@
             android:label="@string/title_activity_home_page"
             android:theme="@style/Theme.321ProjectPrototype.NoActionBar"></activity>
         <activity android:name=".LoginPackage.SignUp" />
-        <activity android:name=".LoginPackage.LoginProcess" />
         <activity android:name=".LoginPackage.ResetPassword" />
 
 
