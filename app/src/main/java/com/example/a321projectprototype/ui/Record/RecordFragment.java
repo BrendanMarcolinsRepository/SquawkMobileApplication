@@ -1,6 +1,10 @@
 package com.example.a321projectprototype.ui.Record;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,6 +44,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
@@ -71,7 +76,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private static String fileName = null;
     private boolean isRecording  = false;
     private Context context;
-
+    private NavController navController;
+    private AnimatorSet mAnimationSet;
 
 
 
@@ -81,6 +87,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 if(isGranted)
                 {
                     System.out.println("5");
+
                 }
                 else
                 {
@@ -93,8 +100,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             });
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View root = inflater.inflate(R.layout.fragment_record, container, false);
         recordImage = root.findViewById(R.id.recordIcon);
@@ -105,6 +111,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 new ViewModelProvider(this).get(RecordViewModel.class);
 
         homePage = (HomePage)getActivity();
+        navController = homePage.getNav();
 
         context = homePage.getApplicationContext();
 
@@ -132,7 +139,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                    // You can use the API that requires the permission.
                    isRecording = true;
                    startRecord();
-                   recordImage.setImageResource(android.R.drawable.presence_audio_busy);
+                   startAlphaAnimation();
                    System.out.println("1");
                }
 
@@ -154,6 +161,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void startRecord()
     {
+
+
+        if(haveNetwork())
+        {
+
+        }
+        else
+        {
+            System.out.println("ready to be saved");
+        }
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -183,18 +200,14 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         mediaRecorder.reset();
         mediaRecorder.release();
         mediaRecorder = null;
-        recordImage.setImageResource(android.R.drawable.presence_audio_online);
+        stopAlphaAnimation();
 
-        if(haveNetwork())
-        {
-            System.out.println("ready to be pushed");
-        }
-        else
-        {
-            System.out.println("ready to be saved");
-        }
+        retrieveData();
+
 
     }
+
+
 
     private boolean haveNetwork()
     {
@@ -268,7 +281,42 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     }
 
 
+    private void startAlphaAnimation()
+    {
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(recordImage, "alpha",  1f, .3f);
+        fadeOut.setDuration(2000);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(recordImage, "alpha", .3f, 1f);
+        fadeIn.setDuration(2000);
 
+        mAnimationSet = new AnimatorSet();
+
+        mAnimationSet.play(fadeIn).after(fadeOut);
+
+        mAnimationSet.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                mAnimationSet.start();
+            }
+        });
+        mAnimationSet.start();
+    }
+
+    private void stopAlphaAnimation()
+    {
+        mAnimationSet.removeAllListeners();
+        mAnimationSet.end();
+        System.out.println("stopping");
+    }
+
+    private void retrieveData()
+    {
+        NavController navController = homePage.getNav();
+        navController.navigate(R.id.action_nav_record_data);
+
+    }
 
 }
 

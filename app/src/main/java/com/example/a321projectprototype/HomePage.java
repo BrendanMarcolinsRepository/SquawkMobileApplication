@@ -51,8 +51,6 @@ public class HomePage extends AppCompatActivity implements Serializable
     private Button recordButton, discoverButton,rewardButton;
     private  NavController navController;
     private UserModel userModel;
-    private FirebaseUser firebaseUser;
-    private DatabaseReference databaseReference;
     private String userID;
     private Button logout;
 
@@ -71,9 +69,6 @@ public class HomePage extends AppCompatActivity implements Serializable
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-
-
-
         recordButton = findViewById(R.id.homeButton1);
         recordButton.setOnClickListener(record);
 
@@ -87,14 +82,13 @@ public class HomePage extends AppCompatActivity implements Serializable
         logout.setOnClickListener(logoutMethod);
 
 
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_Record, R.id.nav_PastRecording,R.id.nav_Discover,R.id.nav_Forum,
-                R.id.nav_Flock,R.id.nav_Reward,R.id.nav_Settings)
+                R.id.nav_home, R.id.nav_Record, R.id.nav_PastRecording, R.id.nav_Discover, R.id.nav_Forum,
+                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -106,48 +100,10 @@ public class HomePage extends AppCompatActivity implements Serializable
 
         //use to display the users details in the navigation header
 
-        auth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        getUserInformation();
 
-        userID = auth.getCurrentUser().getUid();
-
-        DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
-
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
-                    {
-                        userModel = new UserModel(document.getString("fullname"),document.getString("username"),
-                                document.getString("password"),document.getString("email"));
-
-                        headName.setText(userModel.getUsername());
-                        headEmail.setText(userModel.getEmail());
-
-                    }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-                else
-                {
-                    System.out.println("not successfull");
-
-                }
-            }
-        });
 
     }
-
-
-
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -204,5 +160,46 @@ public class HomePage extends AppCompatActivity implements Serializable
         }
     };
 
+    public void getUserInformation()
+    {
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
+                        userModel = new UserModel(document.getString("fullname"),document.getString("username"),
+                                document.getString("password"),document.getString("email"));
+
+                        headName.setText(userModel.getUsername());
+                        headEmail.setText(userModel.getEmail());
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
+            }
+        });
+
+    }
 
 }
+

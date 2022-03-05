@@ -1,6 +1,5 @@
-package com.example.a321projectprototype.ui.Past_Recordings;
+package com.example.a321projectprototype.ui.Record;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,31 +13,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
 
 import java.util.List;
 
-public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRecordingsCardviewAdpator.MyViewHolder>
+public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCardViewAdapter.MyViewHolder>
 {
     List<String> listItem;
     HomePage homePage;
     int position;
 
-    PastRecordingsCardviewAdpator(List<String> listItem, HomePage homePage)
+    RecordDataCardViewAdapter(List<String> listItem, HomePage homePage)
     {
         this.homePage = homePage;
         this.listItem = listItem;
     }
     @NonNull
     @Override
-    public PastRecordingsCardviewAdpator.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    public RecordDataCardViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pastrecordings_cardview,parent,false);
 
-        return new PastRecordingsCardviewAdpator.MyViewHolder(view);
+        return new RecordDataCardViewAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position)
     {
         this.position = position;
         holder.tvItem.setText(listItem.get(position));
@@ -74,6 +74,4 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             });
         }
     }
-
-
 }

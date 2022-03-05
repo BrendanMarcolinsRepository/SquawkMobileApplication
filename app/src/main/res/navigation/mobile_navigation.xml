@@ -25,7 +25,24 @@
         android:id="@+id/nav_Record"
         android:name="com.example.a321projectprototype.ui.Record.RecordFragment"
         android:label="@string/menu_record"
-        tools:layout="@layout/fragment_record" />
+        tools:layout="@layout/fragment_record" >
+
+        <action
+            android:id="@+id/action_nav_record_data"
+            app:destination="@id/nav_RecordData" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_RecordData"
+        android:name="com.example.a321projectprototype.ui.Record.DataRetrievedFromRecord"
+        android:label="@string/menu_record_processing"
+        tools:layout="@layout/fragement_record_retrieved_data">
+
+        <action
+            android:id="@+id/action_nav_discover_to_bird"
+            app:destination="@id/nav_Discover_Choice" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_PastRecording"
