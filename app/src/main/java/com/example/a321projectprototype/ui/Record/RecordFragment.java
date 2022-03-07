@@ -42,11 +42,16 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
@@ -77,7 +82,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private AnimatorSet mAnimationSet;
     private TextView recordingInformationTexview;
     private ProgressBar progressBar;
-
+    private DrawerLayout drawerLayout;
+    private AppBarConfiguration appBarConfiguration;
 
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -162,6 +168,9 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void startRecord()
     {
+        drawerLayout = homePage.getDrawerLayout();
+        drawerLayout.close();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 
         if(haveNetwork())
@@ -332,13 +341,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             {
                 Random randomObject = new Random();
                 int randomInteger = randomObject.nextInt(2);
+                openNavigationDrawer();
 
                 if(randomInteger == 0)
                 {
+
                     navController.navigate(R.id.action_nav_record_data);
                 }
                 else
                 {
+
                     errorOccured();
                 }
 
@@ -351,6 +363,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void errorOccured()
     {
+
+
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Error Occured");
         alertDialog.setMessage("We had a problem trying to identify your recording, please try again");
@@ -367,7 +381,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         recordImage.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         recordingInformationTexview.setText("Record Your Chirps....");
+        openNavigationDrawer();
     }
+
+    private void openNavigationDrawer()
+    {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+
+    }
+
 
 }
 

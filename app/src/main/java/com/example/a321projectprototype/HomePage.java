@@ -32,6 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -53,9 +54,10 @@ public class HomePage extends AppCompatActivity implements Serializable
     private UserModel userModel;
     private String userID;
     private Button logout;
-
+    private DrawerLayout drawer;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    ActionBarDrawerToggle toggle;
 
 
     @Override
@@ -67,8 +69,9 @@ public class HomePage extends AppCompatActivity implements Serializable
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         checkUserSession();
+
+
 
 
         recordButton = findViewById(R.id.homeButton1);
@@ -84,8 +87,12 @@ public class HomePage extends AppCompatActivity implements Serializable
         logout.setOnClickListener(logoutMethod);
 
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -96,6 +103,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
         View header = navigationView.getHeaderView(0);
         headName = (TextView) header.findViewById(R.id.navhead_name);
         headEmail = (TextView) header.findViewById(R.id.navhead_email);
@@ -212,6 +220,13 @@ public class HomePage extends AppCompatActivity implements Serializable
         });
 
     }
+
+    public DrawerLayout getDrawerLayout()
+    {
+
+        return drawer;
+    }
+
 
 
 }
