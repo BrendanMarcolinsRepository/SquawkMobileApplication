@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:replace="android:label"
     android:layout_width="400dp"
     android:layout_height="400dp"
     android:layout_margin="5dp"
@@ -22,50 +23,47 @@
           android:id="@+id/past_recording_day_textview"
           android:layout_width="144dp"
           android:layout_height="36dp"
-          android:layout_marginTop="4dp"
+          android:layout_marginTop="16dp"
           android:gravity="center"
           android:text="TextView"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.151"
+          app:layout_constraintHorizontal_bias="0.173"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
+
 
       <TextView
           android:id="@+id/past_recording_day_Bird"
           android:layout_width="140dp"
           android:layout_height="36dp"
-          android:layout_marginTop="56dp"
+          android:layout_marginTop="16dp"
           android:gravity="center"
-          android:text="TextView"
+          android:text="11:30"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.153"
+          app:layout_constraintHorizontal_bias="0.859"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
-      <TextView
-          android:id="@+id/past_recording_day_Bird_info"
-          android:layout_width="314dp"
-          android:layout_height="36dp"
-          android:layout_marginTop="180dp"
-          android:gravity="center"
-          android:text="TextView"
+      <com.chibde.visualizer.LineBarVisualizer
+          android:id="@+id/visualizerLineBar"
+          android:layout_width="324dp"
+          android:layout_height="213dp"
+          android:layout_marginTop="24dp"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.491"
+          app:layout_constraintHorizontal_bias="0.492"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/past_recording_day_Bird" />
 
-      <androidx.appcompat.widget.AppCompatButton
-          android:id="@+id/past_recording_moreinfo_textview"
-          android:layout_width="148dp"
-          android:layout_height="26dp"
-          android:layout_marginTop="16dp"
-          android:background="@drawable/et_style"
-          android:text="More Info"
-          android:textColor="@color/white"
+      <ImageView
+          android:id="@+id/pastrecordingRecycleViewPlayer"
+          android:layout_width="46dp"
+          android:layout_height="34dp"
+          android:layout_marginTop="24dp"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.497"
+          app:layout_constraintHorizontal_bias="0.498"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/past_recording_day_Bird_info" />
+          app:layout_constraintTop_toBottomOf="@+id/visualizerLineBar"
+          app:srcCompat="@android:drawable/ic_media_play" />
 
 
   </androidx.constraintlayout.widget.ConstraintLayout>

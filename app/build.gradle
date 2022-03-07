@@ -71,6 +71,8 @@ dependencies {
 
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
 
+    implementation 'com.chibde:audiovisualizer:2.2.0'
+
 
 
 

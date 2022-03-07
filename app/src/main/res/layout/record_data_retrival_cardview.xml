@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:replace="android:label"
+    android:layout_width="400dp"
+    android:layout_height="400dp"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/greenBackground"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    app:cardMaxElevation="10dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_height="match_parent"
+      android:layout_width="match_parent">
+
+
+      <TextView
+          android:id="@+id/record_retrival_data_identified_texview"
+          android:layout_width="248dp"
+          android:layout_height="34dp"
+          android:layout_marginTop="16dp"
+          android:gravity="center"
+          android:text="TextView"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.497"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <ImageView
+          android:id="@+id/record_retrival_data_imageview"
+          android:layout_width="232dp"
+          android:layout_height="200dp"
+          android:layout_marginTop="40dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.496"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/record_retrival_data_identified_texview"
+          tools:srcCompat="@tools:sample/avatars" />
+
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+

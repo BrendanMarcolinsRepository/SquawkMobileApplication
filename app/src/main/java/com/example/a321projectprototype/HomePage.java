@@ -47,8 +47,6 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     private AppBarConfiguration mAppBarConfiguration;
     private HomeViewModel homeViewModel;
-    private String name, email;
-    private ImageView imageView;
     private TextView headName, headEmail;
     private Button recordButton, discoverButton,rewardButton;
     private  NavController navController;
@@ -58,7 +56,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    private final String USERS_KEY = "qbPjDm73CVIUz63gDu8D";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +172,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         }
     };
 
-    public void getUserInformation()
+    private void getUserInformation()
     {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();

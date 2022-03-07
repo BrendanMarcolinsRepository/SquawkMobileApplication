@@ -32,7 +32,7 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
     @Override
     public RecordDataCardViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pastrecordings_cardview,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.record_data_retrival_cardview,parent,false);
 
         return new RecordDataCardViewAdapter.MyViewHolder(view);
     }
@@ -41,7 +41,8 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
     public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position)
     {
         this.position = position;
-        holder.tvItem.setText(listItem.get(position));
+        holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position));
+
     }
 
     @Override
@@ -51,27 +52,21 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView tvItem;
+        TextView identifiedBirdTexview;
         public MyViewHolder(@NonNull View itemView)
         {
             super(itemView);
-            tvItem = itemView.findViewById(R.id.past_recording_day_textview);
 
-            Button moreinfo = itemView.findViewById(R.id.past_recording_moreinfo_textview);
+            identifiedBirdTexview = itemView.findViewById(R.id.record_retrival_data_identified_texview);
 
-            moreinfo.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
 
-                    NavController navController = homePage.getNav();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("birdName", listItem.get(position));
-                    navController.navigate(R.id.action_nav_discover_to_bird,bundle);
-                }
+            /*
+            NavController navController = homePage.getNav();
+            Bundle bundle = new Bundle();
+            bundle.putString("birdName", listItem.get(position));
+            navController.navigate(R.id.action_nav_discover_to_bird,bundle);
+            */
 
-            });
         }
     }
 }

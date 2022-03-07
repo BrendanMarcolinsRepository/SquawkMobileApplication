@@ -15,19 +15,22 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.Discover.ItemDataModel;
 import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class DataRetrievedFromRecord extends Fragment
 {
     private RecyclerView recyclerView;
     private HomePage homePage;
+    private List<Integer> numberList;
     private List<String> listItem;
+    private final int MAX_IDENTIFIER = 2;
 
-    ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-    ItemDataModel item2 = new ItemDataModel("Rainbow Lorikeet");
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -35,26 +38,76 @@ public class DataRetrievedFromRecord extends Fragment
 
         recyclerView = root.findViewById(R.id.recycleRecordData);
         homePage = (HomePage) getActivity();
-        setAdaptor();
+        setData();
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage));
 
         return  root;
 
     }
 
-    private void setAdaptor()
+    private void setData()
     {
+
+        ItemDataModel item1 = new ItemDataModel("Australian Magpie");
+        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
+        ItemDataModel item3 = new ItemDataModel("Australian Crake");
+        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
+        ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
+
+
         listItem = new ArrayList<>();
+        numberList = new ArrayList<>();
+
         listItem.add(String.format(item1.getTxtname()));
         listItem.add(String.format(item2.getTxtname()));
+        listItem.add(String.format(item3.getTxtname()));
+        listItem.add(String.format(item4.getTxtname()));
+        listItem.add(String.format(item5.getTxtname()));
 
 
-        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage));
 
+        numberList = randomNumberGenerator();
+
+        for(int i = 0; i < numberList.size(); i++)
+        {
+            int number = numberList.get(i);
+            listItem.remove(number);
+
+        }
+    }
+
+    public List<Integer> randomNumberGenerator()
+    {
+        Random randomObject = new Random();
+        List<Integer> numberBirds = new ArrayList<>();
+
+        int counter = 0;
+        while(counter < MAX_IDENTIFIER)
+        {
+            int randomInteger = randomObject.nextInt(4);
+
+            if(counter == 0)
+            {
+                numberBirds.add(randomInteger);
+            }
+
+            for(int i = 0; i < numberBirds.size(); i++)
+            {
+                if(numberBirds.get(i) != randomInteger)
+                {
+                    numberBirds.add(randomInteger);
+                }
+            }
+
+            counter++;
+        }
+
+        return numberBirds;
     }
 }
