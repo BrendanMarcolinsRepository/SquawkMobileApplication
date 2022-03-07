@@ -1,4 +1,4 @@
-# SquawkMobileApplication
+# Squawk Mobile Application
 CSIT321 Project 
 How to run this application
 1. Download source codes from github and then unzip it.
