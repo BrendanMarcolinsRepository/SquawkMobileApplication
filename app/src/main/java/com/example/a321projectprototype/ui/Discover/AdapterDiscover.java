@@ -1,34 +1,28 @@
 package com.example.a321projectprototype.ui.Discover;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.a321projectprototype.User.BirdModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
 public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> {
 
-    List<ItemDataModel> FullList;
-    List<ItemDataModel> dataSet;
+    List<BirdModel> FullList;
+    List<BirdModel> dataSet;
     private HomePage homePage;
     private NavController navigation;
 
@@ -67,7 +61,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
     }
 
-    AdapterDiscover(List<ItemDataModel> listItem, HomePage homePage)
+    AdapterDiscover(List<BirdModel> listItem, HomePage homePage)
     {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
@@ -86,8 +80,8 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position)
     {
-        ItemDataModel currentItem = dataSet.get(position);
-        holder.bird.setText(currentItem.getTxtname());
+        BirdModel currentItem = dataSet.get(position);
+        holder.bird.setText(currentItem.getComName());
 
     }
 
@@ -102,13 +96,13 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     private Filter Searched_Filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<ItemDataModel> filteredList = new ArrayList<>();
+            ArrayList<BirdModel> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(FullList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (ItemDataModel item : FullList) {
-                    if (item.getTxtname().toLowerCase().contains(filterPattern)) {
+                for (BirdModel item : FullList) {
+                    if (item.getComName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

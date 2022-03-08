@@ -126,7 +126,7 @@ public class Prototype extends AppCompatActivity
                 else
                 {
                     invisableSetTwo();
-                    Toast.makeText(Prototype.this,"Failed to Login", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Prototype.this,"Failed to Login:" + task.getResult(), Toast.LENGTH_LONG).show();
 
 
                 }

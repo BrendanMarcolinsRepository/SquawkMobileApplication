@@ -1,56 +1,40 @@
 package com.example.a321projectprototype.ui.Discover;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.a321projectprototype.API.BirdInterface;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
-import com.example.a321projectprototype.ui.Past_Recordings.onClickInterface;
+import com.example.a321projectprototype.User.BirdModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class DiscoverFragment extends Fragment
@@ -60,6 +44,7 @@ public class DiscoverFragment extends Fragment
     private SearchView discoverSearchView;
     private RecyclerView recyclerView;
     private List<ItemDataModel> list;
+    private List<BirdModel> birdList;
     private AdapterDiscover adapterDiscover;
     private PopupWindow popupWindow;
     private ConstraintLayout constraintLayout;
@@ -71,6 +56,8 @@ public class DiscoverFragment extends Fragment
     private DiscoverChoiceInterface discoverChoiceInterface;
     private HomePage homePage;
     private NavController navigation;
+    private Retrofit retrofit;
+    private ProgressBar progressBar;
 
     
 
@@ -89,33 +76,13 @@ public class DiscoverFragment extends Fragment
         filterButton = root.findViewById(R.id.discoverFillterButton);
         filterButton.setOnClickListener(filterButtonMethod);
 
+        progressBar = root.findViewById(R.id.discoverProgressBar);
 
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-
-
-        ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
-        ItemDataModel item3 = new ItemDataModel("Australian Crake");
-        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
-        ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
+        callApi();
 
 
 
 
-        list = new ArrayList<>();
-        list.add(item1);
-        list.add(item2);
-        list.add(item3);
-        list.add(item4);
-        list.add(item5);
-
-
-        adapterDiscover = new  AdapterDiscover(list,homePage);
-        recyclerView.setAdapter(adapterDiscover);
 
 
 
@@ -143,6 +110,56 @@ public class DiscoverFragment extends Fragment
         });
 
         return root;
+    }
+
+    private void callApi()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        retrofit = new Retrofit
+                .Builder()
+                .baseUrl("https://api.ebird.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        BirdInterface service = retrofit.create(BirdInterface.class);
+
+        Call<List<BirdModel>> repos = service.listRepos();
+
+        repos.enqueue(new Callback<List<BirdModel>>() {
+            @Override
+            public void onResponse(Call<List<BirdModel>> call, Response<List<BirdModel>> response) {
+                if(response.code() != 200)
+                {
+                    return;
+                }
+
+                birdList = response.body();
+
+                for(BirdModel s : birdList)
+                {
+
+                    System.out.println(s.getComName());
+                }
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setHasFixedSize(true);
+
+                adapterDiscover = new  AdapterDiscover(birdList,homePage);
+                progressBar.setVisibility(View.INVISIBLE);
+                recyclerView.setAdapter(adapterDiscover);
+
+            }
+
+            @Override
+            public void onFailure(Call<List<BirdModel>> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
     private final View.OnClickListener filterButtonMethod = new View.OnClickListener()
@@ -236,12 +253,15 @@ public class DiscoverFragment extends Fragment
     private void theChange()
     {
         System.out.println("worked");
-        Collections.reverse(list);
+        Collections.reverse(birdList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        adapterDiscover = new  AdapterDiscover(list,homePage);
+        adapterDiscover = new  AdapterDiscover(birdList,homePage);
         recyclerView.setAdapter(adapterDiscover);
     }
+
+
+
 }

@@ -52,5 +52,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/viewDiscoverPage" />
 
+    <ProgressBar
+        android:id="@+id/discoverProgressBar"
+        android:layout_width="83dp"
+        android:layout_height="84dp"
+        android:layout_marginTop="320dp"
+        android:elevation="10dp"
+        android:outlineAmbientShadowColor="@color/white"
+        android:outlineSpotShadowColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
