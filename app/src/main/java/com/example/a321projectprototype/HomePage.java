@@ -1,11 +1,13 @@
 package com.example.a321projectprototype;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.UserModel;
@@ -30,6 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -45,20 +48,17 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     private AppBarConfiguration mAppBarConfiguration;
     private HomeViewModel homeViewModel;
-    private String name, email;
-    private ImageView imageView;
     private TextView headName, headEmail;
     private Button recordButton, discoverButton,rewardButton;
     private  NavController navController;
     private UserModel userModel;
-    private FirebaseUser firebaseUser;
-    private DatabaseReference databaseReference;
     private String userID;
     private Button logout;
-
+    private DrawerLayout drawer;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    private final String USERS_KEY = "qbPjDm73CVIUz63gDu8D";
+    ActionBarDrawerToggle toggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        checkUserSession();
 
 
 
@@ -87,66 +87,41 @@ public class HomePage extends AppCompatActivity implements Serializable
         logout.setOnClickListener(logoutMethod);
 
 
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_Record, R.id.nav_PastRecording,R.id.nav_Discover,R.id.nav_Forum,
-                R.id.nav_Flock,R.id.nav_Reward,R.id.nav_Settings)
+                R.id.nav_home, R.id.nav_Record, R.id.nav_PastRecording, R.id.nav_Discover, R.id.nav_Forum,
+                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
         View header = navigationView.getHeaderView(0);
         headName = (TextView) header.findViewById(R.id.navhead_name);
         headEmail = (TextView) header.findViewById(R.id.navhead_email);
 
         //use to display the users details in the navigation header
 
+        getUserInformation();
+
+
+    }
+
+    private void checkUserSession()
+    {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         userID = auth.getCurrentUser().getUid();
-
-        DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
-
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
-                    {
-                        userModel = new UserModel(document.getString("fullname"),document.getString("username"),
-                                document.getString("password"),document.getString("email"));
-
-                        headName.setText(userModel.getUsername());
-                        headEmail.setText(userModel.getEmail());
-
-                    }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-                else
-                {
-                    System.out.println("not successfull");
-
-                }
-            }
-        });
-
     }
-
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -194,6 +169,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         return userModel;
     }
 
+
     private final View.OnClickListener logoutMethod = new View.OnClickListener()
     {
         @Override
@@ -204,5 +180,54 @@ public class HomePage extends AppCompatActivity implements Serializable
         }
     };
 
+    private void getUserInformation()
+    {
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists())
+                    {
+                        userModel = new UserModel(document.getString("fullname"),document.getString("username"),
+                                document.getString("password"),document.getString("email"));
+
+                        headName.setText(userModel.getUsername());
+                        headEmail.setText(userModel.getEmail());
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+                else
+                {
+                    System.out.println("not successfull");
+
+                }
+            }
+        });
+
+    }
+
+    public DrawerLayout getDrawerLayout()
+    {
+
+        return drawer;
+    }
+
+
 
 }
+

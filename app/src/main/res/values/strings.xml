@@ -10,6 +10,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_record">Record</string>
+    <string name="menu_record_processing">Record</string>
     <string name="menu_PastRecordings">Past Recordings</string>
     <string name="menu_Discover">Discover</string>
     <string name="menu_Forum">Forum</string>

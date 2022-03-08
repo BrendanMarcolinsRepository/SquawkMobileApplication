@@ -42,7 +42,7 @@
         tools:src="@tools:sample/avatars" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editLoginEmail"
         android:layout_width="330dp"
         android:layout_height="53dp"
         android:layout_marginTop="4dp"
@@ -51,7 +51,7 @@
         android:backgroundTint="@color/white"
         android:elevation="10dp"
         android:ems="10"
-        android:hint="Username"
+        android:hint="Email"
         android:textColorHint="@color/black"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,20 +75,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/editLoginEmail" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_width="143dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/et_style"
+        android:gravity="center"
+
         android:text="Sign In"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/ForgetPassword" />
 
     <TextView
         android:id="@+id/ForgetPassword"
@@ -97,21 +100,25 @@
         android:layout_marginTop="12dp"
         android:text="Forget Password?"
         android:textColor="@color/buttonColours"
+        android:onClick="true"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        tools:ignore="OnClick" />
+
+
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="186dp"
         android:layout_height="52dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:clickable="true"
         android:gravity="center"
         android:text="Don't Have An Account Yet?"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintEnd_toStartOf="@+id/signUp"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
@@ -119,11 +126,11 @@
         android:id="@+id/signUp"
         android:layout_width="83dp"
         android:layout_height="52dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginRight="44dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:clickable="true"
         android:gravity="center"
+        android:paddingRight="20dp"
         android:text="Sign Up"
         android:textColor="@color/buttonColours"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -131,11 +138,13 @@
 
     <ProgressBar
         android:id="@+id/loginProgressBar"
-        android:layout_width="56dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="332dp"
+        android:layout_width="83dp"
+        android:layout_height="84dp"
+        android:layout_marginTop="320dp"
+        android:elevation="10dp"
+        android:outlineAmbientShadowColor="@color/white"
+        android:outlineSpotShadowColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

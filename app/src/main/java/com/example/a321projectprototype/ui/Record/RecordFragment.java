@@ -1,6 +1,10 @@
 package com.example.a321projectprototype.ui.Record;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +19,7 @@ import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.text.Layout;
 import android.util.Log;
@@ -24,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -36,10 +42,16 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
@@ -50,6 +62,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.activity.result.contract.ActivityResultContracts.*;
@@ -60,19 +73,17 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
 
     private RecordViewModel recordViewModel;
-    private Button recordButton;
     private ImageView recordImage;
     private MediaRecorder mediaRecorder;
-    private File file;
     private HomePage homePage;
-    private String recordPermission = Manifest.permission.RECORD_AUDIO;
-    private boolean recording = false;
-    private FragmentActivity fragmentActivity;
-    private static String fileName = null;
     private boolean isRecording  = false;
     private Context context;
-
-
+    private NavController navController;
+    private AnimatorSet mAnimationSet;
+    private TextView recordingInformationTexview;
+    private ProgressBar progressBar;
+    private DrawerLayout drawerLayout;
+    private AppBarConfiguration appBarConfiguration;
 
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -81,6 +92,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 if(isGranted)
                 {
                     System.out.println("5");
+
                 }
                 else
                 {
@@ -93,18 +105,20 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             });
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View root = inflater.inflate(R.layout.fragment_record, container, false);
         recordImage = root.findViewById(R.id.recordIcon);
+        recordingInformationTexview = root.findViewById(R.id.recordInformationTextview);
+        progressBar = root.findViewById(R.id.recordProgressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
         recordImage.setOnClickListener(record);
 
-        recordViewModel =
-                new ViewModelProvider(this).get(RecordViewModel.class);
+        recordViewModel = new ViewModelProvider(this).get(RecordViewModel.class);
 
         homePage = (HomePage)getActivity();
+        navController = homePage.getNav();
 
         context = homePage.getApplicationContext();
 
@@ -126,13 +140,13 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                        getContext(), Manifest.permission.RECORD_AUDIO) ==
                        PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                        getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-               PackageManager.PERMISSION_GRANTED)
+                                PackageManager.PERMISSION_GRANTED)
 
                {
                    // You can use the API that requires the permission.
                    isRecording = true;
                    startRecord();
-                   recordImage.setImageResource(android.R.drawable.presence_audio_busy);
+                   startAlphaAnimation();
                    System.out.println("1");
                }
 
@@ -154,6 +168,19 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void startRecord()
     {
+        drawerLayout = homePage.getDrawerLayout();
+        drawerLayout.close();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+
+        if(haveNetwork())
+        {
+
+        }
+        else
+        {
+            System.out.println("ready to be saved");
+        }
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -166,6 +193,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         {
             mediaRecorder.prepare();
             mediaRecorder.start();
+            recordingInformationTexview.setText("Now Recording Your Chirps....");
+
 
             System.out.println("Recording Started...");
         }
@@ -183,18 +212,12 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         mediaRecorder.reset();
         mediaRecorder.release();
         mediaRecorder = null;
-        recordImage.setImageResource(android.R.drawable.presence_audio_online);
+        stopAlphaAnimation();
 
-        if(haveNetwork())
-        {
-            System.out.println("ready to be pushed");
-        }
-        else
-        {
-            System.out.println("ready to be saved");
-        }
-
+        response();
     }
+
+
 
     private boolean haveNetwork()
     {
@@ -248,11 +271,6 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                     Manifest.permission.RECORD_AUDIO);
             requestPermissionLauncher.launch(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-
-            // You can directly ask for the permission.
-            // The registered ActivityResultCallback gets the result of this request.
-
         }
 
 
@@ -268,6 +286,110 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     }
 
 
+    private void startAlphaAnimation()
+    {
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(recordImage, "alpha",  1f, .3f);
+        fadeOut.setDuration(2000);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(recordImage, "alpha", .3f, 1f);
+        fadeIn.setDuration(2000);
+
+        mAnimationSet = new AnimatorSet();
+
+        mAnimationSet.play(fadeIn).after(fadeOut);
+
+        mAnimationSet.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationEnd(animation);
+                mAnimationSet.start();
+            }
+        });
+        mAnimationSet.start();
+    }
+
+    private void stopAlphaAnimation()
+    {
+        mAnimationSet.removeAllListeners();
+        mAnimationSet.end();
+        System.out.println("stopping");
+    }
+
+    private void response()
+    {
+
+        recordImage.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        recordingInformationTexview.setText("Identifing Your Chirps....");
+
+         CountDownTimer countDownTimer = new CountDownTimer(6000,5) {
+            private boolean warned = false;
+            @Override
+            public void onTick(long millisUntilFinished_)
+            {
+                if(millisUntilFinished_ == 3000)
+                {
+                    recordingInformationTexview.setText("Almost Chirping There....");
+                }
+            }
+
+
+            @Override
+            public void onFinish()
+            {
+                Random randomObject = new Random();
+                int randomInteger = randomObject.nextInt(2);
+                openNavigationDrawer();
+
+                if(randomInteger == 0)
+                {
+
+                    navController.navigate(R.id.action_nav_record_data);
+                }
+                else
+                {
+
+                    errorOccured();
+                }
+
+            }
+        }.start();
+
+
+
+    }
+
+    public void errorOccured()
+    {
+
+
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        alertDialog.setTitle("Error Occured");
+        alertDialog.setMessage("We had a problem trying to identify your recording, please try again");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Okay",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+
+                        alertDialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+
+        recordImage.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        recordingInformationTexview.setText("Record Your Chirps....");
+        openNavigationDrawer();
+    }
+
+    private void openNavigationDrawer()
+    {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+
+    }
 
 
 }

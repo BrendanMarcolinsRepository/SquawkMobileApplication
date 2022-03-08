@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,6 +70,7 @@ public class HomeFragment extends Fragment
 
 
 
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -87,49 +89,11 @@ public class HomeFragment extends Fragment
         rewardButton.setOnClickListener(reward);
 
 
-
         greetings = root.findViewById(R.id.homeTextView);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        userID = firebaseUser.getUid();
 
+        getUserInformation();
 
-
-        auth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-
-        userID = auth.getCurrentUser().getUid();
-
-        DocumentReference documentReference = firebaseFirestore.collection("users").document("A1m2nmOrG3WISGp2jUOp");
-
-        progressBar.setVisibility(View.VISIBLE);
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
-                    {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        greetings.setText("Welcome: " + document.getString("username"));
-
-                    }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-                else
-                {
-                    System.out.println("not successfull");
-
-                }
-            }
-        });
 
 
 
@@ -166,6 +130,36 @@ public class HomeFragment extends Fragment
             navController.navigate(R.id.action_nav_Home_to_nav_Reward);
         }
     };
+
+    public void getUserInformation() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        greetings.setText("Welcome: " + document.getString("username"));
+
+                    } else {
+                        System.out.println("no document");
+                    }
+                } else {
+                    System.out.println("not successfull");
+
+                }
+            }
+        });
+    }
 
 
 

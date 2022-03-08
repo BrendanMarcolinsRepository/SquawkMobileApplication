@@ -20,12 +20,17 @@
         android:theme="@style/Theme.321ProjectPrototype"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
+        tools:replace="android:label"
+
         >
         <activity
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
             android:theme="@style/Theme.321ProjectPrototype.NoActionBar"></activity>
         <activity android:name=".LoginPackage.SignUp" />
+        <activity android:name=".LoginPackage.ResetPassword" />
+
+
         <activity android:name=".LoginPackage.Prototype">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
