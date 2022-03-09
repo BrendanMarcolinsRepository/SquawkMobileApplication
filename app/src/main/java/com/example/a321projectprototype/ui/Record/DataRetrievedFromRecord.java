@@ -18,6 +18,7 @@ import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardvie
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +29,7 @@ public class DataRetrievedFromRecord extends Fragment
     private HomePage homePage;
     private List<Integer> numberList;
     private List<String> listItem;
+    private ArrayList image;
     private final int MAX_IDENTIFIER = 2;
 
 
@@ -45,7 +47,7 @@ public class DataRetrievedFromRecord extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage));
+        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage,image));
 
         return  root;
 
@@ -70,6 +72,9 @@ public class DataRetrievedFromRecord extends Fragment
         listItem.add(String.format(item4.getTxtname()));
         listItem.add(String.format(item5.getTxtname()));
 
+        image = new ArrayList<>(Arrays.asList(R.drawable.magpie,R.drawable.australian_swiftlet
+        ,R.drawable.australian_crake,R.drawable.australian_brushturkey,R.drawable.rainbow_lorikeet));
+
 
 
         numberList = randomNumberGenerator();
@@ -78,6 +83,7 @@ public class DataRetrievedFromRecord extends Fragment
         {
             int number = numberList.get(i);
             listItem.remove(number);
+            image.remove(number);
 
         }
     }

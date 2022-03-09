@@ -57,7 +57,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     private DrawerLayout drawer;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    ActionBarDrawerToggle toggle;
+
 
 
     @Override
@@ -89,10 +89,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(

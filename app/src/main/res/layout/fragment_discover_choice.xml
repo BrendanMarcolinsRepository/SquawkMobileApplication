@@ -9,9 +9,9 @@
 
     <TextView
         android:id="@+id/BirdTextview"
-        android:layout_width="289dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="88dp"
+        android:layout_width="320dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="48dp"
         android:text="TextView"
         android:textAlignment="center"
         android:textSize="30dp"
@@ -20,48 +20,72 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/birdInformationTextview"
-        android:layout_width="211dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="100dp"
-        android:text="TextView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/discoverCHoiceCOnstraint"
+        android:layout_width="312dp"
+        android:layout_height="173dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/birdImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/BirdTextview">
 
-    <ImageView
-        android:id="@+id/birdImageView"
-        android:layout_width="262dp"
-        android:layout_height="152dp"
-        android:layout_marginTop="24dp"
+        <TextView
+            android:id="@+id/birdScientificNameTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/birdVisitTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birdScientificNameTextview" />
+
+        <TextView
+            android:id="@+id/birdDateTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birdVisitTextview" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/moreInfoButtonRecordCardview"
+        android:layout_width="232dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/et_style"
+        android:text="More Information"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BirdTextview"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/discoverCHoiceCOnstraint" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="78dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="100dp"
-        android:background="@color/darkerGreen"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toBottomOf="@+id/birdInformationTextview"
-        app:srcCompat="@android:drawable/ic_media_play" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="78dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="80dp"
-        android:background="@color/darkerGreen"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/discoverMapView"
+        android:layout_width="364dp"
+        android:layout_height="282dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/birdInformationTextview"
-        app:srcCompat="@android:drawable/ic_menu_save" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoButtonRecordCardview" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

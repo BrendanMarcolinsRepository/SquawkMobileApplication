@@ -3,34 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.a321projectprototype">
 
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="Squawk"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.321ProjectPrototype"
-        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label"
+        tools:replace="android:label">
 
-        >
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDebBX8_-JXqRVoxPBBkU_u9lcpM7suyak" />
+
         <activity
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
-            android:theme="@style/Theme.321ProjectPrototype.NoActionBar"></activity>
+            android:theme="@style/Theme.321ProjectPrototype.NoActionBar" />
         <activity android:name=".LoginPackage.SignUp" />
         <activity android:name=".LoginPackage.ResetPassword" />
-
-
         <activity android:name=".LoginPackage.Prototype">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +50,5 @@
             </intent-filter>
         </activity>
     </application>
-
 
 </manifest>
