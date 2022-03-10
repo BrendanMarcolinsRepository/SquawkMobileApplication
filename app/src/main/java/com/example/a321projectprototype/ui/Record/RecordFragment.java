@@ -56,11 +56,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.ui.home.HomeFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -84,7 +92,10 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private ProgressBar progressBar;
     private DrawerLayout drawerLayout;
     private AppBarConfiguration appBarConfiguration;
-
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString;
+    private Date date;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new RequestPermission(), isGranted ->
@@ -186,8 +197,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        System.out.println("Location: " + getRecordingFilePath());
-        mediaRecorder.setOutputFile(getRecordingFilePath());
+        filePath = getRecordingFilePath();
+        mediaRecorder.setOutputFile(filePath);
 
         try
         {
@@ -278,10 +289,11 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     private String getRecordingFilePath()
     {
-        Date date = new Date();
+        date = new Date();
+        dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory,"birdRecordingFile-" + date.getDate() +".mp3");
+        File file = new File(musicDirectory, fileName+ date.getDate() +".mp3");
         return file.getPath();
     }
 
@@ -345,7 +357,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
                 if(randomInteger == 0)
                 {
-
+                    storeRecordingFilePath();
                     navController.navigate(R.id.action_nav_record_data);
                 }
                 else
@@ -355,7 +367,9 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 }
 
             }
-        }.start();
+
+
+         }.start();
 
 
 
@@ -388,6 +402,35 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
+
+    }
+
+    private void storeRecordingFilePath()
+    {
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        userID = auth.getCurrentUser().getUid();
+
+        DocumentReference documentReference = firebaseFirestore.collection("files").document();
+
+        HashMap<String,Object> userMap = new HashMap<>();
+        userMap.put("created_at",dateString);
+        userMap.put("description",desciption);
+        userMap.put("filename",fileName);
+        userMap.put("path", filePath);
+        userMap.put("updated_at", dateString);
+        userMap.put("uploadedBy", userID);
+
+
+        documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void aVoid)
+            {
+                System.out.println("worked");
+            }
+        });
 
     }
 
