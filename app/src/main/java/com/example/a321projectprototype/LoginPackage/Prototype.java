@@ -29,7 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+//random
 
 public class Prototype extends AppCompatActivity
 {
@@ -37,7 +37,6 @@ public class Prototype extends AppCompatActivity
     private TextView email, password, signUp, passwordRest,textView;
     private ImageView logoImage;
     private String stringUserpassword, stringEmail;
-    private final static int MY_REQUEST_CODE = 1;
     private FirebaseAuth firebaseAuth;
     private ProgressBar progressBar;
 
