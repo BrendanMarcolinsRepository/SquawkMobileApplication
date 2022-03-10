@@ -29,6 +29,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView bird;
+        String latitude, logatude, sciName, visit, date,code;
 
 
 
@@ -55,6 +56,12 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
                 Bundle bundle = new Bundle();
                 bundle.putString("birdName",birdName);
+                bundle.putString("latitude",latitude);
+                bundle.putString("logatude",logatude);
+                bundle.putString("sciName",sciName);
+                bundle.putString("visit",visit);
+                bundle.putString("date",date);
+                bundle.putString("code",code);
                 navigation.navigate(R.id.action_nav_discover_to_bird,bundle);
             }
         };
@@ -82,6 +89,12 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     {
         BirdModel currentItem = dataSet.get(position);
         holder.bird.setText(currentItem.getComName());
+        holder.latitude = dataSet.get(position).getLat();
+        holder.logatude = dataSet.get(position).getLng();
+        holder.sciName = dataSet.get(position).getSciName();
+        holder.visit = dataSet.get(position).getLocName();
+        holder.date = dataSet.get(position).getObsDt();
+        holder.code = dataSet.get(position).getSpeciesCode();
 
     }
 

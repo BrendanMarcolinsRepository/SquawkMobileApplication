@@ -1,28 +1,22 @@
 package com.example.a321projectprototype.ui.Past_Recordings;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Discover.ItemDataModel;
+import com.example.a321projectprototype.User.ItemDataModel;
 
 import java.text.SimpleDateFormat;
-import java.time.chrono.HijrahChronology;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

@@ -25,6 +25,7 @@ import com.example.a321projectprototype.API.BirdInterface;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.BirdModel;
+import com.example.a321projectprototype.User.ItemDataModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Collections;
@@ -136,11 +137,7 @@ public class DiscoverFragment extends Fragment
 
                 birdList = response.body();
 
-                for(BirdModel s : birdList)
-                {
 
-                    System.out.println(s.getComName());
-                }
 
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                 linearLayoutManager.setOrientation(RecyclerView.VERTICAL);

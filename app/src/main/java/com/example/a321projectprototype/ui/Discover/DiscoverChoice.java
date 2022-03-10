@@ -1,33 +1,42 @@
 package com.example.a321projectprototype.ui.Discover;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 {
 
     private View root;
     private int bird;
-    private TextView birdNameTextView;
-    private MapView mapView;
-    private GoogleMap googleMap;
-    private String key ="AIzaSyDebBX8_-JXqRVoxPBBkU_u9lcpM7suyak";
+    private TextView birdNameTextView,sciNameTextView,dateTextView,lngTextView,latTextView,visitTextView;
+    private Button moreInfo;
+    private HomePage homePage;
+    private GoogleMap map;
+    private String comBirdName,sciName,date,lng,lat,visit,code;
+    private double latitude, longitude;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,114 +49,78 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
     {
 
         root = inflater.inflate(R.layout.fragment_discover_choice, container, false);
+        homePage = (HomePage) getActivity();
 
-        String s = getArguments().getString("birdName");
+        comBirdName = getArguments().getString("birdName");
+        sciName = getArguments().getString("sciName");
+        date = getArguments().getString("date");
+        lng = getArguments().getString("logatude");
+        lat = getArguments().getString("latitude");
+        visit = getArguments().getString("visit");
+        code = getArguments().getString("code");
 
-        System.out.println(s);
-
-        mapView = root.findViewById(R.id.discoverMapView);
-        mapView.onCreate(savedInstanceState);
 
 
-
-
+        latitude =Double.parseDouble(lat);
+        longitude =Double.parseDouble(lng);
 
         birdNameTextView = root.findViewById(R.id.BirdTextview);
-        birdNameTextView.setText(s);
+        sciNameTextView = root.findViewById(R.id.birdScientificNameTextview);
+        dateTextView = root.findViewById(R.id.birdDateTextview);
+        visitTextView = root.findViewById(R.id.birdVisitTextview);
+        moreInfo = root.findViewById(R.id.moreInfoDiscover);
+
+        birdNameTextView.setText(comBirdName);
+        sciNameTextView.setText("Scientific Name: " + sciName);
+        dateTextView.setText("Obervation Date: " + date);
+        visitTextView.setText("Recent Visit: " + visit);
+
+        moreInfo.setOnClickListener(moreInfoClick);
 
         return root;
     }
 
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-
-
-    private void initGoogleMap(Bundle savedInstanceState){
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        if(getActivity()!=null) {
+            SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
+                    .findFragmentById(R.id.mapDiscover);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(this);
+            }
         }
-
-        mapView.onCreate(mapViewBundle);
-
-        mapView.getMapAsync(this);
-    }
-
-    private void initUserListRecyclerView() {
-        mUserRecyclerAdapter = new UserRecyclerAdapter(mUserList);
-        mUserListRecyclerView.setAdapter(mUserRecyclerAdapter);
-        mUserListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
 
-        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if (mapViewBundle == null) {
-            mapViewBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        map.addMarker(new MarkerOptions().position(new LatLng(longitude,latitude)).title("Marker"));
+
+    }
+
+
+    private final View.OnClickListener moreInfoClick = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            onBrowseClick(v);
         }
+    };
 
-        mMapView.onSaveInstanceState(mapViewBundle);
+    public void onBrowseClick(View v) {
+        String url = "https://ebird.org/species/"+code;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        homePage.startActivity(intent);
+
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
-
-    @Override
-    public void onMapReady(GoogleMap map) {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        map.setMyLocationEnabled(true);
-    }
-
-    @Override
-    public void onPause() {
-        mapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mapView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 }
 
 

@@ -11,12 +11,13 @@
         android:id="@+id/BirdTextview"
         android:layout_width="320dp"
         android:layout_height="34dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="72dp"
         android:text="TextView"
         android:textAlignment="center"
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +67,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/moreInfoButtonRecordCardview"
+        android:id="@+id/moreInfoDiscover"
         android:layout_width="232dp"
         android:layout_height="35dp"
         android:layout_marginTop="20dp"
@@ -78,14 +79,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/discoverCHoiceCOnstraint" />
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/discoverMapView"
-        android:layout_width="364dp"
-        android:layout_height="282dp"
-        android:layout_marginTop="32dp"
+    <fragment
+        android:layout_width="368dp"
+        android:layout_height="335dp"
+        android:layout_marginTop="24dp"
+        android:id="@+id/mapDiscover"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoButtonRecordCardview" />
-
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoDiscover" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

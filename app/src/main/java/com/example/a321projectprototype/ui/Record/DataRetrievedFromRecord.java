@@ -12,14 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.ui.Discover.ItemDataModel;
-import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
+import com.example.a321projectprototype.User.ItemDataModel;
 
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -28,8 +24,7 @@ public class DataRetrievedFromRecord extends Fragment
     private RecyclerView recyclerView;
     private HomePage homePage;
     private List<Integer> numberList;
-    private List<String> listItem;
-    private ArrayList image;
+    private List<ItemDataModel> listItem;
     private final int MAX_IDENTIFIER = 2;
 
 
@@ -47,7 +42,7 @@ public class DataRetrievedFromRecord extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage,image));
+        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage));
 
         return  root;
 
@@ -55,25 +50,29 @@ public class DataRetrievedFromRecord extends Fragment
 
     private void setData()
     {
+        int drawable1 = R.drawable.magpie;
+        int drawable2 = R.drawable.australian_swiftlet;
+        int drawable3 = R.drawable.australian_crake;
+        int drawable4 = R.drawable.australian_brushturkey;
+        int drawable5 = R.drawable.rainbow_lorikeet;
 
-        ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
-        ItemDataModel item3 = new ItemDataModel("Australian Crake");
-        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
-        ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
+        ItemDataModel item1 = new ItemDataModel("Australian Magpie","https://ebird.org/species/ausmag2",drawable1);
+        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet","https://ebird.org/species/ausswi1",drawable2);
+        ItemDataModel item3 = new ItemDataModel("Australian Crake","https://ebird.org/species/auscra1",drawable3);
+        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey","https://ebird.org/species/ausbrt1",drawable4);
+        ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet","https://ebird.org/species/railor5",drawable5);
 
 
         listItem = new ArrayList<>();
         numberList = new ArrayList<>();
 
-        listItem.add(String.format(item1.getTxtname()));
-        listItem.add(String.format(item2.getTxtname()));
-        listItem.add(String.format(item3.getTxtname()));
-        listItem.add(String.format(item4.getTxtname()));
-        listItem.add(String.format(item5.getTxtname()));
+        listItem.add(item1);
+        listItem.add(item2);
+        listItem.add(item3);
+        listItem.add(item4);
+        listItem.add(item5);
 
-        image = new ArrayList<>(Arrays.asList(R.drawable.magpie,R.drawable.australian_swiftlet
-        ,R.drawable.australian_crake,R.drawable.australian_brushturkey,R.drawable.rainbow_lorikeet));
+
 
 
 
@@ -83,8 +82,6 @@ public class DataRetrievedFromRecord extends Fragment
         {
             int number = numberList.get(i);
             listItem.remove(number);
-            image.remove(number);
-
         }
     }
 
