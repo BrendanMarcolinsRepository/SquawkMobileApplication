@@ -3,6 +3,8 @@ package com.example.a321projectprototype;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,6 +59,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     private DrawerLayout drawer;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    private Toolbar toolbar;
 
 
 
@@ -66,10 +69,11 @@ public class HomePage extends AppCompatActivity implements Serializable
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         checkUserSession();
+
 
 
 
@@ -218,12 +222,51 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
-    public DrawerLayout getDrawerLayout()
+    public void disableMenuItems()
     {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item1 = menu.findItem(R.id.nav_home);
+        item1.setEnabled(false);
+        MenuItem item2 = menu.findItem(R.id.nav_Discover);
+        item2.setEnabled(false);
+        MenuItem item3 = menu.findItem(R.id.nav_Flock);
+        item3.setEnabled(false);
+        MenuItem item4 = menu.findItem(R.id.nav_Forum);
+        item4.setEnabled(false);
+        MenuItem item5 = menu.findItem(R.id.nav_PastRecording);
+        item5.setEnabled(false);
+        MenuItem item6 = menu.findItem(R.id.nav_Record);
+        item6.setEnabled(false);
+        MenuItem item7 = menu.findItem(R.id.nav_Reward);
+        item7.setEnabled(false);
+        MenuItem item8 = menu.findItem(R.id.nav_Settings);
+        item8.setEnabled(false);
 
-        return drawer;
     }
 
+    public void enableMenuItems()
+    {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item1 = menu.findItem(R.id.nav_home);
+        item1.setEnabled(true);
+        MenuItem item2 = menu.findItem(R.id.nav_Discover);
+        item2.setEnabled(true);
+        MenuItem item3 = menu.findItem(R.id.nav_Flock);
+        item3.setEnabled(true);
+        MenuItem item4 = menu.findItem(R.id.nav_Forum);
+        item4.setEnabled(true);
+        MenuItem item5 = menu.findItem(R.id.nav_PastRecording);
+        item5.setEnabled(true);
+        MenuItem item6 = menu.findItem(R.id.nav_Record);
+        item6.setEnabled(true);
+        MenuItem item7 = menu.findItem(R.id.nav_Reward);
+        item7.setEnabled(true);
+        MenuItem item8 = menu.findItem(R.id.nav_Settings);
+        item8.setEnabled(true);
+
+    }
 
 
 }

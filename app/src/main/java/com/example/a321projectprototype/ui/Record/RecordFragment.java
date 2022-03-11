@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -59,6 +60,7 @@ import com.example.a321projectprototype.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -79,7 +81,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 {
 
 
-
+    private View root;
     private RecordViewModel recordViewModel;
     private ImageView recordImage;
     private MediaRecorder mediaRecorder;
@@ -118,7 +120,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View root = inflater.inflate(R.layout.fragment_record, container, false);
+        root = inflater.inflate(R.layout.fragment_record, container, false);
         recordImage = root.findViewById(R.id.recordIcon);
         recordingInformationTexview = root.findViewById(R.id.recordInformationTextview);
         progressBar = root.findViewById(R.id.recordProgressBar);
@@ -179,9 +181,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     public void startRecord()
     {
-        drawerLayout = homePage.getDrawerLayout();
-        drawerLayout.close();
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        disableMenuItems();
 
 
         if(haveNetwork())
@@ -353,11 +354,12 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             {
                 Random randomObject = new Random();
                 int randomInteger = randomObject.nextInt(2);
-                openNavigationDrawer();
+
 
                 if(randomInteger == 0)
                 {
                     storeRecordingFilePath();
+                    enableMenuItems();
                     navController.navigate(R.id.action_nav_record_data);
                 }
                 else
@@ -395,15 +397,9 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         recordImage.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         recordingInformationTexview.setText("Record Your Chirps....");
-        openNavigationDrawer();
+        enableMenuItems();
     }
 
-    private void openNavigationDrawer()
-    {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-
-    }
 
     private void storeRecordingFilePath()
     {
@@ -434,6 +430,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
     }
 
+
+    public void disableMenuItems()
+    {
+        homePage.disableMenuItems();
+    }
+
+    public void enableMenuItems()
+    {
+        homePage.enableMenuItems();
+    }
 
 }
 
