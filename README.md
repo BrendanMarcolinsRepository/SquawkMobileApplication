@@ -14,4 +14,6 @@ How to run this application
    In the toolbar, select your app from the run/debug configurations drop-down menu. 
    From the target device drop-down menu, select the AVD that you want to run your app on. 
    Click "Run" button. 
-
+5.After running the application, create an account inside the application via "Sign Up" and fill out the form and submit to create an account.
+6.Attempt to sign in and message will display to verify your email. An email will be sent out to the given email to verify through a link provided by the email.
+7.After verifying through the link, the application will now accept your login details.
