@@ -194,11 +194,57 @@
         android:id="@+id/nav_Reward"
         android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"
         android:label="@string/menu_Reward"
-        tools:layout="@layout/fragment_rewards" />
+        tools:layout="@layout/fragment_rewards" >
+        <action
+            android:id="@+id/action_nav_Reward_to_rewardAchievementFragment"
+            app:destination="@id/rewardAchievementFragment" />
+        <action
+            android:id="@+id/action_nav_Reward_to_rewardCompareFragment"
+            app:destination="@id/rewardCompareFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_Settings"
         android:name="com.example.a321projectprototype.ui.Settings.SettingsFragment"
         android:label="@string/menu_Settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_nav_Settings_to_settingsPermissionFragment"
+            app:destination="@id/settingsPermissionFragment" />
+        <action
+            android:id="@+id/action_nav_Settings_to_settingsTermFragment"
+            app:destination="@id/settingsTermFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rewardAchievementFragment"
+        android:name="com.example.a321projectprototype.ui.Rewards.RewardAchievementFragment"
+        android:label="RewardAchievementFragment" >
+        <action
+            android:id="@+id/action_rewardAchievementFragment_to_nav_Reward"
+            app:destination="@id/nav_Reward" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPermissionFragment"
+        android:name="com.example.a321projectprototype.ui.Settings.SettingsPermissionFragment"
+        android:label="SettingsPermissionFragment" >
+        <action
+            android:id="@+id/action_settingsPermissionFragment_to_nav_Settings"
+            app:destination="@id/nav_Settings" />
+    </fragment>
+    <fragment
+        android:id="@+id/rewardCompareFragment"
+        android:name="com.example.a321projectprototype.ui.Rewards.RewardCompareFragment"
+        android:label="RewardCompareFragment" >
+        <action
+            android:id="@+id/action_rewardCompareFragment_to_nav_Reward"
+            app:destination="@id/nav_Reward" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsTermFragment"
+        android:name="com.example.a321projectprototype.ui.Settings.SettingsTermFragment"
+        android:label="SettingsTermFragment" >
+        <action
+            android:id="@+id/action_settingsTermFragment_to_nav_Settings"
+            app:destination="@id/nav_Settings" />
+    </fragment>
 
 </navigation>
