@@ -69,6 +69,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,6 +77,7 @@ import java.util.Random;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.activity.result.contract.ActivityResultContracts.*;
+import static androidx.core.app.ActivityCompat.requestPermissions;
 
 public class RecordFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
 {
@@ -98,24 +100,6 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private FirebaseAuth auth;
     private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString;
     private Date date;
-
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new RequestPermission(), isGranted ->
-            {
-                if(isGranted)
-                {
-                    System.out.println("5");
-
-                }
-                else
-                {
-
-                    System.out.println("6");
-
-
-                }
-
-            });
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -149,25 +133,34 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
            if(!isRecording)
            {
 
-               if (ContextCompat.checkSelfPermission(
-                       getContext(), Manifest.permission.RECORD_AUDIO) ==
-                       PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                       getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                                PackageManager.PERMISSION_GRANTED)
 
+               if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.RECORD_AUDIO)
+                       != PackageManager.PERMISSION_GRANTED)
                {
-                   // You can use the API that requires the permission.
-                   isRecording = true;
-                   startRecord();
-                   startAlphaAnimation();
-                   System.out.println("1");
+                   requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},1);
+                   return;
                }
 
-               else
+               if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                       != PackageManager.PERMISSION_GRANTED)
                {
-                   System.out.println("2");
-                   requestPermission();
+                   requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                   return;
                }
+
+               if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.INTERNET)
+                       != PackageManager.PERMISSION_GRANTED)
+               {
+                   requestPermissions(new String[]{Manifest.permission.INTERNET},1);
+                   return;
+               }
+
+               isRecording = true;
+               startRecord();
+               startAlphaAnimation();
+               System.out.println("1");
+
+
            }
            else
            {
@@ -242,59 +235,15 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         return false;
     }
 
-    private void requestPermission()
-    {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
-                && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) )
-        {
-            System.out.println("3");
-
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-            alertDialog.setTitle("Recording Permission");
-            alertDialog.setMessage("Do you Accept recording permission?");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            requestPermissionLauncher.launch(
-                                    Manifest.permission.RECORD_AUDIO);
-
-                            requestPermissionLauncher.launch(
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-
-                        }
-                    });
-            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            alertDialog.dismiss();
-
-                        }
-                    });
-            alertDialog.show();
-
-        }
-        else
-        {
-            System.out.println("4");
-            requestPermissionLauncher.launch(
-                    Manifest.permission.RECORD_AUDIO);
-            requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
-
-    }
 
     private String getRecordingFilePath()
     {
         date = new Date();
-        dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+        dateString = ft.format(date);
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, fileName+ date.getDate() +".mp3");
+        File file = new File(musicDirectory, fileName+ dateString +".mp3");
         return file.getPath();
     }
 
@@ -369,7 +318,6 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                 }
 
             }
-
 
          }.start();
 

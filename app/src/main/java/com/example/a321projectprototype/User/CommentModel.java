@@ -3,42 +3,60 @@ package com.example.a321projectprototype.User;
 import java.io.Serializable;
 
 public class CommentModel implements Serializable
+
 {
-    private int id;
+    private String created_at;
+    private String content;
+    private String postId;
+    private String userId;
     private String username;
-    private String topic;
-    private String comment;
-    private boolean privatePost;
+    private String updated_at;
+
+
+    public CommentModel(String created_at, String content, String postId, String userId, String username, String updated_at) {
+        this.created_at = created_at;
+        this.content = content;
+        this.postId = postId;
+        this.userId = userId;
+        this.username = username;
+        this.updated_at = updated_at;
+    }
 
     public CommentModel()
     {
 
     }
 
-    public CommentModel(int id, String username, String topic, String comment, boolean privatePost)
-    {
-        this.id = id;
-        this.username = username;
-        this.topic = topic;
-        this.comment = comment;
-        this.privatePost = privatePost;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public CommentModel(int id, String username, String topic, String comment)
-    {
-        this.id = id;
-        this.username = username;
-        this.topic = topic;
-        this.comment = comment;
-
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
-    public int getId() {
-        return id;
+    public String getContent() {
+        return content;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -49,27 +67,11 @@ public class CommentModel implements Serializable
         this.username = username;
     }
 
-    public String getTopic() {
-        return topic;
+    public String getUpdated_at() {
+        return updated_at;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getDescription() {
-        return comment;
-    }
-
-    public void setDescription(String comment) {
-        this.comment = comment;
-    }
-
-    public boolean getPrivatePost() {
-        return privatePost;
-    }
-
-    public void setPrivatePost(boolean privatePost) {
-        this.privatePost = privatePost;
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }

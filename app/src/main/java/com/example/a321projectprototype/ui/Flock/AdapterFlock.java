@@ -16,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.FlockDatabase;
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
@@ -26,13 +25,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     private Context context;
     private FlockModelData flockModelData;
     private FlockModelData currentItem;
-    private FlockDatabase flockDatabase;
+
     private UserModel userModel;
     private String name, countNumber;
     private int count;
@@ -75,12 +74,13 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             registerLayout = view.findViewById(R.id.registerlayerFlock);
 
 
+
             countNumber = groupCountNumber.getText().toString();
 
             System.out.println(name);
             System.out.println(countNumber);
 
-            FlockModelData flockModelData = flockDatabase.getFlock(name);
+
 
 
 
@@ -109,8 +109,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             @Override
             public void onClick(View v)
             {
-                name = homePage.getUserModel().getUserFlock();
-                if(count <= 200 && name == null)
+
+                if(count <= 200)
                 {
                     popUp();
                 }
@@ -124,13 +124,13 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
         };
     }
 
-    AdapterFlock(List<FlockModelData> listItem, HomePage homePage, Context context, FlockDatabase flockDatabase, View view)
+    AdapterFlock(List<FlockModelData> listItem, HomePage homePage, Context context, View view)
     {
         this.dataSet = listItem;
         this.homePage = homePage;
         FullList = new ArrayList<>(listItem);
         this.context = context;
-        this.flockDatabase = flockDatabase;
+
         this.view = view;
     }
 
@@ -151,7 +151,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     {
         currentItem = dataSet.get(position);
         holder.groupName.setText(currentItem.getName());
-        holder.groupCountNumber.setText(currentItem.getGroupNumber() + "/200");
+        name = currentItem.getName();
+        holder.groupCountNumber.setText(currentItem.getMemberAmount() + "/200");
 
 
     }
@@ -214,8 +215,14 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             public void onClick(View v)
             {
                 firebaseFirestore = FirebaseFirestore.getInstance();
+                FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                DocumentReference documentReference = firebaseFirestore.collection("Flock").document("A1m2nmOrG3WISGp2jUOp");
+
+                String userID = auth.getCurrentUser().getUid();
+
+
+                DocumentReference documentReference = firebaseFirestore.collection("Flock").document();
+                DocumentReference documentReference1 = firebaseFirestore.collection("flockMembers").document();
 
                 documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                 {
@@ -227,10 +234,33 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                             DocumentSnapshot document = task.getResult();
                             if (document != null && document.exists())
                             {
-                                if(task.getResult().getString("name").equals(currentItem.getName()))
+
+
+                                Date date = new Date();
+                                String dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
+
+
+
+
+
+                                documentReference1.set("flockMembers").addOnSuccessListener(new OnSuccessListener<Void>()
                                 {
-                                    amount = Integer.parseInt(task.getResult().getString("groupNumber"));
-                                }
+                                    @Override
+                                    public void onSuccess(Void aVoid)
+                                    {
+                                        HashMap<String,Object> userMap = new HashMap<>();
+                                        userMap.put("created_at",dateString);
+                                        userMap.put("flockId",document.get("userId"));
+                                        userMap.put("userId",userID);
+
+
+                                        System.out.println("worked");
+                                    }
+                                });
+
+
+                                amount = Integer.parseInt(document.get("memberCount").toString());
+
                             }
                             else
                             {
@@ -246,13 +276,9 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 });
 
 
-                firebaseFirestore = FirebaseFirestore.getInstance();
-
-
-
-
+                String memberCount = Integer.toString(amount + 1);
                 HashMap<String,Object> myMap = new HashMap<>();
-                myMap.put("groupNumber",amount);
+                myMap.put("groupNumber",memberCount);
 
 
                 documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
@@ -269,29 +295,10 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                     }
                 });
 
-                DocumentReference documentReference1 = firebaseFirestore.collection("flockMember").document();
 
 
-                HashMap<String,Object> myMap1 = new HashMap<>();
-                myMap1.put("name",homePage.getUserModel().getName());
-                myMap1.put("ownerUsername", name);
 
-                documentReference1.set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        alertDialog.dismiss();
 
-                    }
-                }).addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-
-                    }
-                });
             }
         });
 

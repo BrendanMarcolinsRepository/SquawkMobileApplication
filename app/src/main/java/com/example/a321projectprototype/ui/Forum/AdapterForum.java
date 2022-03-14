@@ -1,6 +1,5 @@
 package com.example.a321projectprototype.ui.Forum;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,19 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.FlockDatabase;
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.ForumModel;
 import com.example.a321projectprototype.User.UserModel;
 
@@ -39,7 +34,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     private int picked;
     private Context context;
     private ForumModel forumModel;
-    private ForumDatabase forumDatabase;
+
     private UserModel userModel;
     private String name, countNumber;
     private int count;
@@ -64,7 +59,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
             name = username.getText().toString();
 
-            ForumModel forumModel = forumDatabase.getFlock(name);
+
 
 
 
@@ -78,7 +73,10 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
                     picked = getLayoutPosition();
                     System.out.println("worked");
                     Bundle bundle = new Bundle();
-                    bundle.putString("topic",currentItem.getTopic());
+                    bundle.putString("topic",currentItem.getTitle());
+                    bundle.putString("name",currentItem.getUsername());
+                    bundle.putString("desc",currentItem.getDescription());
+                    bundle.putString("id",currentItem.getPostId());
                     navigation.navigate(R.id.action_nav_forum_to_comment,bundle);
                 }
             });
@@ -87,13 +85,13 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
     }
 
-    AdapterForum(List<ForumModel> listItem, HomePage homePage, Context context, ForumDatabase forumDatabase , View view)
+    AdapterForum(List<ForumModel> listItem, HomePage homePage, Context context, View view)
     {
         this.dataSet = listItem;
         this.homePage = homePage;
         FullList = new ArrayList<>(listItem);
         this.context = context;
-        this.forumDatabase = forumDatabase;
+
         this.view = view;
     }
 
@@ -113,8 +111,8 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, int position)
     {
         currentItem = dataSet.get(position);
-        holder.topic.setText("Topic: " + currentItem.getTopic());
-        holder.username.setText("Cherper: " + currentItem.getTopic());
+        holder.topic.setText("Topic: " + currentItem.getTitle());
+        holder.username.setText("Cherper: " + currentItem.getUsername());
         holder.description.setText(currentItem.getDescription());
 
 
@@ -139,7 +137,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 for (ForumModel item : FullList) {
-                    if (item.getTopic().toLowerCase().contains(filterPattern)) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }

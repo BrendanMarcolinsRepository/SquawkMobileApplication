@@ -1,12 +1,10 @@
 package com.example.a321projectprototype.ui.Forum;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
@@ -22,9 +19,6 @@ import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.ForumModel;
 import com.example.a321projectprototype.User.UserModel;
 
-import org.w3c.dom.Comment;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHolder>
@@ -35,17 +29,12 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
     private HomePage homePage;
     private NavController navigation;
     private Button joinButton, infoButton;
-    private int picked;
+
     private Context context;
-    private ForumModel forumModel;
-    private ForumDatabase forumDatabase;
-    private UserModel userModel;
-    private String name, countNumber;
-    private int count;
-    private UserDatabase userDatabase;
+
     private ConstraintLayout registerLayout;
     private View view;
-    private CommentModel currentItem;
+    private CommentModel commentModel;
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -57,12 +46,11 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
         {
             super(itemView);
             navigation = homePage.getNav();
-            topic = itemView.findViewById(R.id.forumTopicRv);
-            description = itemView.findViewById(R.id.forumDescriptionRv);
-            username = itemView.findViewById(R.id.forumUserRv);
+            description = itemView.findViewById(R.id.comnentRv);
+            username = itemView.findViewById(R.id.commentUserHeaderRv);
 
 
-            name = username.getText().toString();
+
 
         }
 
@@ -82,7 +70,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
     {
 
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_forum_topic, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_forum_comments, parent, false);
         return new AdapterComment.MyViewHolder(view);
     }
 
@@ -91,10 +79,9 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull AdapterComment.MyViewHolder holder, int position)
     {
-        currentItem = dataSet.get(position);
-        holder.topic.setText("Topic: " + currentItem.getTopic());
-        holder.username.setText("Cherper: " + currentItem.getTopic());
-        holder.description.setText(currentItem.getDescription());
+        commentModel = dataSet.get(position);
+        holder.username.setText("Cherper: " + commentModel.getUsername());
+        holder.description.setText(commentModel.getContent());
 
 
     }

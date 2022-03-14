@@ -58,7 +58,7 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
     {
         FlockModelData memberFlock = dataSet.get(position);
         holder.memberNameTextview.setText(memberFlock.getName());
-        holder.scoreTextview.setText(Integer.toString(memberFlock.getScore()));
+        holder.scoreTextview.setText(Integer.toString(0));
         holder.positionTextview.setText(Integer.toString(1));
 
 

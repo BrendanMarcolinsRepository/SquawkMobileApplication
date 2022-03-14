@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.ui.Past_Recordings;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,13 +17,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.Files;
+import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.ItemDataModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class PastRecordingsFragment extends Fragment {
@@ -34,12 +54,11 @@ public class PastRecordingsFragment extends Fragment {
     private String dateString;
     private HomePage homePage;
     private List<String> listItem;
-
-    ItemDataModel item1 = new ItemDataModel("Australian Magpie");
-    ItemDataModel item2 = new ItemDataModel("Australian Swiftlet");
-    ItemDataModel item3 = new ItemDataModel("Australian Crake");
-    ItemDataModel item4 = new ItemDataModel("Australian Brushturkey");
-    ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet");
+    private List<Files> filesList;
+    private List<String> listItem2;
+    private List<Date> dateList;
+    private Files files;
+    private PastRecordingsCardviewAdpator pastRecordingsCardviewAdpator;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,6 +66,8 @@ public class PastRecordingsFragment extends Fragment {
         pastRecordingsViewModel =
                 new ViewModelProvider(this).get(PastRecordingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_pastrecordings, container, false);
+        View cardView = inflater.inflate(R.layout.record_data_retrival_cardview, container, false);
+
         recyclerView = root.findViewById(R.id.recycleRecordings);
         recyclerView2 = root.findViewById(R.id.recycleRecordings2);
         date = root.findViewById(R.id.past_date_textview);
@@ -58,6 +79,8 @@ public class PastRecordingsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView2.setLayoutManager(linearLayoutManager2);
 
+
+
         formatter = new SimpleDateFormat("E, MMM dd yyyy");
 
         homePage = (HomePage) getActivity();
@@ -65,10 +88,10 @@ public class PastRecordingsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView2.setHasFixedSize(true);
 
-        List<Date> dateList = getDates();
+        dateList = getDates();
 
         listItem = new ArrayList<>();
-
+        filesList = new ArrayList<>();
 
 
         for(int i = 0; i < dateList.size();i++)
@@ -77,6 +100,7 @@ public class PastRecordingsFragment extends Fragment {
             listItem.add(String.format(dateString));
         }
 
+        setAdaptor2(dateList.get(0));
 
 
 
@@ -85,35 +109,94 @@ public class PastRecordingsFragment extends Fragment {
             @Override
             public void setClick(int click, View view)
             {
+
+                setAdaptor2(dateList.get(click));
                 date.setText(listItem.get(click));
 
-
-                setAdaptor2();
 
             }
         };
 
 
-        MyRvAdapter rvAdapter = new MyRvAdapter(listItem, getContext(),onClickInterface,homePage);
 
+        MyRvAdapter rvAdapter = new MyRvAdapter(listItem, getContext(),onClickInterface,homePage);
         recyclerView.setAdapter(rvAdapter);
 
-        setAdaptor2();
+        pastRecordingsCardviewAdpator = new PastRecordingsCardviewAdpator(homePage, filesList);
+        recyclerView2.setAdapter(pastRecordingsCardviewAdpator);
+
 
         return root;
     }
 
-    private void setAdaptor2()
+    private void setAdaptor2(Date tempDate)
     {
-        List<String> listItem2 = new ArrayList<>();
-        listItem2.add(String.format(item1.getTxtname()));
-        listItem2.add(String.format(item2.getTxtname()));
-        listItem2.add(String.format(item3.getTxtname()));
-        listItem2.add(String.format(item4.getTxtname()));
-        listItem2.add(String.format(item5.getTxtname()));
 
-        recyclerView2.setAdapter(new PastRecordingsCardviewAdpator(listItem2,homePage));
 
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+        String userID = auth.getCurrentUser().getUid();
+        System.out.println("here ================> ");
+
+
+
+        firebaseFirestore.collection("files").orderBy("created_at", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+
+
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null)
+                        {
+                            System.out.println("Error ==========?>" +  error);
+                            return;
+                        }
+
+                        filesList.clear();
+
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+                                if(documentChange.getDocument().get("uploadedBy").equals(userID))
+                                {
+                                    Files f = documentChange.getDocument().toObject(Files.class);
+
+                                    SimpleDateFormat DateFor = new SimpleDateFormat("dd-MM-yyyy");
+                                    String stringDate= DateFor.format(tempDate);
+
+
+                                    System.out.println("Date Today==========?>" + stringDate);
+
+
+
+                                    if(stringDate.regionMatches(0,f.getCreated_at(),0,10))
+                                    {
+                                        System.out.println("Date Match==========?>" +  f.getCreated_at());
+
+
+
+                                        filesList.add(f);
+
+                                    }
+                                    else
+                                    {
+                                        System.out.println("Date ==========?>" +  f.getCreated_at());
+                                    }
+
+                                }
+                            }
+                        }
+
+                        pastRecordingsCardviewAdpator.notifyDataSetChanged();
+
+
+
+                    }
+                });
     }
 
     public List<Date> getDates()

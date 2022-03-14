@@ -1,34 +1,37 @@
 package com.example.a321projectprototype.ui.Forum;
 
 import android.app.AlertDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.FlockDatabase;
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.ForumModel;
-import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
-import com.example.a321projectprototype.ui.Flock.AdapterFlock;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class ForumFragment extends Fragment
     private View root;
     private HomePage homePage;
     private NavController navController;
-    private ForumDatabase forumDatabase;
+
     private Button filterButton, addButton;
     private String s = "No Change", filterOrder = "o";
     private boolean reversed = false;
@@ -59,8 +62,7 @@ public class ForumFragment extends Fragment
         recyclerView = root.findViewById(R.id.recycleDiscover);
         filterButton = root.findViewById(R.id.forumFillterButton);
         addButton = root.findViewById(R.id.addFillterButton);
-        forumDatabase = new ForumDatabase(this.homePage);
-        forumList = forumDatabase.getAllUsers();
+
         forumSearchView = root.findViewById(R.id.forum_search_bar);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -68,12 +70,15 @@ public class ForumFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
+        forumList = new ArrayList<>();
+        setAdaptor1();
+
         addButton.setOnClickListener(addForum);
         filterButton.setOnClickListener(filter);
 
 //        System.out.println("Flock name 1 " + flockModelData.getName());
 
-        adapterForum = new  AdapterForum(forumList,homePage,getContext(),forumDatabase, root);
+        adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
         recyclerView.setAdapter(adapterForum);
 
         forumSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
@@ -182,6 +187,51 @@ public class ForumFragment extends Fragment
 
     }
 
+    private void setAdaptor1()
+    {
+
+
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+        System.out.println("here ================> ");
+
+
+
+        firebaseFirestore.collection("posts").orderBy("created_at", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+
+
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null)
+                        {
+                            System.out.println("Error ==========?>" +  error);
+                            return;
+                        }
+
+
+
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+                                ForumModel forumModel = documentChange.getDocument().toObject(ForumModel.class);
+                                forumList.add(forumModel);
+                            }
+                        }
+
+                        adapterForum.notifyDataSetChanged();
+
+
+
+                    }
+                });
+    }
+
 
 
     private void reverseOrder()
@@ -210,7 +260,7 @@ public class ForumFragment extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        adapterForum = new  AdapterForum(forumList,homePage,getContext(),forumDatabase, root);
+        adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
         recyclerView.setAdapter(adapterForum);
     }
 }

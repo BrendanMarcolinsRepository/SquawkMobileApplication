@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.ui.Forum;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,19 +9,25 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.CommentDatabase;
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.ForumModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ForumPost extends Fragment
@@ -31,12 +38,12 @@ public class ForumPost extends Fragment
     private TextView topic ,descritpion, username;
     private HomePage homePage;
     private NavController navController;
-    private CommentDatabase commentDatabase;
+
     private RecyclerView recyclerView;
     private AdapterComment adapterComment;
-    String usernameString, topicString, descriptionString;
+    String usernameString, topicString, descriptionString, postIdString;
     private ArrayList<CommentModel> commentList;
-    private ForumDatabase forumDatabase;
+
     private ForumModel forumModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,16 +61,15 @@ public class ForumPost extends Fragment
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
-        forumDatabase = new ForumDatabase(homePage);
 
+        commentList = new ArrayList<>();
 
         checker();
+        setAdaptor1();
 
 
 
 
-        commentDatabase = new CommentDatabase(homePage);
-        commentList = commentDatabase.getAllUsers(topicString);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -88,16 +94,14 @@ public class ForumPost extends Fragment
 
 
             topicString = (String) getArguments().getSerializable("topic");
+            usernameString = (String) getArguments().getSerializable("name");
+            descriptionString = (String) getArguments().getSerializable("desc");
+            postIdString = (String) getArguments().getSerializable("id");
 
-            System.out.println(topicString);
 
-            forumModel = forumDatabase.getFlock(topicString);
-
-            System.out.println(forumModel.getTopic());
-
-            topic.setText(forumModel.getTopic());
-            username.setText(forumModel.getUsername());
-            descritpion.setText(forumModel.getDescription());
+            topic.setText(topicString);
+            username.setText(usernameString);
+            descritpion.setText(descriptionString);
         }
 
     }
@@ -111,9 +115,54 @@ public class ForumPost extends Fragment
             System.out.println("worked");
             Bundle bundle = new Bundle();
             bundle.putString("topic",topicString);
+            bundle.putString("postId",postIdString);
             navController.navigate(R.id.action_nav_comment_to_commentsPost, bundle);
         }
     };
 
+    private void setAdaptor1()
+    {
+
+
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+        System.out.println("here ================> ");
+
+
+
+        firebaseFirestore.collection("comments").orderBy("created_at", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+
+
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null)
+                        {
+                            System.out.println("Error ==========?>" +  error);
+                            return;
+                        }
+
+
+
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+                                CommentModel commentModel = documentChange.getDocument().toObject(CommentModel.class);
+                                commentList.add(commentModel);
+                            }
+                        }
+
+                        adapterComment.notifyDataSetChanged();
+
+
+
+                    }
+                });
+    }
 
 }

@@ -4,42 +4,31 @@ import java.io.Serializable;
 
 public class ForumModel implements Serializable
 {
-    private int id;
+
+    private String userId;
+    private String postId;
     private String username;
-    private String topic;
+    private String title;
     private String description;
-    private boolean privatePost;
+    private String created_at;
+    private String updated_at;
 
-    public ForumModel()
+
+
+    public ForumModel(String postId, String created_at, String description, String title, String updated_at, String userId, String username)
     {
-
-    }
-
-    public ForumModel(int id, String username, String topic, String description, boolean privatePost)
-    {
-        this.id = id;
+        this.postId = postId;
+        this.created_at = created_at;
         this.username = username;
-        this.topic = topic;
+        this.title = title;
         this.description = description;
-        this.privatePost = privatePost;
-    }
-
-    public ForumModel(int id, String username, String topic, String description)
-    {
-        this.id = id;
-        this.username = username;
-        this.topic = topic;
-        this.description = description;
+        this.userId = userId;
+        this.updated_at = updated_at;
 
     }
 
-    public int getId() {
-        return id;
-    }
+    public ForumModel(){}
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -47,14 +36,6 @@ public class ForumModel implements Serializable
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
     }
 
     public String getDescription() {
@@ -65,11 +46,43 @@ public class ForumModel implements Serializable
         this.description = description;
     }
 
-    public boolean getPrivatePost() {
-        return privatePost;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setPrivatePost(boolean privatePost) {
-        this.privatePost = privatePost;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

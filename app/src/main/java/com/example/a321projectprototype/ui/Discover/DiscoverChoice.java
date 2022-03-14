@@ -20,7 +20,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -75,6 +78,14 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
         dateTextView.setText("Obervation Date: " + date);
         visitTextView.setText("Recent Visit: " + visit);
 
+
+
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+        getChildFragmentManager().beginTransaction().replace(R.id.mapDiscover, mapFragment).commit();
+        mapFragment.getMapAsync(this);
+
+
+
         moreInfo.setOnClickListener(moreInfoClick);
 
         return root;
@@ -97,9 +108,14 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
+        this.map = googleMap;
+        LatLng birdPosition = new LatLng(latitude,longitude);
 
-        map.addMarker(new MarkerOptions().position(new LatLng(longitude,latitude)).title("Marker"));
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(birdPosition).title("Last Chirp");
+        map.clear();
+        map.animateCamera(CameraUpdateFactory.newLatLng(birdPosition));
+        map.addMarker(markerOptions);
 
     }
 

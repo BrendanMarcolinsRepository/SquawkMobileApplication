@@ -1,6 +1,5 @@
 package com.example.a321projectprototype.ui.Flock;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,23 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.FlockDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
-import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -64,8 +58,9 @@ public class FlockFragment extends Fragment
     private String s = "No Change", filterOrder = "o";
     private HomePage homePage;
     private NavController navController;
-    private FlockDatabase flockDatabase;
+
     private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
     private ProgressBar progressBar;
 
 
@@ -78,7 +73,7 @@ public class FlockFragment extends Fragment
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
-        flockDatabase = new FlockDatabase(homePage);
+
 
         textViewFlockName = root.findViewById(R.id.text_flocks);
         flockSearchView = root.findViewById(R.id.flock_search_bar);
@@ -100,14 +95,14 @@ public class FlockFragment extends Fragment
         recyclerView.setHasFixedSize(true);
 
         flockList = new ArrayList<>();
-        adapterFlock = new  AdapterFlock(flockList,homePage,getContext(),flockDatabase, root);
+        adapterFlock = new  AdapterFlock(flockList,homePage,getContext(), root);
         recyclerView.setAdapter(adapterFlock);
 
 
 //        System.out.println("Flock name 1 " + flockModelData.getName());
 
 
-        progressBar.setVisibility(View.VISIBLE);
+
         EventChangeListener();
         createFlockButton.setOnClickListener(createFlockFragement);
         leaderboard.setOnClickListener(flockLeaderboardMethod);
@@ -144,7 +139,8 @@ public class FlockFragment extends Fragment
     private void EventChangeListener()
     {
 
-        firebaseFirestore.collection("Flock").orderBy("name", Query.Direction.ASCENDING)
+        progressBar.setVisibility(View.VISIBLE);
+        firebaseFirestore.collection("flocks").orderBy("name", Query.Direction.ASCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>()
                 {
                     @Override
@@ -161,10 +157,8 @@ public class FlockFragment extends Fragment
 
                             if(documentChange.getType() == DocumentChange.Type.ADDED)
                             {
-
-                                flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
                                 progressBar.setVisibility(View.INVISIBLE);
-
+                                flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
 
                             }
 
@@ -178,7 +172,14 @@ public class FlockFragment extends Fragment
 
     private void checkFlockName()
     {
-        DocumentReference  documentReference = firebaseFirestore.collection("Flock").document("4OIcTerZfrxWSLMZYX1O");
+
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        String userID = auth.getCurrentUser().getUid();
+
+
+        DocumentReference  documentReference = firebaseFirestore.collection("flocks").document();
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
         {
@@ -190,29 +191,31 @@ public class FlockFragment extends Fragment
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists())
                     {
-                        UserModel userModel = homePage.getUserModel();
-                        if(userModel.getUsername() != task.getResult().getString("ownerUsername"))
+
+                        if(userID.equals(document.get("userId").toString()))
                         {
-                            userModel.setUserFlock(task.getResult().getString("name"));
-                            textViewFlockName.setText(userModel.getUserFlock());
+
+
+                            textViewFlockName.setText(document.get("name").toString());
                             createFlockButton.setVisibility(View.GONE);
                             createFlockButton.setOnClickListener(null);
                             myflock.setVisibility(View.VISIBLE);
                             flockImage.setVisibility(View.VISIBLE);
 
 
-                        }
-                        else
-                        {
-                            myflock.setVisibility(View.GONE);
-                            flockImage.setVisibility(View.GONE);
-                            createFlockButton.setVisibility(View.VISIBLE);
+
+
+                            System.out.println("===========> in a flock");
+
 
                         }
-
                     }
                     else
                     {
+                        myflock.setVisibility(View.GONE);
+                        flockImage.setVisibility(View.GONE);
+                        createFlockButton.setVisibility(View.VISIBLE);
+                        System.out.println("===========> not in a flock");
                         System.out.println("no document");
                     }
                 }

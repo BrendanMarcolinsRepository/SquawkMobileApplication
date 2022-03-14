@@ -1,28 +1,29 @@
 package com.example.a321projectprototype.User;
 
-public class FlockModelData
-{
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
+public class FlockModelData {
     private int id;
     private String name;
-    private int groupNumber;
+    private int memberAmount;
     private String description;
-    private boolean privateFlock = true;
-    private String ownerUsername;
-    private int score;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 
-    public FlockModelData(){}
-
-    public FlockModelData( String name, int groupNumber, String description, boolean privateFlock, String ownerUsername, int score)
-    {
-        this.name = name;
-        this.groupNumber = groupNumber;
-        this.description = description;
-        this.privateFlock = privateFlock;
-        this.ownerUsername = ownerUsername;
-        this.score = score;
+    public FlockModelData() {
     }
 
-    public FlockModelData( String name, int groupNumber) { this.id = id;this.name = name;this.groupNumber = groupNumber; }
+    public FlockModelData(Timestamp created_at, String description, int memberAmount, String name, Timestamp updated_at,int id) {
+        this.name = name;
+        this.memberAmount = memberAmount;
+        this.description = description;
+        this.id = id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
 
     public String getName() {
         return name;
@@ -32,43 +33,45 @@ public class FlockModelData
         this.name = name;
     }
 
-    public int getGroupNumber() {
-        return groupNumber;
+    public String getDescription() {
+        return description;
     }
 
-    public void setGroupNumber(int groupNumber) {
-        this.groupNumber = groupNumber;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getDescription() { return description; }
-
-    public void setDescription(String description) { this.description = description; }
-
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public boolean isPrivateFlock() {
-        return privateFlock;
+    public int getId() {
+        return id;
     }
 
-    public void setPrivateFlock(boolean privateFlock) {
-        this.privateFlock = privateFlock;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getOwnerUsername() {
-        return ownerUsername;
+    public int getMemberAmount() {
+        return memberAmount;
     }
 
-    public void setOwnerUsername(String ownerUsername) {
-        this.ownerUsername = ownerUsername;
+    public void setMemberAmount(int memberAmount) {
+        this.memberAmount = memberAmount;
     }
 
-    public int getScore() {
-        return score;
+    public Timestamp getCreated_at() {
+        return created_at;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
+
+    public Timestamp getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Timestamp updated_at) {
+        this.updated_at = updated_at;
     }
 }
+
+

@@ -12,11 +12,16 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.CommentDatabase;
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.CommentModel;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 public class ForumComments extends Fragment
 {
@@ -26,9 +31,9 @@ public class ForumComments extends Fragment
     private TextView topic ,comment;
     private HomePage homePage;
     private NavController navController;
-    private CommentDatabase commentDatabase;
+
     private RecyclerView recyclerView;
-    String topicString, commentString;
+    String topicString, commentString,postId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -42,10 +47,10 @@ public class ForumComments extends Fragment
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
-        commentDatabase = new CommentDatabase(homePage);
 
 
         topicString = (String) getArguments().getSerializable("topic");
+        postId = (String) getArguments().getSerializable("id");
         topic.setText(topicString);
 
 
@@ -72,8 +77,41 @@ public class ForumComments extends Fragment
             }
             else
             {
-                CommentModel commentModel = new CommentModel(idCount(),homePage.getUserModel().getUsername(),topicString,commentString);
-                commentDatabase.addFlock(commentModel);
+
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+                String userID = auth.getCurrentUser().getUid();
+                DocumentReference documentReference2 = firebaseFirestore.collection("users").document(userID);
+
+
+
+                DocumentReference documentReference = firebaseFirestore.collection("comments").document();
+
+                Date date = new Date();
+                SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+                String dateString = ft.format(date);
+
+
+                HashMap<String,Object> userMap = new HashMap<>();
+                userMap.put("created_at",dateString);
+                userMap.put("content",commentString);
+                userMap.put("updated_at", dateString);
+                userMap.put("userId", userID);
+                userMap.put("comment_id", documentReference.getId());
+                userMap.put("post_id", postId);
+                userMap.put("username", homePage.getUserModel().getUsername());
+
+
+                documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        System.out.println("worked");
+                    }
+                });
+
                 Bundle bundle = new Bundle();
                 bundle.putString("topic",topicString);
                 navController.popBackStack();
@@ -81,18 +119,5 @@ public class ForumComments extends Fragment
         }
     };
 
-    public int idCount()
-    {
-        int count = commentDatabase.getContactsCount();
 
-        if(count == 0)
-        {
-            return count;
-        }
-        else
-        {
-            return count + 1;
-
-        }
-    }
 }

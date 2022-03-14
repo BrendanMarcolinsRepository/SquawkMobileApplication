@@ -27,8 +27,10 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.BirdModel;
 import com.example.a321projectprototype.User.ItemDataModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -136,17 +138,9 @@ public class DiscoverFragment extends Fragment
                 }
 
                 birdList = response.body();
-
-
-
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
-                recyclerView.setHasFixedSize(true);
-
-                adapterDiscover = new  AdapterDiscover(birdList,homePage);
                 progressBar.setVisibility(View.INVISIBLE);
-                recyclerView.setAdapter(adapterDiscover);
+                recyclerViewMethod();
+
 
             }
 
@@ -200,7 +194,7 @@ public class DiscoverFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                order();
+                orderAlgorithm();
                 alertDialog.dismiss();
             }
         });
@@ -209,7 +203,7 @@ public class DiscoverFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                reverseOrder();
+                reverseOrderAlgorithm();
                 alertDialog.dismiss();
             }
         });
@@ -228,29 +222,35 @@ public class DiscoverFragment extends Fragment
     }
 
 
-
-    private void reverseOrder()
-    {
-        if(!reversed)
-        {
-            reversed = true;
-            theChange();
-        }
-    }
-
-    private void order()
-    {
-        if(reversed)
-        {
-            reversed = false;
-            theChange();
-        }
-    }
-
-    private void theChange()
+    private void orderAlgorithm()
     {
         System.out.println("worked");
+        Collections.sort(birdList, new Comparator<BirdModel>() {
+            @Override
+            public int compare(BirdModel o1, BirdModel o2) {
+                return o1.getComName().compareTo(o2.getComName());
+            }
+        });
+
+        recyclerViewMethod();
+    }
+
+    private void reverseOrderAlgorithm()
+    {
+        System.out.println("worked");
+        Collections.sort(birdList, new Comparator<BirdModel>() {
+            @Override
+            public int compare(BirdModel o1, BirdModel o2) {
+                return o1.getComName().compareTo(o2.getComName());
+            }
+        });
+
         Collections.reverse(birdList);
+        recyclerViewMethod();
+    }
+
+    public void recyclerViewMethod()
+    {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);

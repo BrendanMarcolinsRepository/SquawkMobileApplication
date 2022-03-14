@@ -1,6 +1,5 @@
 package com.example.a321projectprototype.ui.Forum;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +10,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.ForumDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.ForumModel;
-import com.example.a321projectprototype.ui.Discover.AdapterDiscover;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
-import java.util.Collections;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 public class ForumAdd extends Fragment
 {
@@ -31,7 +37,10 @@ public class ForumAdd extends Fragment
     private TextView topic ,descritpion;
     private HomePage homePage;
     private NavController navController;
-    private ForumDatabase forumDatabase;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    String userID,username;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -42,7 +51,12 @@ public class ForumAdd extends Fragment
         descritpion = root.findViewById(R.id.forumAddDesciption);
         addPost = root.findViewById(R.id.forumAddPost);
         homePage = (HomePage) getActivity();
-        forumDatabase = new ForumDatabase(homePage);
+
+
+
+
+
+
         navController = homePage.getNav();
 
         addPost.setOnClickListener(addForum);
@@ -72,25 +86,52 @@ public class ForumAdd extends Fragment
             }
             else
             {
-                ForumModel forumModel = new ForumModel(idCount(),homePage.getUserModel().getUsername(),topicString,descriptionString);
-                forumDatabase.addFlock(forumModel);
+
+
+
+                auth = FirebaseAuth.getInstance();
+                firebaseFirestore = FirebaseFirestore.getInstance();
+
+                userID = auth.getCurrentUser().getUid();
+                DocumentReference documentReference2 = firebaseFirestore.collection("users").document(userID);
+
+
+
+                DocumentReference documentReference = firebaseFirestore.collection("posts").document();
+
+                Date date = new Date();
+                SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+                String dateString = ft.format(date);
+
+                HashMap<String,Object> userMap = new HashMap<>();
+                userMap.put("created_at",dateString);
+                userMap.put("description",descriptionString);
+                userMap.put("title",topicString);
+                userMap.put("updated_at", dateString);
+                userMap.put("userId", userID);
+                userMap.put("postId", documentReference.getId());
+                userMap.put("username", homePage.getUserModel().getUsername());
+
+
+                documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void aVoid)
+                    {
+                        System.out.println("worked");
+                    }
+                });
+
                 navController.navigate(R.id.action_nav_add_to_forum);
             }
+
+
+
+
+
         }
+
     };
 
-    public int idCount()
-    {
-        int count = forumDatabase.getContactsCount();
 
-        if(count == 0)
-        {
-            return count;
-        }
-        else
-        {
-            return count + 1;
-
-        }
-    }
 }

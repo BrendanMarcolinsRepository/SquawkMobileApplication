@@ -2,6 +2,7 @@ package com.example.a321projectprototype.ui.Flock;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,27 +11,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
-import com.example.a321projectprototype.Database.FlockDatabase;
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.Files;
+import com.example.a321projectprototype.User.FlockMembers;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,12 +37,11 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Document;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -60,11 +58,12 @@ public class FlockCreationFragment extends Fragment
     private HomePage homePage;
     private NavController navController;
     private ArrayList<FlockModelData> flockModelDataArrayList;
-    private FlockDatabase flockDatabase;
+
     private UserModel userModel;
     private UserDatabase userDatabase;
     private int flockCount;
     private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
     private String ownerUsername;
 
 
@@ -90,7 +89,9 @@ public class FlockCreationFragment extends Fragment
         privateFlockSwitch = root.findViewById(R.id.flock_create_private_switch);
         update = root.findViewById(R.id.flock_update_Button);
 
+        auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
 
         checkFlockName();
 
@@ -182,20 +183,22 @@ public class FlockCreationFragment extends Fragment
             privateFlock = privateFlockSwitch.getSplitTrack();
 
 
+            String userID = auth.getCurrentUser().getUid();
 
-            DocumentReference documentReference = firebaseFirestore.collection("Flock").document();
-            FlockModelData flockModelData = new FlockModelData(flockNameString,0,flockDescriptionString,privateFlock,ownerUsername,0);
+            Date date = new Date();
+            String dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
+
+            DocumentReference documentReference = firebaseFirestore.collection("flocks").document();
 
             HashMap<String,Object> myMap = new HashMap<>();
             myMap.put("name",flockNameString);
-            myMap.put("groupNumber",  1);
+            myMap.put("memberCount",  1);
             myMap.put("description",flockDescriptionString);
-            myMap.put("ownerUsername",ownerUsername);
-            myMap.put("privateFlock",privateFlock);
-            myMap.put("score",0);
+            myMap.put("userID", userID);
+            myMap.put("created_at", dateString);
+            myMap.put("updated_at", dateString);
 
-            documentReference.collection("Flock").document("4OIcTerZfrxWSLMZYX1O")
-                    .set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
+            documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
             {
                 @Override
                 public void onSuccess(Void aVoid)
@@ -246,49 +249,49 @@ public class FlockCreationFragment extends Fragment
 
     private void checkFlockName()
     {
-        DocumentReference  documentReference = firebaseFirestore.collection("flockMembers").document("4OIcTerZfrxWSLMZYX1O");
 
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
-                    {
+        String userID = auth.getCurrentUser().getUid();
 
-                        if(userModel.getUsername() != task.getResult().getString("ownerUsername"))
+        firebaseFirestore.collection("flockMembers").orderBy("created_at", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+
+
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error != null)
                         {
-
-                            create.setVisibility(View.GONE);
-                            create.setOnClickListener(null);
-                            update.setVisibility(View.VISIBLE);
-
-
-                        }
-                        else
-                        {
-                            update.setVisibility(View.GONE);
-                            update.setOnClickListener(null);
-                            create.setVisibility(View.VISIBLE);
-
+                            System.out.println("Error ==========?>" +  error);
+                            return;
                         }
 
-                    }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-                else
-                {
-                    System.out.println("not successfull");
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+                                FlockMembers f = documentChange.getDocument().toObject(FlockMembers.class);
 
-                }
-            }
-        });
+                                if(f.getUsers().equals(userID) )
+                                {
+                                    if(!f.getFlockName().matches(flockNameString))
+                                    {
 
+                                        create.setVisibility(View.GONE);
+                                        create.setOnClickListener(null);
+                                        update.setVisibility(View.VISIBLE);
+
+                                    }
+                                    else
+                                    {
+                                        update.setVisibility(View.GONE);
+                                        update.setOnClickListener(null);
+                                        create.setVisibility(View.VISIBLE);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                });
     }
 }
