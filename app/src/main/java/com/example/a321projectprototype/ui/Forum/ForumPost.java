@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
+import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.ForumModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -37,6 +44,7 @@ public class ForumPost extends Fragment
     private Button comment;
     private TextView topic ,descritpion, username;
     private HomePage homePage;
+    private ImageView deleteIcon;
     private NavController navController;
 
     private RecyclerView recyclerView;
@@ -53,6 +61,8 @@ public class ForumPost extends Fragment
         root = inflater.inflate(R.layout.fragment_forum_post, container, false);
         comment = root.findViewById(R.id.commentForumComments);
         recyclerView = root.findViewById(R.id.recycleForumComments);
+        deleteIcon = root.findViewById(R.id.deletePostForum);
+        deleteIcon.setVisibility(View.INVISIBLE);
 
         View view1 = root.findViewById(R.id.forumTopicComment);
         topic = view1.findViewById(R.id.forumTopicRv);
@@ -65,6 +75,7 @@ public class ForumPost extends Fragment
         commentList = new ArrayList<>();
 
         checker();
+        checkIfCanDelete();
         setAdaptor1();
 
 
@@ -81,10 +92,46 @@ public class ForumPost extends Fragment
 
 
         comment.setOnClickListener(commentMethod);
+        deleteIcon.setOnClickListener(deletePostMethod);
 
 
 
         return root;
+    }
+
+    private void checkIfCanDelete()
+    {
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        System.out.println("post id ===============" + postIdString );
+
+        DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+
+                    if(documentSnapshot.exists())
+                    {
+
+                        String databaseName = documentSnapshot.getString("username");
+
+                        System.out.println("names ===============" +usernameString );
+                        System.out.println("names ===============" +databaseName );
+                        System.out.println(databaseName + "============================= names ===============" +usernameString );
+                        if(usernameString.matches(databaseName))
+                        {
+                            deleteIcon.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }
+
+            }
+        });
     }
 
     private void checker()
@@ -97,6 +144,8 @@ public class ForumPost extends Fragment
             usernameString = (String) getArguments().getSerializable("name");
             descriptionString = (String) getArguments().getSerializable("desc");
             postIdString = (String) getArguments().getSerializable("id");
+
+
 
 
             topic.setText(topicString);
@@ -117,6 +166,27 @@ public class ForumPost extends Fragment
             bundle.putString("topic",topicString);
             bundle.putString("postId",postIdString);
             navController.navigate(R.id.action_nav_comment_to_commentsPost, bundle);
+        }
+    };
+
+    private final View.OnClickListener deletePostMethod = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+            DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
+            documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task)
+                {
+                    if(task.isSuccessful())
+                    {
+                        Toast.makeText(homePage,"Your Post Has Been Deleted", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         }
     };
 
@@ -146,8 +216,6 @@ public class ForumPost extends Fragment
                             return;
                         }
 
-
-
                         for(DocumentChange documentChange : value.getDocumentChanges())
                         {
                             if(documentChange.getType() == DocumentChange.Type.ADDED)
@@ -156,11 +224,7 @@ public class ForumPost extends Fragment
                                 commentList.add(commentModel);
                             }
                         }
-
                         adapterComment.notifyDataSetChanged();
-
-
-
                     }
                 });
     }
