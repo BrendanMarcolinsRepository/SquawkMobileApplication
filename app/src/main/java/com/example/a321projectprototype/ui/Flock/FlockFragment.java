@@ -35,6 +35,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -179,54 +180,40 @@ public class FlockFragment extends Fragment
         String userID = auth.getCurrentUser().getUid();
 
 
-        DocumentReference  documentReference = firebaseFirestore.collection("flocks").document();
-
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
+        firebaseFirestore.collection("flockMembers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
             {
-                if(task.isSuccessful())
+                if (task.isSuccessful())
                 {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
+                    List<String> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult())
                     {
-
                         if(userID.equals(document.get("userId").toString()))
                         {
-
-
-                            textViewFlockName.setText(document.get("name").toString());
                             createFlockButton.setVisibility(View.GONE);
                             createFlockButton.setOnClickListener(null);
                             myflock.setVisibility(View.VISIBLE);
                             flockImage.setVisibility(View.VISIBLE);
-
-
-
-
                             System.out.println("===========> in a flock");
-
-
+                        }
+                        else
+                        {
+                            myflock.setVisibility(View.GONE);
+                            flockImage.setVisibility(View.GONE);
+                            createFlockButton.setVisibility(View.VISIBLE);
+                            System.out.println("===========> not in a flock");
+                            System.out.println("no document");
                         }
                     }
-                    else
-                    {
-                        myflock.setVisibility(View.GONE);
-                        flockImage.setVisibility(View.GONE);
-                        createFlockButton.setVisibility(View.VISIBLE);
-                        System.out.println("===========> not in a flock");
-                        System.out.println("no document");
-                    }
+
                 }
                 else
                 {
-                    System.out.println("not successfull");
-
+                    System.out.println("no document");
                 }
             }
         });
-
     }
 
     private final View.OnClickListener createFlockFragement = new View.OnClickListener()

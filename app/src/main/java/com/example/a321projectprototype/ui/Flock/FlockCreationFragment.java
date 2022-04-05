@@ -49,8 +49,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class FlockCreationFragment extends Fragment
 {
-    private EditText name;
-    private TextView description;
+    private EditText name,description;
     private ImageView flockImage;
     private Button create,update;
     private int SELECT_PICTURE = 200;
@@ -223,8 +222,8 @@ public class FlockCreationFragment extends Fragment
 
 
             HashMap<String,Object> myMap1 = new HashMap<>();
-            myMap1.put("name",flockNameString);
-            myMap1.put("ownerUsername", ownerUsername);
+            myMap1.put("flockId",documentReference.getId());
+            myMap1.put("userId", auth.getUid());
             myMap1.put("created_at",dateString);
 
             documentReference1.collection("flockMembers").document()
@@ -270,25 +269,29 @@ public class FlockCreationFragment extends Fragment
                             return;
                         }
 
-                        for(DocumentChange documentChange : value.getDocumentChanges())
-                        {
-                            if(documentChange.getType() == DocumentChange.Type.ADDED)
-                            {
+                        for(DocumentChange documentChange : value.getDocumentChanges()) {
+                            if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
                                 String documentsId = documentChange.getDocument().get("userId").toString();
-                                if(documentsId.equals(userID) )
-                                {
+                                if (documentsId.equals(userID)) {
                                     create.setVisibility(View.GONE);
-                                   // create.setOnClickListener(null);
+                                    // create.setOnClickListener(null);
                                     update.setVisibility(View.VISIBLE);
+                                    System.out.println("worked 1 ==========================>>>");
 
-                                }
-                                else
-                                {
+                                } else {
                                     update.setVisibility(View.GONE);
-                                  //  update.setOnClickListener(null);
+                                    //  update.setOnClickListener(null);
                                     create.setVisibility(View.VISIBLE);
+                                    System.out.println("worked 2 ==========================>>>");
                                 }
+                            }
+                            else
+                            {
+                                create.setVisibility(View.GONE);
+                                // create.setOnClickListener(null);
+                                update.setVisibility(View.VISIBLE);
+                                System.out.println("worked 1 ==========================>>>");
                             }
                         }
                     }

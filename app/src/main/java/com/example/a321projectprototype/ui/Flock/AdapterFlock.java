@@ -141,9 +141,11 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
             @Override
             public void onClick(View v) {
-                if (count <= 200) {
+                if (dataSet.get(position).getMemberCount() <= 200)
+                {
                     popUp(position);
-                } else {
+                } else
+                {
                     Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
                 }
             }
