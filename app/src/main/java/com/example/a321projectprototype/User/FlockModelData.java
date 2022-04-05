@@ -5,25 +5,42 @@ import com.google.firebase.Timestamp;
 import java.util.Date;
 
 public class FlockModelData {
-    private int id;
+    private String flockId;
+    private String userId;
     private String name;
-    private int memberAmount;
+    private int memberCount;
     private String description;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    private String created_at;
+    private String updated_at;
 
     public FlockModelData() {
     }
 
-    public FlockModelData(Timestamp created_at, String description, int memberAmount, String name, Timestamp updated_at,int id) {
+    public FlockModelData(String flockId, String userId, String name, int memberCount, String description, String created_at, String updated_at) {
+        this.flockId = flockId;
+        this.userId = userId;
         this.name = name;
-        this.memberAmount = memberAmount;
+        this.memberCount = memberCount;
         this.description = description;
-        this.id = id;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
 
+    public String getFlockId() {
+        return flockId;
+    }
+
+    public void setFlockId(String flockId) {
+        this.flockId = flockId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;
@@ -31,6 +48,14 @@ public class FlockModelData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getMemberCount() {
+        return memberCount;
+    }
+
+    public void setMemberCount(int memberCount) {
+        this.memberCount = memberCount;
     }
 
     public String getDescription() {
@@ -41,35 +66,19 @@ public class FlockModelData {
         this.description = description;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getMemberAmount() {
-        return memberAmount;
-    }
-
-    public void setMemberAmount(int memberAmount) {
-        this.memberAmount = memberAmount;
-    }
-
-    public Timestamp getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Timestamp created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
-    public Timestamp getUpdated_at() {
+    public String getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Timestamp updated_at) {
+    public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
     }
 }

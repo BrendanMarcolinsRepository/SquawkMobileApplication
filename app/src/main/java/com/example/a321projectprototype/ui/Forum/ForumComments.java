@@ -50,7 +50,7 @@ public class ForumComments extends Fragment
 
 
         topicString = (String) getArguments().getSerializable("topic");
-        postId = (String) getArguments().getSerializable("id");
+        postId = (String) getArguments().getSerializable("postId");
         topic.setText(topicString);
 
 

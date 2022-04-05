@@ -5,18 +5,20 @@ import java.io.Serializable;
 public class CommentModel implements Serializable
 
 {
+    private String comment_id;
     private String created_at;
     private String content;
-    private String postId;
+    private String post_id;
     private String userId;
     private String username;
     private String updated_at;
 
 
-    public CommentModel(String created_at, String content, String postId, String userId, String username, String updated_at) {
+    public CommentModel(String comment_id, String created_at, String content, String post_id, String userId, String username, String updated_at) {
+        this.comment_id = comment_id;
         this.created_at = created_at;
         this.content = content;
-        this.postId = postId;
+        this.post_id = post_id;
         this.userId = userId;
         this.username = username;
         this.updated_at = updated_at;
@@ -43,12 +45,12 @@ public class CommentModel implements Serializable
         this.content = content;
     }
 
-    public String getPostId() {
-        return postId;
+    public String getpost_id() {
+        return post_id;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setpost_id(String post_id) {
+        this.post_id = post_id;
     }
 
     public String getUserId() {
@@ -73,5 +75,13 @@ public class CommentModel implements Serializable
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(String comment_id) {
+        this.comment_id = comment_id;
     }
 }

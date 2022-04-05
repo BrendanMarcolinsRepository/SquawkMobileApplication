@@ -73,10 +73,10 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
                     picked = getLayoutPosition();
                     System.out.println("worked");
                     Bundle bundle = new Bundle();
-                    bundle.putString("topic",currentItem.getTitle());
-                    bundle.putString("name",currentItem.getUsername());
-                    bundle.putString("desc",currentItem.getDescription());
-                    bundle.putString("id",currentItem.getPostId());
+                    bundle.putString("topic",dataSet.get(getLayoutPosition()).getTitle());
+                    bundle.putString("name",dataSet.get(getLayoutPosition()).getUsername());
+                    bundle.putString("desc",dataSet.get(getLayoutPosition()).getDescription());
+                    bundle.putString("id",dataSet.get(getLayoutPosition()).getPostId());
                     navigation.navigate(R.id.action_nav_forum_to_comment,bundle);
                 }
             });
@@ -111,6 +111,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, int position)
     {
         currentItem = dataSet.get(position);
+
         holder.topic.setText("Topic: " + currentItem.getTitle());
         holder.username.setText("Cherper: " + currentItem.getUsername());
         holder.description.setText(currentItem.getDescription());

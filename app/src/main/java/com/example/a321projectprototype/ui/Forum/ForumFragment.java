@@ -200,7 +200,7 @@ public class ForumFragment extends Fragment
 
 
 
-        firebaseFirestore.collection("posts").orderBy("created_at", Query.Direction.ASCENDING)
+        firebaseFirestore.collection("posts").orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override

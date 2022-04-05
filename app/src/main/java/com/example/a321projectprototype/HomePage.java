@@ -15,6 +15,8 @@ import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.home.HomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -195,30 +198,37 @@ public class HomePage extends AppCompatActivity implements Serializable
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                if(task.isSuccessful())
-                {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists())
+                task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot)
                     {
-                        userModel = new UserModel(document.getString("fullname"),document.getString("username"),
-                                document.getString("password"),document.getString("email"));
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists())
+                        {
+                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),
+                                    document.getString("password"),document.getString("email"));
 
-                        headName.setText(userModel.getUsername());
-                        headEmail.setText(userModel.getEmail());
+                            headName.setText(userModel.getUsername());
+                            headEmail.setText(userModel.getEmail());
+
+                        }
+                        else
+                        {
+                            System.out.println("no document");
+                        }
 
                     }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-                else
-                {
-                    System.out.println("not successfull");
+                });
 
-                }
+                task.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Failed Here ===================> " + e);
+                    }
+                });
             }
         });
+
 
     }
 
@@ -267,7 +277,6 @@ public class HomePage extends AppCompatActivity implements Serializable
         item8.setEnabled(true);
 
     }
-
 
 }
 

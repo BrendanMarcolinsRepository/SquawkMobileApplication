@@ -8,6 +8,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -48,7 +49,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -110,6 +110,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         progressBar = root.findViewById(R.id.recordProgressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
+
         recordImage.setOnClickListener(record);
 
         recordViewModel = new ViewModelProvider(this).get(RecordViewModel.class);
@@ -169,6 +170,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
            }
         }
     };
+
 
 
 
@@ -284,6 +286,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         recordImage.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
+
         recordingInformationTexview.setText("Identifing Your Chirps....");
 
          CountDownTimer countDownTimer = new CountDownTimer(6000,5) {
@@ -320,6 +323,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             }
 
          }.start();
+
 
 
 

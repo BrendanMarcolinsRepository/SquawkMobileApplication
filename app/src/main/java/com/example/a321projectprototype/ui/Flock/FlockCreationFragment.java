@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,13 +49,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class FlockCreationFragment extends Fragment
 {
-    private EditText name, description;
+    private EditText name;
+    private TextView description;
     private ImageView flockImage;
-    private Switch privateFlockSwitch;
-    private Button create, photoButton,update;
+    private Button create,update;
     private int SELECT_PICTURE = 200;
     private String flockNameString,flockDescriptionString;
-    private boolean privateFlock = true;
     private HomePage homePage;
     private NavController navController;
     private ArrayList<FlockModelData> flockModelDataArrayList;
@@ -82,11 +82,9 @@ public class FlockCreationFragment extends Fragment
 
 
         name = root.findViewById(R.id.flock_name_editText);
-        description = root.findViewById(R.id.flock_description_editText);
+        description = root.findViewById(R.id.flock_description_TextView);
         flockImage = root.findViewById(R.id.flock_create_image);
         create = root.findViewById(R.id.flock_Create_Button);
-        photoButton = root.findViewById(R.id.flockCreateButton);
-        privateFlockSwitch = root.findViewById(R.id.flock_create_private_switch);
         update = root.findViewById(R.id.flock_update_Button);
 
         auth = FirebaseAuth.getInstance();
@@ -95,7 +93,7 @@ public class FlockCreationFragment extends Fragment
 
         checkFlockName();
 
-        photoButton.setOnClickListener(selectPhotoMethod);
+        flockImage.setOnClickListener(selectPhotoMethod);
         create.setOnClickListener(createFlockMethod);
         update.setOnClickListener(updateFlockMethod);
 
@@ -161,6 +159,7 @@ public class FlockCreationFragment extends Fragment
         public void onClick(View v)
         {
             confirmNewFlock(v);
+            System.out.println("worked ==================================== 1");
 
         }
     };
@@ -180,7 +179,7 @@ public class FlockCreationFragment extends Fragment
         else
         {
             ownerUsername = homePage.getName();
-            privateFlock = privateFlockSwitch.getSplitTrack();
+            
 
 
             String userID = auth.getCurrentUser().getUid();
@@ -191,18 +190,22 @@ public class FlockCreationFragment extends Fragment
             DocumentReference documentReference = firebaseFirestore.collection("flocks").document();
 
             HashMap<String,Object> myMap = new HashMap<>();
+            myMap.put("userId",userID);
+            myMap.put("flockId",documentReference.getId());
             myMap.put("name",flockNameString);
-            myMap.put("memberCount",  1);
+            myMap.put("memberCount",1);
             myMap.put("description",flockDescriptionString);
-            myMap.put("userID", userID);
-            myMap.put("created_at", dateString);
-            myMap.put("updated_at", dateString);
+            myMap.put("created_at",dateString);
+            myMap.put("updated_at",dateString);
+
+            System.out.println("worked ==================================== 2");
 
             documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
             {
                 @Override
                 public void onSuccess(Void aVoid)
                 {
+                    System.out.println("worked ==================================== 3");
 
 
                 }
@@ -216,12 +219,13 @@ public class FlockCreationFragment extends Fragment
             });
 
 
-            DocumentReference documentReference1 = firebaseFirestore.collection("flockMember").document();
+            DocumentReference documentReference1 = firebaseFirestore.collection("flockMembers").document();
 
 
             HashMap<String,Object> myMap1 = new HashMap<>();
             myMap1.put("name",flockNameString);
             myMap1.put("ownerUsername", ownerUsername);
+            myMap1.put("created_at",dateString);
 
             documentReference1.collection("flockMembers").document()
                     .set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
@@ -258,7 +262,8 @@ public class FlockCreationFragment extends Fragment
                     @Override
 
 
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+                    {
                         if(error != null)
                         {
                             System.out.println("Error ==========?>" +  error);
@@ -269,25 +274,20 @@ public class FlockCreationFragment extends Fragment
                         {
                             if(documentChange.getType() == DocumentChange.Type.ADDED)
                             {
-                                FlockMembers f = documentChange.getDocument().toObject(FlockMembers.class);
 
-                                if(f.getUsers().equals(userID) )
+                                String documentsId = documentChange.getDocument().get("userId").toString();
+                                if(documentsId.equals(userID) )
                                 {
-                                    if(!f.getFlockName().matches(flockNameString))
-                                    {
+                                    create.setVisibility(View.GONE);
+                                   // create.setOnClickListener(null);
+                                    update.setVisibility(View.VISIBLE);
 
-                                        create.setVisibility(View.GONE);
-                                        create.setOnClickListener(null);
-                                        update.setVisibility(View.VISIBLE);
-
-                                    }
-                                    else
-                                    {
-                                        update.setVisibility(View.GONE);
-                                        update.setOnClickListener(null);
-                                        create.setVisibility(View.VISIBLE);
-                                    }
-
+                                }
+                                else
+                                {
+                                    update.setVisibility(View.GONE);
+                                  //  update.setOnClickListener(null);
+                                    create.setVisibility(View.VISIBLE);
                                 }
                             }
                         }

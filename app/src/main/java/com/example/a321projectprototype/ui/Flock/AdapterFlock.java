@@ -42,7 +42,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     private HomePage homePage;
     private NavController navigation;
-    private Button joinButton, infoButton;
+
     private int picked;
     private Context context;
     private FlockModelData flockModelData;
@@ -50,7 +50,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     private UserModel userModel;
     private String name, countNumber;
-    private int count;
+    private int count,position;
     private UserDatabase userDatabase;
     private ConstraintLayout registerLayout;
     private View view;
@@ -59,6 +59,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
+        private Button joinButton, infoButton;
         TextView groupName, groupCountNumber;
 
 
@@ -99,29 +100,12 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 }
             });
 
-            joinButton.setOnClickListener(joinMethod);
+
 
 
         }
 
-        View.OnClickListener joinMethod  = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
 
-                if(count <= 200)
-                {
-                    popUp();
-                }
-                else
-                {
-                    Toast.makeText(context, "You Have Already Joined A Group",Toast.LENGTH_LONG).show();
-                }
-
-
-            }
-        };
     }
 
     AdapterFlock(List<FlockModelData> listItem, HomePage homePage, Context context, View view)
@@ -147,16 +131,24 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
 
     @Override
-    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, int position) {
         currentItem = dataSet.get(position);
         holder.groupName.setText(currentItem.getName());
         name = currentItem.getName();
-        holder.groupCountNumber.setText(currentItem.getMemberAmount() + "/200");
+        holder.groupCountNumber.setText(currentItem.getMemberCount() + "/200");
 
+        holder.joinButton.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                if (count <= 200) {
+                    popUp(position);
+                } else {
+                    Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
-
 
 
     public Filter getFilter() {
@@ -195,7 +187,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     };
 
-    public void popUp()
+
+    public void popUp(int position)
     {
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -217,11 +210,14 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 firebaseFirestore = FirebaseFirestore.getInstance();
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
+                FlockModelData flockModelData = dataSet.get(position);
 
                 String userID = auth.getCurrentUser().getUid();
 
+                System.out.println("Postion clicked is: ======================>?" + dataSet.get(position).getFlockId());
 
-                DocumentReference documentReference = firebaseFirestore.collection("Flock").document();
+
+                DocumentReference documentReference = firebaseFirestore.collection("flocks").document(flockModelData.getFlockId());
                 DocumentReference documentReference1 = firebaseFirestore.collection("flockMembers").document();
 
                 documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
@@ -240,18 +236,18 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                                 String dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
 
 
+                                HashMap<String,Object> userMap = new HashMap<>();
+                                userMap.put("created_at",dateString);
+                                userMap.put("flockId",document.get("userId"));
+                                userMap.put("userId",userID);
 
 
-
-                                documentReference1.set("flockMembers").addOnSuccessListener(new OnSuccessListener<Void>()
+                                documentReference1.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
                                 {
                                     @Override
                                     public void onSuccess(Void aVoid)
                                     {
-                                        HashMap<String,Object> userMap = new HashMap<>();
-                                        userMap.put("created_at",dateString);
-                                        userMap.put("flockId",document.get("userId"));
-                                        userMap.put("userId",userID);
+
 
 
                                         System.out.println("worked");
@@ -276,9 +272,19 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 });
 
 
-                String memberCount = Integer.toString(amount + 1);
+                Date date = new Date();
+                String dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
+
+
                 HashMap<String,Object> myMap = new HashMap<>();
-                myMap.put("groupNumber",memberCount);
+                myMap.put("userId",flockModelData.getUserId());
+                myMap.put("flockId",flockModelData.getFlockId());
+                myMap.put("name",flockModelData.getName());
+                myMap.put("memberCount",flockModelData.getMemberCount()+1);
+                myMap.put("description",flockModelData.getDescription());
+                myMap.put("created_at",flockModelData.getCreated_at());
+                myMap.put("updated_at",dateString);
+
 
 
                 documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()

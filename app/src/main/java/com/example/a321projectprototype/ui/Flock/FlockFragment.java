@@ -159,7 +159,7 @@ public class FlockFragment extends Fragment
                             {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
-
+                                System.out.println("Postion clicked is: ======================>?" + flockList.get(0).getFlockId());
                             }
 
                             adapterFlock.notifyDataSetChanged();

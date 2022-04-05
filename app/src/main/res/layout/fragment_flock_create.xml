@@ -8,147 +8,87 @@
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/create_flock_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="80dp"
-        android:text="Flock Name"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/flock_name_editText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/flock_name_editText"
         android:layout_width="232dp"
         android:layout_height="45dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="160dp"
         android:background="@drawable/et_style"
         android:backgroundTint="@color/white"
         android:elevation="10dp"
         android:ems="10"
-        android:hint="Enter Text Here"
+        android:hint="Flock Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/flock_description_editText"
-        android:layout_width="250dp"
-        android:layout_height="232dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="28dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewEditTextFlockCreation"
+        android:layout_width="376dp"
+        android:layout_height="326dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/et_style"
         android:backgroundTint="@color/white"
         android:elevation="10dp"
         android:ems="10"
         android:gravity="top"
-        android:hint="Enter Description"
-        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_create_image" />
-
-    <TextView
-        android:id="@+id/flock_create_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="80dp"
-        android:text="Flock Picture"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/flock_create_image"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_flock_name" />
+        app:layout_constraintTop_toBottomOf="@+id/flock_name_editText">
 
-    <TextView
-        android:id="@+id/flock_create_description"
-        android:layout_width="122dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="100dp"
-        android:text="Flock Description"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/flock_description_editText"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_create_picture" />
+
+        <TextView
+            android:id="@+id/flock_description_TextView"
+            android:layout_width="347dp"
+            android:layout_height="285dp"
+            android:hint="Enter Description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/flock_create_image"
         android:layout_width="96dp"
         android:layout_height="79dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
         android:src="@drawable/ic_account_profile_picture"
-        app:layout_constraintEnd_toStartOf="@+id/flockCreateButton"
-        app:layout_constraintTop_toBottomOf="@+id/flock_name_editText"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/flock_create_private_flock"
-        android:layout_width="122dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="120dp"
-        android:text="Private Flock:"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/flock_create_private_switch"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_description_editText"
-        app:layout_constraintVertical_bias="0.888" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/flockCreateButton"
-        android:layout_width="126dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/green"
-        android:text="Choose Picture"
-        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_name_editText" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/flock_name_editText"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flock_Create_Button"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/green"
         android:text="Create Flock"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_create_private_flock" />
+        app:layout_constraintTop_toBottomOf="@+id/viewEditTextFlockCreation" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flock_update_Button"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/green"
         android:text="Update Flock"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_create_private_flock" />
+        app:layout_constraintTop_toBottomOf="@+id/viewEditTextFlockCreation" />
 
-    <Switch
-        android:id="@+id/flock_create_private_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.378"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_description_editText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
