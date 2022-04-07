@@ -14,6 +14,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -54,8 +55,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.ui.AppBarConfiguration;
 
+import com.example.a321projectprototype.Database.RecordingPathFileDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.Files;
 import com.example.a321projectprototype.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -241,7 +244,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private String getRecordingFilePath()
     {
         date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
         dateString = ft.format(date);
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
@@ -310,7 +313,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
                 if(randomInteger == 0)
                 {
-                    storeRecordingFilePath();
+                    noSqlRecordingPath();
                     enableMenuItems();
                     navController.navigate(R.id.action_nav_record_data);
                 }
@@ -352,6 +355,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         enableMenuItems();
     }
 
+
+    private void noSqlRecordingPath()
+    {
+        RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
+        Files files = new Files(dateString,desciption,fileName,filePath);
+
+        recordingPathFileDatabase.addFile(files);
+
+
+    }
 
     private void storeRecordingFilePath()
     {

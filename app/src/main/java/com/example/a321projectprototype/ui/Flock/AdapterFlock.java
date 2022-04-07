@@ -95,7 +95,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                     picked = getLayoutPosition();
                     System.out.println("worked");
                     Bundle bundle = new Bundle();
-                    bundle.putInt("Position",picked );
+                    bundle.putSerializable("flock",dataSet.get(position));
                     navigation.navigate(R.id.info_fragment_nav,bundle);
                 }
             });
@@ -143,10 +143,21 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             public void onClick(View v) {
                 if (dataSet.get(position).getMemberCount() <= 200)
                 {
-                    popUp(position);
-                } else
+                    flockModelData = homePage.getFlockModelData();
+
+                    if(flockModelData == null)
+                    {
+                        popUp(position);
+                    }
+                    else
+                    {
+                        Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                else
                 {
-                    Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Flock Is Too Full", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -209,6 +220,10 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             @Override
             public void onClick(View v)
             {
+
+
+
+
                 firebaseFirestore = FirebaseFirestore.getInstance();
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -240,7 +255,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
                                 HashMap<String,Object> userMap = new HashMap<>();
                                 userMap.put("created_at",dateString);
-                                userMap.put("flockId",document.get("userId"));
+                                userMap.put("flockId",document.get("flockId"));
                                 userMap.put("userId",userID);
 
 

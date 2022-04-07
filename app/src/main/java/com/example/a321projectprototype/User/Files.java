@@ -20,6 +20,13 @@ public class Files
         this.uploadedBy = uploadedBy;
     }
 
+    public Files(String created_at, String description, String filename, String path) {
+        this.created_at = created_at;
+        this.description = description;
+        this.filename = filename;
+        this.path = path;
+    }
+
     public Files() {}
 
     public String getCreated_at() {

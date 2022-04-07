@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a321projectprototype.LoginPackage.Prototype;
+import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
 import com.example.a321projectprototype.ui.home.HomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,6 +48,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class HomePage extends AppCompatActivity implements Serializable
 {
@@ -63,6 +65,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private Toolbar toolbar;
+    private FlockModelData flockModelData;
 
 
 
@@ -74,7 +77,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         setContentView(R.layout.activity_home_page);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         checkUserSession();
 
 
@@ -278,5 +281,13 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
+    public void setFlockModelData(FlockModelData flockModelData)
+    {
+        this.flockModelData = flockModelData;
+    }
+
+    public FlockModelData getFlockModelData() {
+        return flockModelData;
+    }
 }
 

@@ -13,50 +13,30 @@
         android:id="@+id/text_flocks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:text="Currently Not in A Flock"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
-
-
-    <ImageView
-        android:id="@+id/flockImage"
-        android:layout_width="77dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_account_profile_picture"
-        app:layout_constraintEnd_toStartOf="@+id/text_flocks"
-        app:layout_constraintHorizontal_bias="0.214"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewFlock1" />
-
-    <View
-        android:id="@+id/viewFlock1"
-        android:layout_width="375dp"
-        android:layout_height="5dp"
-        android:layout_marginTop="76dp"
-        android:background="@drawable/green"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/viewFlock2"
-        android:layout_width="375dp"
-        android:layout_height="5dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/green"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageView
+        android:id="@+id/flockImage"
+        android:layout_width="125dp"
+        android:layout_height="83dp"
+        android:layout_marginTop="68dp"
+        android:src="@drawable/ic_account_profile_picture"
+        app:layout_constraintEnd_toStartOf="@+id/text_flocks"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flockCreateButton"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="167dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="28dp"
         android:background="@drawable/green"
         android:text="Make a Flock"
         android:textColor="@color/white"
@@ -65,22 +45,24 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flockMyFlock"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="167dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/green"
         android:text="My Flock"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/flockLeaderBoards"
+        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_flocks" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flockLeaderBoards"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="52dp"
+        android:layout_width="167dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/green"
         android:text="LeaderBoards"
         android:textColor="@color/white"
@@ -91,7 +73,7 @@
         android:id="@+id/flock_search_bar"
         android:layout_width="300dp"
         android:layout_height="40dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="56dp"
         android:background="@drawable/white_search"
         android:layoutDirection="rtl"
@@ -103,7 +85,7 @@
         android:id="@+id/viewFlock3"
         android:layout_width="375dp"
         android:layout_height="5dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,11 +93,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleFlock"
-        android:layout_width="390dp"
-        android:layout_height="416dp"
+        android:layout_width="385dp"
+        android:layout_height="393dp"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewFlock3" />
 

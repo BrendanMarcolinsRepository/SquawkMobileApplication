@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.Files;
 import com.chibde.visualizer.LineBarVisualizer;
 
@@ -55,11 +56,6 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     public PastRecordingsCardviewAdpator.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pastrecordings_cardview,parent,false);
-
-
-
-
-
         return new PastRecordingsCardviewAdpator.MyViewHolder(view);
     }
 
@@ -80,8 +76,8 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             holder.name.setText(fileName);
 
 
-            String timeSub = time.substring(11,19);
-            holder.time.setText(timeSub);
+
+            holder.time.setText(time);
         }
 
 
@@ -186,11 +182,4 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
         };
     }
-
-
-
-
-
-
-
 }

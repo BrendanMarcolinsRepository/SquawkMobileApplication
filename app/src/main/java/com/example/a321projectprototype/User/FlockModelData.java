@@ -2,9 +2,10 @@ package com.example.a321projectprototype.User;
 
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FlockModelData {
+public class FlockModelData implements Serializable {
     private String flockId;
     private String userId;
     private String name;

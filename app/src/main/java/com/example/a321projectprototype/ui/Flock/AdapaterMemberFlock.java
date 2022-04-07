@@ -19,6 +19,7 @@ import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
+import com.example.a321projectprototype.User.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,8 @@ import java.util.List;
 
 public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder>
 {
-    protected List<FlockMembersModel> FullList;
-    protected List<FlockMembersModel> dataSet;
+    protected List<UserModel> FullList;
+    protected List<UserModel> dataSet;
 
 
     private int picked;
@@ -42,8 +43,8 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
         {
             super(itemView);
 
-            memberName = itemView.findViewById(R.id.memberFockName);
-            score = itemView.findViewById(R.id.memberFockScore);
+            memberName = itemView.findViewById(R.id.textUsernameTable);
+            //score = itemView.findViewById(R.id.memberFockScore);
 
             memberName.setOnClickListener(memberSettings);
         }
@@ -58,7 +59,7 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
         };
     }
 
-    AdapaterMemberFlock(List<FlockMembersModel> listItem, Context context)
+    AdapaterMemberFlock(List<UserModel> listItem, Context context)
     {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
@@ -81,9 +82,9 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder holder, int position)
     {
-        FlockMembersModel memberFlock = dataSet.get(position);
-        holder.memberName.setText(memberFlock.getUsername());
-        holder.score.setText(Integer.toString(memberFlock.getScore()));
+        UserModel userModel = dataSet.get(position);
+        holder.memberName.setText(userModel.getUsername());
+
 
 
     }

@@ -1,32 +1,42 @@
 package com.example.a321projectprototype.User;
 
-public class FlockMembers
-{
-    private String users;
-    private String flockName;
+public class FlockMembers {
+    private String usersId;
+    private String flockNameId;
+    private String created_at;
 
 
     public FlockMembers() {
     }
 
-    public FlockMembers(String users, String flockName) {
-        this.users = users;
-        this.flockName = flockName;
+    public FlockMembers(String usersId, String flockNameId, String created_at) {
+
+        this.usersId = usersId;
+        this.flockNameId = flockNameId;
+        this.created_at = created_at;
     }
 
-    public String getUsers() {
-        return users;
+    public String getUsersId() {
+        return usersId;
     }
 
-    public void setUsers(String users) {
-        this.users = users;
+    public void setUsersId(String usersId) {
+        this.usersId = usersId;
     }
 
-    public String getFlockName() {
-        return flockName;
+    public String getFlockNameId() {
+        return flockNameId;
     }
 
-    public void setFlockName(String flockName) {
-        this.flockName = flockName;
+    public void setFlockNameId(String flockNameId) {
+        this.flockNameId = flockNameId;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 }

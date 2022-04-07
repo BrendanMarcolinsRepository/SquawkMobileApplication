@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,40 +47,53 @@ public class FlockInfoFragment extends Fragment
     private String name;
     private HomePage homePage;
     private NavController navController;
+    private List<String> userIds;
+    private List<UserModel> userModelList;
+    private FirebaseFirestore firebaseFirestore;
+    private FlockModelData flockModelData;
+    private ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
 
         View root = inflater.inflate(R.layout.fragement_flock_info, container, false);
-        //System.out.println("Flock Number: " + getArguments().getInt("Position"));
+
+        flockModelData = (FlockModelData) getArguments().getSerializable("flock");
+
+
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
 
 
+        groupName = root.findViewById(R.id.flockInfoGroupName);
+        groupName.setText(flockModelData.getName());
+
         recyclerView = root.findViewById(R.id.recycleFlockInfo);
         join = root.findViewById(R.id.flock_info_join);
-        groupName = root.findViewById(R.id.flock_groupname_info_textview);
         groupScore = root.findViewById(R.id.flock_info_score);
         settings = root.findViewById(R.id.flockInfoSettings);
         invite = root.findViewById(R.id.flock_info_invite);
+        progressBar = root.findViewById(R.id.flockMemebersListProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
 
         checkFlockName();
 
 
-        flockMembersModelList = new ArrayList<>();
+
         loadData();
 
-        setRecycleVeiw(flockMembersModelList);
+
 
         join.setOnClickListener(joinInfoButtonMethod);
         settings.setOnClickListener(settingsInfoMethod);
         invite.setOnClickListener(inviteInfoMethod);
 
-        groupName.setText(name);
-        currentTotalScore = getFlocksCurrentScore();
-        groupScore.setText("Current Flocks Points: " + Integer.toString(currentTotalScore));
+
+
+       // groupScore.setText("Current Flocks Points: " + Integer.toString(currentTotalScore));
 
 
 
@@ -82,40 +103,120 @@ public class FlockInfoFragment extends Fragment
 
     public void loadData()
     {
-        FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Neil", 150);
-        FlockMembersModel flockMembersModel2 = new FlockMembersModel("Sydney Flockers", "Kim", 200);
-        FlockMembersModel flockMembersModel3 = new FlockMembersModel("Sydney Flockers", "Ray", 230);
-        FlockMembersModel flockMembersModel4 = new FlockMembersModel("Sydney Flockers", "Lachlan", 300);
-        FlockMembersModel flockMembersModel5 = new FlockMembersModel("Sydney Flockers", "Shelby", 130);
+        userIds = new ArrayList<>();
+        userModelList = new ArrayList<>();
+        //assert getArguments() != null;
 
-        name = flockMembersModel1.getGroupName();
-        flockMembersModelList.add(flockMembersModel1);
-        flockMembersModelList.add(flockMembersModel2);
-        flockMembersModelList.add(flockMembersModel3);
-        flockMembersModelList.add(flockMembersModel4);
-        flockMembersModelList.add(flockMembersModel5);
+
+        System.out.println("=========== Flock :" + flockModelData.getName());
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("flockMembers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task)
+            {
+                if (task.isSuccessful())
+                {
+                    List<String> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult())
+                    {
+                        if(flockModelData.getFlockId().equals(document.get("flockId").toString()))
+                        {
+
+                            System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
+                            userIds.add(document.get("userId").toString());
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    loadOtherData();
+
+                }
+                else
+                {
+                    System.out.println("no document");
+                }
+            }
+
+        });
+
+
+
+
+
+
+
+
     }
 
-    private int getFlocksCurrentScore()
+    private void loadOtherData()
     {
-        int score = 0;
-
-        for(FlockMembersModel f : flockMembersModelList)
+        if(userIds != null)
         {
-            score = score + f.getScore();
-        }
+            System.out.println("User Here ==========================> worked 1");
+            firebaseFirestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                {
+                    if (task.isSuccessful()) {
 
-        return score;
+                        System.out.println("User Here ==========================> worked 2" + userIds.get(0));
+                        for (String s : userIds)
+                        {
+                            System.out.println("User Here ==========================> " + s);
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
+                                //System.out.println("User Here ==========================> " + document.get("userId").toString());
+
+                                if(s.equals(document.get("userId").toString()))
+                                {
+
+                                    UserModel userModel = new UserModel();
+                                    userModel.setUsername(document.get("username").toString());
+                                    System.out.println("User Here ==========================> " + userModel.getUsername());
+                                    userModelList.add(userModel);
+
+                                }
+                                else
+                                {
+
+                                }
+
+                            }
+                        }
+
+                        setRecycleVeiw(userModelList);
+
+
+                    }
+                    else
+                    {
+                        System.out.println("no document");
+                    }
+                }
+
+            });
+
+            progressBar.setVisibility(View.INVISIBLE);
+
+        }
     }
 
-    private void setRecycleVeiw(List<FlockMembersModel> members)
+
+
+    private void setRecycleVeiw(List<UserModel> userModel)
     {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapaterMemberFlock = new  AdapaterMemberFlock(members,getContext());
+        adapaterMemberFlock = new  AdapaterMemberFlock(userModel,getContext());
         recyclerView.setAdapter(adapaterMemberFlock);
     }
 
@@ -169,12 +270,12 @@ public class FlockInfoFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
-                flockMembersModelList.add(flockMembersModel1);
+               // FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
+                //flockMembersModelList.add(flockMembersModel1);
 
                 adapaterMemberFlock.notifyDataSetChanged();
-                currentTotalScore = getFlocksCurrentScore();
-                groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
+
+                //groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
 
                 alertDialog.dismiss();
             }
@@ -212,12 +313,12 @@ public class FlockInfoFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
-                flockMembersModelList.add(flockMembersModel1);
+               // FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
+                //flockMembersModelList.add(flockMembersModel1);
 
                 adapaterMemberFlock.notifyDataSetChanged();
-                currentTotalScore = getFlocksCurrentScore();
-                groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
+
+               // groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
 
                 alertDialog.dismiss();
             }
@@ -237,9 +338,9 @@ public class FlockInfoFragment extends Fragment
 
     private void checkFlockName()
     {
-        UserModel userModel = homePage.getUserModel();
+        FlockModelData flockModelData = homePage.getFlockModelData();
 
-        if(userModel.getUserFlock() != null)
+        if(flockModelData != null)
         {
             settings.setVisibility(View.VISIBLE);
             invite.setVisibility(View.VISIBLE);

@@ -1,6 +1,7 @@
 package com.example.a321projectprototype.ui.Flock;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +39,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FlockFragment extends Fragment
 {
+    private FlockModelData flockModelData;
     private FlockViewModel flockViewModel;
     private SearchView flockSearchView;
     private RecyclerView recyclerView;
@@ -59,7 +64,6 @@ public class FlockFragment extends Fragment
     private String s = "No Change", filterOrder = "o";
     private HomePage homePage;
     private NavController navController;
-
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
@@ -75,6 +79,8 @@ public class FlockFragment extends Fragment
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
 
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         textViewFlockName = root.findViewById(R.id.text_flocks);
         flockSearchView = root.findViewById(R.id.flock_search_bar);
@@ -174,8 +180,7 @@ public class FlockFragment extends Fragment
     private void checkFlockName()
     {
 
-        auth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+
 
         String userID = auth.getCurrentUser().getUid();
 
@@ -196,17 +201,12 @@ public class FlockFragment extends Fragment
                             myflock.setVisibility(View.VISIBLE);
                             flockImage.setVisibility(View.VISIBLE);
                             System.out.println("===========> in a flock");
-                        }
-                        else
-                        {
-                            myflock.setVisibility(View.GONE);
-                            flockImage.setVisibility(View.GONE);
-                            createFlockButton.setVisibility(View.VISIBLE);
-                            System.out.println("===========> not in a flock");
-                            System.out.println("no document");
-                        }
-                    }
 
+                            getFlockName(document.getString("flockId").toString());
+                            return;
+                        }
+
+                    }
                 }
                 else
                 {
@@ -214,15 +214,55 @@ public class FlockFragment extends Fragment
                 }
             }
         });
+
+        if(flockModelData == null)
+        {
+            myflock.setVisibility(View.GONE);
+            flockImage.setVisibility(View.GONE);
+            createFlockButton.setVisibility(View.VISIBLE);
+            System.out.println("===========> not in a flock");
+            System.out.println("no document");
+        }
     }
 
+    private void getFlockName(String flockId)
+    {
+        firebaseFirestore.collection("flocks").document(flockId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    Map<String,Object> myMap1 = new HashMap<>();
+                    myMap1 = documentSnapshot.getData();
+
+                    flockModelData = new FlockModelData();
+
+                    //flockModelData.setUserId(myMap1.get("userId").toString());
+                    flockModelData.setFlockId(myMap1.get("flockId").toString());
+                    flockModelData.setName(myMap1.get("name").toString());
+                    flockModelData.setMemberCount(Integer.parseInt(myMap1.get(("memberCount")).toString()));
+                    flockModelData.setDescription(myMap1.get("description").toString());
+                    flockModelData.setCreated_at(myMap1.get("created_at").toString());
+                    flockModelData.setUserId(myMap1.get("updated_at").toString());
+
+                    homePage.setFlockModelData(flockModelData);
+
+                    textViewFlockName.setText(flockModelData.getName());
+
+                }
+            }
+        });
+
+
+
+    }
     private final View.OnClickListener createFlockFragement = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
             navController.navigate(R.id.nav_Flock_Create);
-
         }
     };
 
@@ -241,7 +281,9 @@ public class FlockFragment extends Fragment
         @Override
         public void onClick(View v)
         {
-            navController.navigate(R.id.nav_Flock_Info);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("flock", flockModelData);
+            navController.navigate(R.id.nav_Flock_Info,bundle);
 
         }
     };

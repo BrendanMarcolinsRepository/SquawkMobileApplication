@@ -23,23 +23,24 @@
         android:id="@+id/flock_group_info_picture"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_account_profile_picture"
-        app:layout_constraintEnd_toStartOf="@+id/flock_groupname_info_textview"
+        app:layout_constraintEnd_toStartOf="@+id/flockInfoGroupName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
     <TextView
-        android:id="@+id/flock_groupname_info_textview"
+        android:id="@+id/flockInfoGroupName"
         android:layout_width="150dp"
         android:layout_height="31dp"
         android:layout_marginTop="44dp"
-        android:layout_marginEnd="108dp"
         android:gravity="center"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -47,83 +48,46 @@
         android:layout_width="98dp"
         android:layout_height="30dp"
         android:layout_marginTop="44dp"
+        android:layout_marginEnd="28dp"
         android:background="@drawable/green"
         android:text="Settings"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toEndOf="@+id/flock_groupname_info_textview"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/flockInfoGroupName"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
     <View
         android:id="@+id/viewInfoFlock2"
         android:layout_width="375dp"
         android:layout_height="5dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_groupname_info_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/flockInfoGroupName" />
 
     <TextView
         android:id="@+id/flock_groupmember_info_textview"
         android:layout_width="150dp"
         android:layout_height="31dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="128dp"
         android:gravity="center"
         android:text="Members:"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock2" />
 
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="314dp"
-        android:layout_margin="8dp"
-        android:stretchColumns="1,2,3"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleFlockInfo"
+        android:layout_width="355dp"
+        android:layout_height="312dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flock_groupmember_info_textview">
-
-        <TableRow>
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_column="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Members Name" />
-
-            <TextView
-
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_column="1"
-                android:background="@drawable/vertical_line"
-                android:gravity="center" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_column="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Points" />
-        </TableRow>
-
-        <View
-            android:layout_width="375dp"
-            android:layout_height="5dp"
-            android:background="@color/black" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleFlockInfo"
-            android:layout_width="342dp"
-            android:layout_height="269dp"
-            android:layout_marginTop="16dp" />
-    </TableLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flock_groupmember_info_textview" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flock_info_join"
@@ -136,7 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flock_info_invite"
@@ -149,7 +113,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
 
     <TextView
         android:id="@+id/flock_info_score"
@@ -160,6 +124,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.961"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
+
+    <ProgressBar
+        android:id="@+id/flockMemebersListProgressBar"
+        android:layout_width="103dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="384dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

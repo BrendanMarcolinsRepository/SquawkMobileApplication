@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.a321projectprototype.Database.RecordingPathFileDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.Files;
@@ -38,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -133,7 +135,25 @@ public class PastRecordingsFragment extends Fragment {
     {
 
 
+        if(filesList.size() > 0)
+            filesList.clear();
 
+        RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
+        String stringDate= ft.format(tempDate);
+
+        System.out.println(stringDate);
+
+        List<Files> tempFiles = recordingPathFileDatabase.getAllFiles(ft.format(tempDate));
+
+        filesList.addAll(tempFiles);
+
+        if(pastRecordingsCardviewAdpator != null)
+            pastRecordingsCardviewAdpator.notifyDataSetChanged();
+
+
+//        System.out.println("+++++++++++++++++++++++ date: " + filesList.get(0).getCreated_at());
+        /*
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -195,8 +215,11 @@ public class PastRecordingsFragment extends Fragment {
 
 
 
+
                     }
                 });
+
+        */
     }
 
     public List<Date> getDates()

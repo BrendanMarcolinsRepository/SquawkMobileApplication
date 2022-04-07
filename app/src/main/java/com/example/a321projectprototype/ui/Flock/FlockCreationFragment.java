@@ -226,8 +226,8 @@ public class FlockCreationFragment extends Fragment
             myMap1.put("userId", auth.getUid());
             myMap1.put("created_at",dateString);
 
-            documentReference1.collection("flockMembers").document()
-                    .set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
+
+            documentReference1.set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
             {
                 @Override
                 public void onSuccess(Void aVoid)
@@ -253,48 +253,18 @@ public class FlockCreationFragment extends Fragment
     private void checkFlockName()
     {
 
-        String userID = auth.getCurrentUser().getUid();
+        if(homePage.getFlockModelData() != null)
+        {
+            create.setVisibility(View.GONE);
+            // create.setOnClickListener(null);
+            update.setVisibility(View.VISIBLE);
 
-        firebaseFirestore.collection("flockMembers").orderBy("created_at", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-
-
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-                    {
-                        if(error != null)
-                        {
-                            System.out.println("Error ==========?>" +  error);
-                            return;
-                        }
-
-                        for(DocumentChange documentChange : value.getDocumentChanges()) {
-                            if (documentChange.getType() == DocumentChange.Type.ADDED) {
-
-                                String documentsId = documentChange.getDocument().get("userId").toString();
-                                if (documentsId.equals(userID)) {
-                                    create.setVisibility(View.GONE);
-                                    // create.setOnClickListener(null);
-                                    update.setVisibility(View.VISIBLE);
-                                    System.out.println("worked 1 ==========================>>>");
-
-                                } else {
-                                    update.setVisibility(View.GONE);
-                                    //  update.setOnClickListener(null);
-                                    create.setVisibility(View.VISIBLE);
-                                    System.out.println("worked 2 ==========================>>>");
-                                }
-                            }
-                            else
-                            {
-                                create.setVisibility(View.GONE);
-                                // create.setOnClickListener(null);
-                                update.setVisibility(View.VISIBLE);
-                                System.out.println("worked 1 ==========================>>>");
-                            }
-                        }
-                    }
-                });
+        }
+        else
+        {
+            update.setVisibility(View.GONE);
+            //  update.setOnClickListener(null);
+            create.setVisibility(View.VISIBLE);
+        }
     }
 }
