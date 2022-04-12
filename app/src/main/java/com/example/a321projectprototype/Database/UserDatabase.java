@@ -21,8 +21,6 @@ public class UserDatabase extends SQLiteOpenHelper
     public static final String USERS_COLUMN_NAME = "name";
     public static final String USERS_COLUMN_USERNAME = "username";
     public static final String USERS_COLUMN_EMAIL = "email";
-    public static final String USERS_COLUMN_PASSWORD = "password";
-    public static final String USERS_COLUMN_FLOCK = "flockName";
 
     // constructor needed for the database
     public UserDatabase(Context context)
@@ -38,7 +36,7 @@ public class UserDatabase extends SQLiteOpenHelper
     {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + USERS_TABLE_NAME + "("
                 + USERS_COLUMN_ID + " INTEGER  PRIMARY KEY," + USERS_COLUMN_NAME + " TEXT," + USERS_COLUMN_USERNAME + " TEXT,"
-                + USERS_COLUMN_EMAIL + " TEXT," + USERS_COLUMN_PASSWORD + " TEXT," + USERS_COLUMN_FLOCK + " TEXT" + ")";
+                + USERS_COLUMN_EMAIL +  " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -60,13 +58,12 @@ public class UserDatabase extends SQLiteOpenHelper
         contentValues.put(USERS_COLUMN_NAME, user.getName());
         contentValues.put(USERS_COLUMN_USERNAME, user.getUsername());
         contentValues.put(USERS_COLUMN_EMAIL, user.getEmail());
-        contentValues.put(USERS_COLUMN_PASSWORD, user.getPassword());
-        contentValues.put(USERS_COLUMN_FLOCK, user.getUserFlock());;
         database.insert(USERS_TABLE_NAME, null, contentValues);
         database.close();
 
     }
 
+    /*
     //checks if a user is in the database by using the email and password passed
     public boolean checkUser(String username, String password)
     {
@@ -182,4 +179,6 @@ public class UserDatabase extends SQLiteOpenHelper
                 new String[] {String.valueOf(user.getId())});
 
     }
+
+     */
 }

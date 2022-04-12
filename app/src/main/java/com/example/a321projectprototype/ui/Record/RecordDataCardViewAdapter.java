@@ -5,37 +5,46 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.ItemDataModel;
-import com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsCardviewAdpator;
+import com.example.a321projectprototype.User.BirdRewardModel;
+import com.example.a321projectprototype.User.RewardPointsModel;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCardViewAdapter.MyViewHolder>
 {
-    List<ItemDataModel> listItem;
+    List<RewardPointsModel> rewardPointsModels ;
+    List<BirdRewardModel> listItem;
     HomePage homePage;
     int position;
 
-    RecordDataCardViewAdapter(List<ItemDataModel> listItem, HomePage homePage)
+    RecordDataCardViewAdapter(List<BirdRewardModel> listItem, HomePage homePage, List<RewardPointsModel> rewardPointsModels)
     {
         this.homePage = homePage;
         this.listItem = listItem;
+        this.rewardPointsModels = rewardPointsModels;
 
     }
     @NonNull
@@ -51,17 +60,31 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
     public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position)
     {
 
-        this.position = holder.getAbsoluteAdapterPosition();
-        holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getTxtname());
-
-        int res =  listItem.get(position).getDrawable();
-        holder.imageViewBirds.setImageResource(res);
+        //this.position = holder.getAbsoluteAdapterPosition();
+        holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
 
 
-        holder.pointsTextView.setText("Congradulation You Have Earned: 10 Points");
 
-        holder.url = listItem.get(position).getUrl();
+
+
+        FirebaseStorage  firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference().child("BirdImages/"+listItem.get(position).getBird_name()+".jpg");
+
+
+
+        Glide.with(homePage.getApplicationContext())
+                .load(storageReference).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imageViewBirds);
+
+        for(int i = 0; i < rewardPointsModels.size();i++) {
+
+            if(rewardPointsModels.get(i).getBird_status().matches(listItem.get(position).getBird_status())){
+                holder.pointsTextView.setText("Congradulation You Have Earned: " + rewardPointsModels.get(i).getReward_points());
+            }
+        }
+
+        holder.url = listItem.get(position).getBird_url();
     }
 
     @Override

@@ -208,8 +208,7 @@ public class HomePage extends AppCompatActivity implements Serializable
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists())
                         {
-                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),
-                                    document.getString("password"),document.getString("email"));
+                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),document.getString("email"));
 
                             headName.setText(userModel.getUsername());
                             headEmail.setText(userModel.getEmail());

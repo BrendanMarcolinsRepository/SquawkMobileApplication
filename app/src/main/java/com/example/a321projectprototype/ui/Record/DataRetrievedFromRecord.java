@@ -1,18 +1,30 @@
 package com.example.a321projectprototype.ui.Record;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.BirdRewardModel;
 import com.example.a321projectprototype.User.ItemDataModel;
+import com.example.a321projectprototype.User.RewardPointsModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +36,13 @@ public class DataRetrievedFromRecord extends Fragment
     private RecyclerView recyclerView;
     private HomePage homePage;
     private List<Integer> numberList;
-    private List<ItemDataModel> listItem;
-    private final int MAX_IDENTIFIER = 2;
+    private List<BirdRewardModel> birdRewardModelList;
+    private List<RewardPointsModel> rewardPoints;
+    private final int MAX_IDENTIFIER = 3;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private FirebaseFirestore firebaseFirestore;
+    private LinearLayoutManager linearLayoutManager;
+    private RecordDataCardViewAdapter recordDataCardViewAdapter;
 
 
 
@@ -35,14 +52,12 @@ public class DataRetrievedFromRecord extends Fragment
 
         recyclerView = root.findViewById(R.id.recycleRecordData);
         homePage = (HomePage) getActivity();
+
+        birdRewardModelList = new ArrayList<>();
+        rewardPoints = new ArrayList<>();
+
         setData();
 
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new RecordDataCardViewAdapter(listItem,homePage));
 
         return  root;
 
@@ -50,54 +65,90 @@ public class DataRetrievedFromRecord extends Fragment
 
     private void setData()
     {
-        int drawable1 = R.drawable.magpie;
-        int drawable2 = R.drawable.australian_swiftlet;
-        int drawable3 = R.drawable.australian_crake;
-        int drawable4 = R.drawable.australian_brushturkey;
-        int drawable5 = R.drawable.rainbow_lorikeet;
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("bird").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
 
-        ItemDataModel item1 = new ItemDataModel("Australian Magpie","https://ebird.org/species/ausmag2",drawable1);
-        ItemDataModel item2 = new ItemDataModel("Australian Swiftlet","https://ebird.org/species/ausswi1",drawable2);
-        ItemDataModel item3 = new ItemDataModel("Australian Crake","https://ebird.org/species/auscra1",drawable3);
-        ItemDataModel item4 = new ItemDataModel("Australian Brushturkey","https://ebird.org/species/ausbrt1",drawable4);
-        ItemDataModel item5 = new ItemDataModel("Rainbow Lorikeet","https://ebird.org/species/railor5",drawable5);
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-
-        listItem = new ArrayList<>();
-        numberList = new ArrayList<>();
-
-        listItem.add(item1);
-        listItem.add(item2);
-        listItem.add(item3);
-        listItem.add(item4);
-        listItem.add(item5);
+                        System.out.println("Bird Section +++++++++++++++++++++++++++++++++++++");
+                        if(error != null)
+                        {
+                            System.out.println("Error ==========?>" +  error);
+                            return;
+                        }
 
 
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
 
+                                BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
+                                birdRewardModelList.add(birdRewardModel);
+                            }
 
-
-        numberList = randomNumberGenerator();
-
-        for(int i = 0; i < numberList.size(); i++)
-        {
-            int number = numberList.get(i);
-            listItem.remove(number);
-        }
+                        }
+                        generator();
+                       loadRewardData();
+                    }
+                });
     }
 
-    public List<Integer> randomNumberGenerator()
-    {
+    public void loadRewardData() {
+
+        firebaseFirestore.collection("rewardPoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+
+
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                       System.out.println("Reward Section +++++++++++++++++++++++++++++++++++++");
+
+                        if(error != null)
+                        {
+                            System.out.println("Error ==========?>" +  error);
+                            return;
+                        }
+
+                        for(DocumentChange documentChange : value.getDocumentChanges())
+                        {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED)
+                            {
+                                RewardPointsModel rewardPointsModel = documentChange.getDocument().toObject(RewardPointsModel.class);
+                                rewardPoints.add(rewardPointsModel);
+                            }
+
+                        }
+
+                        setRecyclerView();
+                    }
+                });
+
+    }
+
+    public void generator(){
+
+
+
         Random randomObject = new Random();
         List<Integer> numberBirds = new ArrayList<>();
+        List<BirdRewardModel> tempBirdList = new ArrayList<>();
+
 
         int counter = 0;
         while(counter < MAX_IDENTIFIER)
         {
-            int randomInteger = randomObject.nextInt(4);
+            int randomInteger = randomObject.nextInt(23);
+
+            System.out.println("list size here +++++++++++++++ : " + birdRewardModelList.size());
 
             if(counter == 0)
             {
                 numberBirds.add(randomInteger);
+                tempBirdList.add(birdRewardModelList.get(randomInteger));
             }
 
             for(int i = 0; i < numberBirds.size(); i++)
@@ -105,12 +156,23 @@ public class DataRetrievedFromRecord extends Fragment
                 if(numberBirds.get(i) != randomInteger)
                 {
                     numberBirds.add(randomInteger);
+                    tempBirdList.add(birdRewardModelList.get(randomInteger));
                 }
             }
 
             counter++;
         }
 
-        return numberBirds;
+        birdRewardModelList = null;
+        birdRewardModelList = tempBirdList;
+    }
+
+    public void setRecyclerView() {
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        recordDataCardViewAdapter = new RecordDataCardViewAdapter(birdRewardModelList,homePage,rewardPoints);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(recordDataCardViewAdapter);
     }
 }
