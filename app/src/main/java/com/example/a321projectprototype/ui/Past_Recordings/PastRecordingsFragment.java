@@ -1,17 +1,23 @@
 package com.example.a321projectprototype.ui.Past_Recordings;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +67,9 @@ public class PastRecordingsFragment extends Fragment {
     private List<Date> dateList;
     private Files files;
     private PastRecordingsCardviewAdpator pastRecordingsCardviewAdpator;
+    private RelativeLayout relativeLayout;
+    private int mYear,mMonth,mDay;
+    private String stringDate;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -69,80 +78,71 @@ public class PastRecordingsFragment extends Fragment {
                 new ViewModelProvider(this).get(PastRecordingsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_pastrecordings, container, false);
         View cardView = inflater.inflate(R.layout.record_data_retrival_cardview, container, false);
-
-        recyclerView = root.findViewById(R.id.recycleRecordings);
-        recyclerView2 = root.findViewById(R.id.recycleRecordings2);
-        date = root.findViewById(R.id.past_date_textview);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        linearLayoutManager2.setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView2.setLayoutManager(linearLayoutManager2);
-
-
-
-        formatter = new SimpleDateFormat("E, MMM dd yyyy");
-
         homePage = (HomePage) getActivity();
 
-        recyclerView.setHasFixedSize(true);
+        recyclerView2 = root.findViewById(R.id.recycleRecordings2);
+        date = root.findViewById(R.id.past_date_textview);
+        relativeLayout = root.findViewById(R.id.imageButtonCalendar);
+
+        relativeLayout.setOnClickListener(calendarLauncher);
+
+
+
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getContext());
+        linearLayoutManager2.setOrientation(RecyclerView.VERTICAL);
+        recyclerView2.setLayoutManager(linearLayoutManager2);
         recyclerView2.setHasFixedSize(true);
 
-        dateList = getDates();
+
 
         listItem = new ArrayList<>();
         filesList = new ArrayList<>();
 
 
-        for(int i = 0; i < dateList.size();i++)
-        {
-            dateString = formatter.format(dateList.get(i));
-            listItem.add(String.format(dateString));
-        }
+        pastRecordingsCardviewAdpator = new PastRecordingsCardviewAdpator(homePage, filesList);
+        updateRecyclerView(new Date());
+        recyclerView2.setAdapter(pastRecordingsCardviewAdpator);
 
-        setAdaptor2(dateList.get(0));
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
-
-
-
-        onClickInterface = new onClickInterface() {
             @Override
-            public void setClick(int click, View view)
-            {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
 
-                setAdaptor2(dateList.get(click));
-                date.setText(listItem.get(click));
+                return false;
+            }
 
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                Toast.makeText(homePage, "File Deleted  ", Toast.LENGTH_SHORT).show();
+                //Remove swiped item from list and notify the RecyclerView
+                filesList.remove(viewHolder.getAbsoluteAdapterPosition());
+
+                if(pastRecordingsCardviewAdpator != null) {
+                    pastRecordingsCardviewAdpator.notifyDataSetChanged();
+                }
 
             }
-        };
-
-
-
-        MyRvAdapter rvAdapter = new MyRvAdapter(listItem, getContext(),onClickInterface,homePage);
-        recyclerView.setAdapter(rvAdapter);
-
-        pastRecordingsCardviewAdpator = new PastRecordingsCardviewAdpator(homePage, filesList);
-        recyclerView2.setAdapter(pastRecordingsCardviewAdpator);
+        }).attachToRecyclerView(recyclerView2);
 
 
         return root;
     }
 
-    private void setAdaptor2(Date tempDate)
+    private void updateRecyclerView(Date tempDate)
     {
 
 
         if(filesList.size() > 0)
             filesList.clear();
 
+        /*
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
         String stringDate= ft.format(tempDate);
 
-        System.out.println(stringDate);
+        date.setText(stringDate);
+        System.out.println("Date Here: " + stringDate);
 
         List<Files> tempFiles = recordingPathFileDatabase.getAllFiles(ft.format(tempDate));
 
@@ -152,8 +152,9 @@ public class PastRecordingsFragment extends Fragment {
             pastRecordingsCardviewAdpator.notifyDataSetChanged();
 
 
+           */
 //        System.out.println("+++++++++++++++++++++++ date: " + filesList.get(0).getCreated_at());
-        /*
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -161,6 +162,9 @@ public class PastRecordingsFragment extends Fragment {
         System.out.println("here ================> ");
 
 
+        SimpleDateFormat DateFor = new SimpleDateFormat("dd-MM-yyyy");
+        String stringDate= DateFor.format(tempDate);
+        date.setText(stringDate);
 
         firebaseFirestore.collection("files").orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -185,8 +189,7 @@ public class PastRecordingsFragment extends Fragment {
                                 {
                                     Files f = documentChange.getDocument().toObject(Files.class);
 
-                                    SimpleDateFormat DateFor = new SimpleDateFormat("dd-MM-yyyy");
-                                    String stringDate= DateFor.format(tempDate);
+
 
 
                                     System.out.println("Date Today==========?>" + stringDate);
@@ -196,8 +199,6 @@ public class PastRecordingsFragment extends Fragment {
                                     if(stringDate.regionMatches(0,f.getCreated_at(),0,10))
                                     {
                                         System.out.println("Date Match==========?>" +  f.getCreated_at());
-
-
 
                                         filesList.add(f);
 
@@ -219,25 +220,37 @@ public class PastRecordingsFragment extends Fragment {
                     }
                 });
 
-        */
+
     }
 
-    public List<Date> getDates()
+    private final View.OnClickListener calendarLauncher = new View.OnClickListener()
     {
-        Date today = new Date();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(today);
-        List<Date> dateList = new ArrayList<>();
-        dateList.add(today);
-        for(int i = 1; i < 7; i++)
-        {
-           
-            cal.add(Calendar.DAY_OF_MONTH, -1);
-            Date date = cal.getTime();
-            dateList.add(date);
+        @Override
+        public void onClick(View v) {
+
+            final Calendar cal = Calendar.getInstance();
+            mYear = cal.get(Calendar.YEAR);
+            mMonth = cal.get(Calendar.MONTH);
+            mDay = cal.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(homePage,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                            Calendar c = Calendar.getInstance();
+                            c.set(Calendar.YEAR,year);
+                            c.set(Calendar.MONTH,month);
+                            c.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                            Date date = c.getTime();
+                            updateRecyclerView(date);
+                        }
+
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
 
         }
+    };
 
-        return dateList;
-    }
 }

@@ -13,14 +13,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.BirdRewardModel;
 import com.example.a321projectprototype.User.RewardPointsModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -63,19 +67,15 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         //this.position = holder.getAbsoluteAdapterPosition();
         holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
-
-
-
-
-
-        FirebaseStorage  firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference().child("BirdImages/"+listItem.get(position).getBird_name()+".jpg");
-
-
+        FirebaseStorage storage = FirebaseStorage.getInstance();
 
         Glide.with(homePage.getApplicationContext())
-                .load(storageReference).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load(listItem.get(position).getBird_image())
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.logo)
                 .into(holder.imageViewBirds);
+
 
         for(int i = 0; i < rewardPointsModels.size();i++) {
 
@@ -134,3 +134,6 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         }
     }
 }
+
+
+

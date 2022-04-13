@@ -6,79 +6,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:replace="android:label"
     android:layout_width="400dp"
-    android:layout_height="400dp"
+    android:layout_height="100dp"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="@color/greenBackground"
+    app:cardBackgroundColor="@color/buttonColours"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
     app:cardMaxElevation="10dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_height="match_parent"
-      android:layout_width="match_parent">
-
-      <TextView
-          android:id="@+id/past_recording_day_textview"
-          android:layout_width="144dp"
-          android:layout_height="36dp"
-          android:layout_marginTop="16dp"
-          android:gravity="center"
-          android:text="TextView"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.173"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="71dp">
 
 
-      <TextView
-          android:id="@+id/past_recording_day_time"
-          android:layout_width="140dp"
-          android:layout_height="36dp"
-          android:layout_marginTop="16dp"
-          android:gravity="center"
-          android:text="11:30"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.859"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/past_recording_day_textview"
+            android:layout_width="144dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.285"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/past_recording_day_time"
+            android:layout_width="91dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="11:30"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.883"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/pastrecordingRecycleViewPlayer"
+            android:layout_width="46dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.018"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/play" />
+
+        <ImageView
+            android:id="@+id/pastrecordingPauseRecycleViewPlayer"
+            android:layout_width="46dp"
+            android:layout_height="34dp"
+            android:src="@drawable/pause"
+            tools:layout_editor_absoluteX="6dp"
+            tools:layout_editor_absoluteY="16dp" />
 
 
-      <com.chibde.visualizer.LineBarVisualizer
-          android:id="@+id/visualizerLineBar"
-          android:layout_width="252dp"
-          android:layout_height="221dp"
-          android:layout_marginTop="20dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.495"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/past_recording_day_time" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <ImageView
-          android:id="@+id/pastrecordingRecycleViewPlayer"
-          android:layout_width="46dp"
-          android:layout_height="34dp"
-          android:layout_marginTop="32dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.495"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/visualizerLineBar"
-          app:srcCompat="@android:drawable/ic_media_play" />
-
-      <ImageView
-          android:id="@+id/pastrecordingPauseRecycleViewPlayer"
-          android:layout_width="46dp"
-          android:layout_height="34dp"
-          android:layout_marginTop="32dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintHorizontal_bias="0.498"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/visualizerLineBar"
-          app:srcCompat="@android:drawable/ic_media_pause" />
-
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
 

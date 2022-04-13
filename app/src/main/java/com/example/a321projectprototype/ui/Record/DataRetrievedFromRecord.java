@@ -16,18 +16,26 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.BirdRewardModel;
 import com.example.a321projectprototype.User.ItemDataModel;
+import com.example.a321projectprototype.User.RecordByModel;
 import com.example.a321projectprototype.User.RewardPointsModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -91,7 +99,7 @@ public class DataRetrievedFromRecord extends Fragment
 
                         }
                         generator();
-                       loadRewardData();
+                        loadRewardData();
                     }
                 });
     }
@@ -123,6 +131,7 @@ public class DataRetrievedFromRecord extends Fragment
 
                         }
 
+
                         setRecyclerView();
                     }
                 });
@@ -130,9 +139,6 @@ public class DataRetrievedFromRecord extends Fragment
     }
 
     public void generator(){
-
-
-
         Random randomObject = new Random();
         List<Integer> numberBirds = new ArrayList<>();
         List<BirdRewardModel> tempBirdList = new ArrayList<>();
@@ -174,5 +180,31 @@ public class DataRetrievedFromRecord extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(recordDataCardViewAdapter);
+
+        setRewardPoints();
+    }
+
+    public void setRewardPoints(){
+
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        for(int i = 0; i < birdRewardModelList.size(); i++) {
+
+            WriteBatch batch = firebaseFirestore.batch();
+
+            DocumentReference documentReference = firebaseFirestore.collection("identified_bird").document();
+
+            RecordByModel  recordByModel = new RecordByModel(birdRewardModelList.get(i).getBird_name(),firebaseAuth.getUid());
+
+            batch.set(documentReference,recordByModel);
+
+            batch.commit().addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println("++++++++++++++++++++++++ Didnt Worked: " + e);
+                }
+            });
+        }
     }
 }

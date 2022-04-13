@@ -1,6 +1,7 @@
 package com.example.a321projectprototype.ui.Past_Recordings;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.Image;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -45,11 +47,13 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     private MediaPlayer mediaPlayer;
     private String filePath, fileDescription, fileName,time;
     private Files fileObjects;
+    private String date;
 
     PastRecordingsCardviewAdpator(HomePage homePage, List<Files> files)
     {
         this.homePage = homePage;
         this.files = files;
+
     }
     @NonNull
     @Override
@@ -61,7 +65,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
 
     @Override
-    public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
         this.position = position;
 
@@ -74,13 +78,8 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             time = fileObjects.getCreated_at();
 
             holder.name.setText(fileName);
-
-
-
-            holder.time.setText(time);
+            holder.time.setText(time.substring(10,16));
         }
-
-
 
     }
 
@@ -92,8 +91,6 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView name,time, description;
-
-        private LineBarVisualizer lineBarVisualizer;
         private ImageView iconPlayer, pause;
 
         public MyViewHolder(@NonNull View itemView)
@@ -103,8 +100,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             time = itemView.findViewById(R.id.past_recording_day_time);
 
 
-            lineBarVisualizer = itemView.findViewById(R.id.visualizerLineBar);
-            lineBarVisualizer.setVisibility(View.VISIBLE);
+
 
             iconPlayer = itemView.findViewById(R.id.pastrecordingRecycleViewPlayer);
             pause = itemView.findViewById(R.id.pastrecordingPauseRecycleViewPlayer);
@@ -117,6 +113,8 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
         }
 
+
+
         public View.OnClickListener playerRecording = new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -126,6 +124,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
                 mediaPlayer = MediaPlayer.create(homePage, Uri.parse(filePath));
 
+
                 if(mediaPlayer == null)
                 {
                     Toast.makeText(homePage.getBaseContext(), "Could No Find File, Please Try Again",Toast.LENGTH_LONG).show();
@@ -134,31 +133,21 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
                 int audioSessionId = mediaPlayer.getAudioSessionId();
 
-                mediaPlayer.start();
+
 
                 if(audioSessionId != -1)
                 {
 
-                    if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.RECORD_AUDIO)
+                    if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.ACCESS_MEDIA_LOCATION)
                             != PackageManager.PERMISSION_GRANTED)
                     {
-                        requestPermissions(homePage,new String[]{Manifest.permission.RECORD_AUDIO},1);
+                        requestPermissions(homePage,new String[]{Manifest.permission.ACCESS_MEDIA_LOCATION},1);
 
                     }
-                    else
-                    {
-                        // set a custom color to the line.
-                        lineBarVisualizer.setColor(ContextCompat.getColor(homePage, R.color.purple_200));
 
-                        // set the line width for the visualizer between 1-10 default is  1.
-                        lineBarVisualizer.setDensity(60);
-
-                        // Setting the media player to the visualizer.
-                        lineBarVisualizer.setPlayer(mediaPlayer.getAudioSessionId());
-                        iconPlayer.setVisibility(View.INVISIBLE);
-                        pause.setVisibility(View.VISIBLE);
-
-                    }
+                    mediaPlayer.start();
+                    iconPlayer.setVisibility(View.INVISIBLE);
+                    pause.setVisibility(View.VISIBLE);
 
 
                 }
@@ -174,7 +163,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
                 if(mediaPlayer.isPlaying())
                 {
                     mediaPlayer.stop();
-                    lineBarVisualizer.release();
+                    mediaPlayer.release();
                     pause.setVisibility(View.INVISIBLE);
                     iconPlayer.setVisibility(View.VISIBLE);
                 }

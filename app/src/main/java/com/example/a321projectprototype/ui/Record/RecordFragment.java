@@ -244,7 +244,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private String getRecordingFilePath()
     {
         date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
         dateString = ft.format(date);
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
@@ -313,7 +313,8 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
                 if(randomInteger == 0)
                 {
-                    noSqlRecordingPath();
+                    //noSqlRecordingPath();
+                    storeRecordingFilePath();
                     enableMenuItems();
                     navController.navigate(R.id.action_nav_record_data);
                 }
