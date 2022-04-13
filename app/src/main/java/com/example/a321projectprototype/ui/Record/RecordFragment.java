@@ -77,10 +77,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.activity.result.contract.ActivityResultContracts.*;
 import static androidx.core.app.ActivityCompat.requestPermissions;
+import static androidx.core.content.ContextCompat.getExternalCacheDirs;
 
 public class RecordFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
 {
@@ -101,7 +103,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private AppBarConfiguration appBarConfiguration;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString;
+    private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString, dateStringFile, filePathFirebase;
     private Date date;
 
 
@@ -245,11 +247,16 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     {
         date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+        SimpleDateFormat ft2 = new SimpleDateFormat ("dd-MM-yyyy-hh:mm:ss");
         dateString = ft.format(date);
+        dateStringFile = ft2.format(date);
+
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
-        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, fileName+ dateString +".mp3");
-        return file.getPath();
+        filePathFirebase = homePage.getExternalCacheDir().getAbsolutePath();
+        filePathFirebase +=  "/" + UUID.randomUUID()+"_bird_recording"+".3gp";
+
+
+        return filePathFirebase;
     }
 
 
@@ -380,7 +387,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         userMap.put("created_at",dateString);
         userMap.put("description",desciption);
         userMap.put("filename",fileName);
-        userMap.put("path", filePath);
+        userMap.put("path", filePathFirebase);
         userMap.put("updated_at", dateString);
         userMap.put("uploadedBy", userID);
 

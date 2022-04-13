@@ -3,12 +3,14 @@ package com.example.a321projectprototype.ui.Past_Recordings;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,8 @@ import com.example.a321projectprototype.User.CommentModel;
 import com.example.a321projectprototype.User.Files;
 import com.chibde.visualizer.LineBarVisualizer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +45,9 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
     List<Files> files;
     HomePage homePage;
-    int position;
 
-    private ImageView iconPlayer;
+
+
     private MediaPlayer mediaPlayer;
     private String filePath, fileDescription, fileName,time;
     private Files fileObjects;
@@ -65,21 +69,67 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
 
     @Override
-    public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, @SuppressLint("RecyclerView") int position)
-    {
-        this.position = position;
+    public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder,  int position) {
+        fileDescription = files.get(position).getDescription();
+        fileName = files.get(position).getFilename();
+        time = files.get(position).getCreated_at();
 
-        if(files.size() > 0)
+        holder.name.setText(fileName);
+        holder.time.setText(time.substring(10,16));
+
+        holder.iconPlayer.setOnClickListener(new View.OnClickListener()
         {
-            fileObjects = files.get(position);
-            filePath = fileObjects.getPath();
-            fileDescription = fileObjects.getDescription();
-            fileName = fileObjects.getFilename();
-            time = fileObjects.getCreated_at();
+            @Override
+            public void onClick(View v)
+            {
+                String path =  files.get(position).getPath();
 
-            holder.name.setText(fileName);
-            holder.time.setText(time.substring(10,16));
-        }
+                System.out.println(path);
+
+                mediaPlayer = MediaPlayer.create(homePage,Uri.parse(path));
+
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        System.out.println("worked");
+                        mp.start();
+                        holder.pause.setVisibility(View.VISIBLE);
+                        holder.iconPlayer.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+
+                        mediaPlayer.stop();
+                        mediaPlayer.release();
+                        holder.pause.setVisibility(View.INVISIBLE);
+                        holder.iconPlayer.setVisibility(View.VISIBLE);
+                        System.out.println("worked stopped");
+
+                    }
+                });
+
+
+
+
+            }
+        });
+
+        holder.pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mediaPlayer.isPlaying())
+                {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    holder.pause.setVisibility(View.INVISIBLE);
+                    holder.iconPlayer.setVisibility(View.VISIBLE);
+                    System.out.println("worked stopped");
+                }
+            }
+        });
 
     }
 
@@ -91,84 +141,19 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView name,time, description;
-        private ImageView iconPlayer, pause;
+        ImageView iconPlayer, pause;
 
-        public MyViewHolder(@NonNull View itemView)
-        {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.past_recording_day_textview);
             time = itemView.findViewById(R.id.past_recording_day_time);
-
-
-
-
             iconPlayer = itemView.findViewById(R.id.pastrecordingRecycleViewPlayer);
             pause = itemView.findViewById(R.id.pastrecordingPauseRecycleViewPlayer);
-
-            iconPlayer.setOnClickListener(playerRecording);
-            pause.setOnClickListener(pauseRecording);
             pause.setVisibility(View.INVISIBLE);
-
 
 
         }
 
-
-
-        public View.OnClickListener playerRecording = new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                System.out.println("=>>>>>>>>>>>>>Staring: " + filePath);
-
-
-                mediaPlayer = MediaPlayer.create(homePage, Uri.parse(filePath));
-
-
-                if(mediaPlayer == null)
-                {
-                    Toast.makeText(homePage.getBaseContext(), "Could No Find File, Please Try Again",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                int audioSessionId = mediaPlayer.getAudioSessionId();
-
-
-
-                if(audioSessionId != -1)
-                {
-
-                    if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.ACCESS_MEDIA_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED)
-                    {
-                        requestPermissions(homePage,new String[]{Manifest.permission.ACCESS_MEDIA_LOCATION},1);
-
-                    }
-
-                    mediaPlayer.start();
-                    iconPlayer.setVisibility(View.INVISIBLE);
-                    pause.setVisibility(View.VISIBLE);
-
-
-                }
-            }
-
-        };
-
-
-        public View.OnClickListener pauseRecording = new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                if(mediaPlayer.isPlaying())
-                {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    pause.setVisibility(View.INVISIBLE);
-                    iconPlayer.setVisibility(View.VISIBLE);
-                }
-            }
-
-        };
     }
+
 }
