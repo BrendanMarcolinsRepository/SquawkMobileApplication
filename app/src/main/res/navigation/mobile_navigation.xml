@@ -52,8 +52,20 @@
         tools:layout="@layout/fragment_pastrecordings" >
 
         <action
-            android:id="@+id/action_nav_discover_to_bird"
-            app:destination="@id/nav_Discover_Choice" />
+            android:id="@+id/action_nav_online"
+            app:destination="@id/nav_PastRecording_Online" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_PastRecording_Online"
+        android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsOnlineFragment"
+        android:label="@string/menu_PastRecordings_Online"
+        tools:layout="@layout/fragment_pastrecordings_online" >
+
+        <action
+            android:id="@+id/action_nav_online"
+            app:destination="@id/nav_PastRecording" />
 
     </fragment>
 

@@ -31,8 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 //random
 
-public class Prototype extends AppCompatActivity
-{
+public class Prototype extends AppCompatActivity {
     private Button login;
     private TextView email, password, signUp, passwordRest,textView;
     private ImageView logoImage;
@@ -43,8 +42,7 @@ public class Prototype extends AppCompatActivity
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
         getSupportActionBar().hide();
@@ -70,8 +68,7 @@ public class Prototype extends AppCompatActivity
 
 
 
-    private final View.OnClickListener loginAccount = new View.OnClickListener()
-    {
+    private final View.OnClickListener loginAccount = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
@@ -79,8 +76,7 @@ public class Prototype extends AppCompatActivity
         }
     };
 
-    private void loginMethod()
-    {
+    private void loginMethod() {
         stringEmail = email.getText().toString();
         stringUserpassword = password.getText().toString();
 
@@ -95,8 +91,7 @@ public class Prototype extends AppCompatActivity
         }
     }
 
-    public void processingLogin()
-    {
+    public void processingLogin() {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.signInWithEmailAndPassword(stringEmail,stringUserpassword).addOnCompleteListener(new OnCompleteListener<AuthResult>()
         {
@@ -107,25 +102,22 @@ public class Prototype extends AppCompatActivity
                 {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if(user.isEmailVerified())
-                    {
+                    if(user.isEmailVerified()){
 
                         Intent homepage  = new Intent(Prototype.this, HomePage.class);
                         homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homepage);
                         finish();
                     }
-                    else
-                    {
+                    else {
                         invisableSetTwo();
                         Toast.makeText(Prototype.this,"Please Verify Your Email", Toast.LENGTH_LONG).show();
                         user.sendEmailVerification();
                     }
-                }
-                else
+                } else
                 {
                     invisableSetTwo();
-                    Toast.makeText(Prototype.this,"Failed to Login:" + task.getResult(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(Prototype.this,"Failed to Login, Please Try Again! ", Toast.LENGTH_LONG).show();
 
 
                 }
@@ -134,22 +126,18 @@ public class Prototype extends AppCompatActivity
         });
     }
 
-    private final View.OnClickListener signUpAccount = new View.OnClickListener()
-    {
+    private final View.OnClickListener signUpAccount = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             Intent register = new Intent(Prototype.this, SignUp.class);
             startActivity(register);
 
         }
     };
 
-    private final View.OnClickListener resetPassword = new View.OnClickListener()
-    {
+    private final View.OnClickListener resetPassword = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             Intent register = new Intent(Prototype.this, ResetPassword.class);
             startActivity(register);
 
@@ -158,18 +146,15 @@ public class Prototype extends AppCompatActivity
 
 
 
-    private boolean checkUserInput(String emailString, String passwordString)
-    {
+    private boolean checkUserInput(String emailString, String passwordString) {
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches() || emailString.isEmpty())
-        {
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches() || emailString.isEmpty()) {
             email.setError("Email Is Incorrect");
             email.requestFocus();
             return false;
         }
 
-        if(passwordString.isEmpty() || passwordString.length() < 6)
-        {
+        if(passwordString.isEmpty() || passwordString.length() < 6) {
             password.setError("Password Is Incorrect");
             password.requestFocus();
             return false;
@@ -178,8 +163,7 @@ public class Prototype extends AppCompatActivity
         return true;
     }
 
-    private void invisableSetOne()
-    {
+    private void invisableSetOne() {
         email.setVisibility(View.INVISIBLE);
         password.setVisibility(View.INVISIBLE);
         signUp.setVisibility(View.INVISIBLE);
@@ -190,8 +174,7 @@ public class Prototype extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void invisableSetTwo()
-    {
+    private void invisableSetTwo() {
         email.setVisibility(View.VISIBLE);
         password.setVisibility(View.VISIBLE);
         signUp.setVisibility(View.VISIBLE);

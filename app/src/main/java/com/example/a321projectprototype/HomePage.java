@@ -104,12 +104,13 @@ public class HomePage extends AppCompatActivity implements Serializable
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_Record, R.id.nav_PastRecording, R.id.nav_Discover, R.id.nav_Forum,
-                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings)
+                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings, R.id.nav_PastRecording_Online)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
 
         View header = navigationView.getHeaderView(0);
         headName = (TextView) header.findViewById(R.id.navhead_name);

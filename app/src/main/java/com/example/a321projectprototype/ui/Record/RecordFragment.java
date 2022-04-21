@@ -20,6 +20,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -30,10 +31,14 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -42,6 +47,7 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -61,6 +67,7 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.Files;
 import com.example.a321projectprototype.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -68,6 +75,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileReader;
@@ -84,7 +94,7 @@ import static androidx.activity.result.contract.ActivityResultContracts.*;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.getExternalCacheDirs;
 
-public class RecordFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
+public class RecordFragment<Switch> extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
 {
 
 
@@ -93,7 +103,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private ImageView recordImage;
     private MediaRecorder mediaRecorder;
     private HomePage homePage;
-    private boolean isRecording  = false;
+    private boolean isRecording  = false, cloudStorage = false;
     private Context context;
     private NavController navController;
     private AnimatorSet mAnimationSet;
@@ -103,20 +113,23 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     private AppBarConfiguration appBarConfiguration;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    private StorageReference storageReference;
     private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString, dateStringFile, filePathFirebase;
     private Date date;
+    private SwitchCompat recordSwitch;
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_record, container, false);
         recordImage = root.findViewById(R.id.recordIcon);
         recordingInformationTexview = root.findViewById(R.id.recordInformationTextview);
         progressBar = root.findViewById(R.id.recordProgressBar);
+        recordSwitch =  root.findViewById(R.id.recordSwitch);
         progressBar.setVisibility(View.INVISIBLE);
 
 
         recordImage.setOnClickListener(record);
+        recordSwitch.setOnCheckedChangeListener(switched);
 
         recordViewModel = new ViewModelProvider(this).get(RecordViewModel.class);
 
@@ -130,33 +143,42 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         return root;
     }
 
-    private final View.OnClickListener record = new View.OnClickListener()
-    {
+    private final CompoundButton.OnCheckedChangeListener switched = new CompoundButton.OnCheckedChangeListener() {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            cloudStorage = isChecked;
+
+            if(cloudStorage){
+                Toast.makeText(homePage,"Storing on the cloud", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(homePage,"Storing on your phone", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+    private final View.OnClickListener record = new View.OnClickListener() {
         @SuppressLint("ResourceAsColor")
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
            if(!isRecording)
            {
 
 
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.RECORD_AUDIO)
-                       != PackageManager.PERMISSION_GRANTED)
-               {
+                       != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},1);
                    return;
                }
 
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                       != PackageManager.PERMISSION_GRANTED)
-               {
+                       != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
                    return;
                }
 
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.INTERNET)
-                       != PackageManager.PERMISSION_GRANTED)
-               {
+                       != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.INTERNET},1);
                    return;
                }
@@ -167,9 +189,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
                System.out.println("1");
 
 
-           }
-           else
-           {
+           } else {
                isRecording = false;
                stopRecording();
            }
@@ -179,18 +199,12 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
 
 
-    public void startRecord()
-    {
+    public void startRecord() {
 
         disableMenuItems();
+        if(haveNetwork()) {
 
-
-        if(haveNetwork())
-        {
-
-        }
-        else
-        {
+        } else {
             System.out.println("ready to be saved");
         }
 
@@ -201,24 +215,20 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         filePath = getRecordingFilePath();
         mediaRecorder.setOutputFile(filePath);
 
-        try
-        {
+        try {
             mediaRecorder.prepare();
             mediaRecorder.start();
             recordingInformationTexview.setText("Now Recording Your Chirps....");
 
 
             System.out.println("Recording Started...");
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             System.out.println("Didnt work" + e);
         }
 
     }
 
-    private void stopRecording()
-    {
+    private void stopRecording() {
         System.out.println("it stopped");
         mediaRecorder.stop();
         mediaRecorder.reset();
@@ -231,8 +241,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
 
 
 
-    private boolean haveNetwork()
-    {
+    private boolean haveNetwork() {
         ConnectivityManager cm = (ConnectivityManager)
                 context.getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -243,8 +252,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     }
 
 
-    private String getRecordingFilePath()
-    {
+    private String getRecordingFilePath() {
         date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
         SimpleDateFormat ft2 = new SimpleDateFormat ("dd-MM-yyyy-hh:mm:ss");
@@ -260,8 +268,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
     }
 
 
-    private void startAlphaAnimation()
-    {
+    private void startAlphaAnimation() {
         ObjectAnimator fadeOut = ObjectAnimator.ofFloat(recordImage, "alpha",  1f, .3f);
         fadeOut.setDuration(2000);
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(recordImage, "alpha", .3f, 1f);
@@ -283,50 +290,44 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         mAnimationSet.start();
     }
 
-    private void stopAlphaAnimation()
-    {
+    private void stopAlphaAnimation() {
         mAnimationSet.removeAllListeners();
         mAnimationSet.end();
         System.out.println("stopping");
     }
 
-    private void response()
-    {
+    private void response() {
 
         recordImage.setVisibility(View.INVISIBLE);
+        recordSwitch.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-
 
         recordingInformationTexview.setText("Identifing Your Chirps....");
 
          CountDownTimer countDownTimer = new CountDownTimer(6000,5) {
             private boolean warned = false;
             @Override
-            public void onTick(long millisUntilFinished_)
-            {
-                if(millisUntilFinished_ == 3000)
-                {
+            public void onTick(long millisUntilFinished_) {
+                if(millisUntilFinished_ == 3000) {
                     recordingInformationTexview.setText("Almost Chirping There....");
                 }
             }
 
 
             @Override
-            public void onFinish()
-            {
+            public void onFinish() {
                 Random randomObject = new Random();
                 int randomInteger = randomObject.nextInt(2);
 
 
-                if(randomInteger == 0)
-                {
-                    //noSqlRecordingPath();
-                    storeRecordingFilePath();
-                    enableMenuItems();
-                    navController.navigate(R.id.action_nav_record_data);
-                }
-                else
-                {
+                if(randomInteger == 0) {
+                    if(cloudStorage){
+                        storeRecordingFilePath();
+
+                    }else {
+                        noSqlRecordingPath();
+                    }
+                } else {
 
                     errorOccured();
                 }
@@ -334,14 +335,9 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
             }
 
          }.start();
-
-
-
-
     }
 
-    public void errorOccured()
-    {
+    public void errorOccured() {
 
 
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
@@ -349,8 +345,7 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         alertDialog.setMessage("We had a problem trying to identify your recording, please try again");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Okay",
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
 
                         alertDialog.dismiss();
                     }
@@ -358,28 +353,46 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         alertDialog.show();
 
         recordImage.setVisibility(View.VISIBLE);
+        recordSwitch.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         recordingInformationTexview.setText("Record Your Chirps....");
         enableMenuItems();
     }
 
 
-    private void noSqlRecordingPath()
-    {
+    private void noSqlRecordingPath() {
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
         Files files = new Files(dateString,desciption,fileName,filePath);
 
         recordingPathFileDatabase.addFile(files);
+        enableMenuItems();
+        navController.navigate(R.id.action_nav_record_data);
 
 
     }
 
-    private void storeRecordingFilePath()
-    {
+    private void storeRecordingFilePath() {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference().child("BirdRecordings").child(filePath);
 
         userID = auth.getCurrentUser().getUid();
+
+        Uri uri = Uri.fromFile(new File(filePath));
+        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                System.out.println("--------------------------- worked");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("--------------------------- failured  " + e);
+            }
+        });
+
 
         DocumentReference documentReference = firebaseFirestore.collection("files").document();
 
@@ -387,30 +400,28 @@ public class RecordFragment extends Fragment implements ActivityCompat.OnRequest
         userMap.put("created_at",dateString);
         userMap.put("description",desciption);
         userMap.put("filename",fileName);
-        userMap.put("path", filePathFirebase);
+        userMap.put("path", storageReference.getPath());
         userMap.put("updated_at", dateString);
         userMap.put("uploadedBy", userID);
 
 
-        documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
-        {
+        documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid)
             {
-                System.out.println("worked");
+                enableMenuItems();
+                navController.navigate(R.id.action_nav_record_data);
             }
         });
 
+
+
     }
 
-
-    public void disableMenuItems()
-    {
+    public void disableMenuItems() {
         homePage.disableMenuItems();
     }
-
-    public void enableMenuItems()
-    {
+    public void enableMenuItems() {
         homePage.enableMenuItems();
     }
 
