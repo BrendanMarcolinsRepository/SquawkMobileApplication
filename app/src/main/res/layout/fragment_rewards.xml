@@ -23,11 +23,11 @@
         android:id="@+id/reward_content"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="80dp"
         android:text="Congradulations, your all time score is 1,730"
-        android:textSize="17sp"
         android:textColor="#726969"
+        android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
