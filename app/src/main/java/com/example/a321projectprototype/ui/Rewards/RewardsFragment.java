@@ -1,6 +1,7 @@
 package com.example.a321projectprototype.ui.Rewards;
 
 import android.os.Bundle;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.example.a321projectprototype.ui.Flock.FlockViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.core.view.Event;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -32,6 +34,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RewardsFragment extends Fragment
 {
@@ -43,7 +48,9 @@ public class RewardsFragment extends Fragment
     private Spinner rewardSpinner;
     private ArrayList<String> times;
     private ArrayAdapter<String> adaptor;
-    private int allTimeScore;
+    private long allTimeScore;
+
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rewardsViewModel = new ViewModelProvider(this).get(RewardsViewModel.class);
@@ -70,7 +77,8 @@ public class RewardsFragment extends Fragment
         allTimeScore = 0;
 
         setAllTimeScore();
-        Log.d("AllTimeScore", String.valueOf(allTimeScore));
+
+        Log.d("AllTimeScoreOnCreateView", String.valueOf(allTimeScore));
         return root;
     }
     // Navigations
@@ -94,7 +102,6 @@ public class RewardsFragment extends Fragment
 
     private void setAllTimeScore() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         firebaseFirestore.collection("identified_bird").orderBy("date", Query.Direction.ASCENDING)
                 .whereEqualTo("recorded_by", auth.getCurrentUser().getUid())
@@ -103,49 +110,70 @@ public class RewardsFragment extends Fragment
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            allTimeScore += getRewardPoint(getBirdStatus((String)document.get("bird_name")));
+                            String birdName = (String)document.get("bird_name");
+                            Log.d("Birdname", birdName);
+                            getBirdStatus(birdName, new onCallBackStatus() {
+                                @Override
+                                public void callBack(String callbackStatus) {
+                                    Log.d("Status", callbackStatus);
+
+                                    getRewardPoint(callbackStatus, new onCallBackReward() {
+                                        @Override
+                                        public void callBack(long callbackReward) {
+                                            allTimeScore += callbackReward;
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }
                 });
     }
 
-    private String getBirdStatus(String birdName) {
-        Log.d("Bird Name", birdName);
-        String[] birdStatus = {""};
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    public interface onCallBackStatus {
+        void callBack(String callbackStatus);
+    }
 
+    public interface onCallBackReward {
+        void callBack(long callbackReward);
+    }
+
+
+    private void getBirdStatus(String birdName, onCallBackStatus callback) {
         firebaseFirestore.collection("bird")
                 .whereEqualTo("bird_name", birdName)
-                .limit(1)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(QueryDocumentSnapshot document : task.getResult()) {
-                            birdStatus[0] = (String)document.get("bird_status");
-                            return; //return after first update as only one bird document should be found
+                        if(task.isSuccessful()) {
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String status = (String)document.get("bird_status");
+
+                                callback.callBack(status);
+
+                            }
+                        } else {
+                            Log.d("getBirdStatus", "Error");
                         }
                     }
                 });
-        return birdStatus[0];
     }
 
-    private int getRewardPoint(String birdStatus) {
-        int[] rewardPoint = {0};
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
+    private void getRewardPoint(String birdStatus, onCallBackReward callback) {
         firebaseFirestore.collection("rewardPoint")
-                .whereEqualTo("name", birdStatus)
+                .whereEqualTo("bird_status", birdStatus)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            rewardPoint[0] = (int)document.get("reward_points");
+                            long rewardPoint = (long)document.get("reward_points");
+                            callback.callBack(rewardPoint);
                         }
                     }
                 });
-        Log.d("RewardPoint", String.valueOf(rewardPoint[0]));
-        return rewardPoint[0];
+        //return rewardPoint[0];
     }
 }
