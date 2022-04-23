@@ -103,7 +103,6 @@ public class RewardsFragment extends Fragment
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d("AllTimeScore", (String)document.get("bird_name"));
                             allTimeScore += getRewardPoint(getBirdStatus((String)document.get("bird_name")));
                         }
                     }
@@ -111,11 +110,11 @@ public class RewardsFragment extends Fragment
     }
 
     private String getBirdStatus(String birdName) {
+        Log.d("Bird Name", birdName);
         String[] birdStatus = {""};
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         firebaseFirestore.collection("bird")
-                .orderBy("bird_name", Query.Direction.ASCENDING)
                 .whereEqualTo("bird_name", birdName)
                 .limit(1)
                 .get()
@@ -128,7 +127,6 @@ public class RewardsFragment extends Fragment
                         }
                     }
                 });
-        Log.d("BirdStatus", birdStatus[0]);
         return birdStatus[0];
     }
 
