@@ -34,7 +34,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,6 +53,18 @@ public class RewardsFragment extends Fragment
     private Spinner rewardSpinner;
     private ArrayList<String> times;
     private ArrayAdapter<String> adaptor;
+
+    private Map<String, Long>rewardPointMap;
+
+    private ArrayList<RewardDisplayBox>criticallyEndangered;
+    private ArrayList<RewardDisplayBox>breedingEndemics;
+    private ArrayList<RewardDisplayBox>endangered;
+    private ArrayList<RewardDisplayBox>endemic;
+    private ArrayList<RewardDisplayBox>introducedSpecies;
+    private ArrayList<RewardDisplayBox>rareAccidental;
+    private ArrayList<RewardDisplayBox>nearThreatened;
+    private ArrayList<RewardDisplayBox>vulnerable;
+
     private long allTimeScore;
 
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -71,12 +88,23 @@ public class RewardsFragment extends Fragment
         times.add("This Month");
         times.add("Last Week");
         times.add("This Year");
+
         adaptor = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, times);
         rewardSpinner.setAdapter(adaptor);
 
+        rewardPointMap = new HashMap<>();
+        criticallyEndangered = new ArrayList<>();
+        breedingEndemics = new ArrayList<>();
+        endangered = new ArrayList<>();
+        endemic = new ArrayList<>();
+        introducedSpecies = new ArrayList<>();
+        rareAccidental = new ArrayList<>();
+        nearThreatened = new ArrayList<>();
+        vulnerable = new ArrayList<>();
+
         allTimeScore = 0;
 
-        setAllTimeScore();
+        setScores();
 
         Log.d("AllTimeScoreOnCreateView", String.valueOf(allTimeScore));
         return root;
@@ -100,7 +128,7 @@ public class RewardsFragment extends Fragment
         }
     };
 
-    private void setAllTimeScore() {
+    private void setScores() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         firebaseFirestore.collection("identified_bird").orderBy("date", Query.Direction.ASCENDING)
@@ -109,35 +137,43 @@ public class RewardsFragment extends Fragment
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String birdName = (String)document.get("bird_name");
-                            Log.d("Birdname", birdName);
-                            getBirdStatus(birdName, new onCallBackStatus() {
-                                @Override
-                                public void callBack(String callbackStatus) {
-                                    Log.d("Status", callbackStatus);
+                        populateRewardPoint(new onCallBackReward() {
+                            @Override
+                            public void callBack() {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String birdName = (String)document.get("bird_name");
+                                    Calendar birdDate = (Calendar)document.get("date");
 
-                                    getRewardPoint(callbackStatus, new onCallBackReward() {
+                                    getBirdStatus(birdName, new onCallBackStatus() {
                                         @Override
-                                        public void callBack(long callbackReward) {
-                                            allTimeScore += callbackReward;
+                                        public void callBack(String callbackStatus) {
+                                            Log.d("Birdname", birdName);
+                                            Log.d("Status", callbackStatus);
+
+                                            addRewardDisplayBox(new RewardDisplayBox(birdName, birdDate), callbackStatus);
+
+                                            long score = rewardPointMap.get(callbackStatus);
+                                            allTimeScore += score;
+
+                                            Log.d("Reward", String.valueOf(score));
                                         }
                                     });
                                 }
-                            });
-                        }
+                                Log.d("All Time Score", String.valueOf(allTimeScore));
+                            }
+                        });
                     }
                 });
     }
 
+
     public interface onCallBackStatus {
-        void callBack(String callbackStatus);
+    void callBack(String callbackStatus);
     }
 
     public interface onCallBackReward {
-        void callBack(long callbackReward);
+    void callBack();
     }
-
 
     private void getBirdStatus(String birdName, onCallBackStatus callback) {
         firebaseFirestore.collection("bird")
@@ -152,7 +188,6 @@ public class RewardsFragment extends Fragment
                                 String status = (String)document.get("bird_status");
 
                                 callback.callBack(status);
-
                             }
                         } else {
                             Log.d("getBirdStatus", "Error");
@@ -161,19 +196,45 @@ public class RewardsFragment extends Fragment
                 });
     }
 
-    private void getRewardPoint(String birdStatus, onCallBackReward callback) {
+    private void populateRewardPoint(onCallBackReward callback) {
         firebaseFirestore.collection("rewardPoint")
-                .whereEqualTo("bird_status", birdStatus)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             long rewardPoint = (long)document.get("reward_points");
-                            callback.callBack(rewardPoint);
+                            String status = (String) document.get("bird_status");
+
+                            Log.d("RewardPoint", String.valueOf(rewardPoint));
+                            Log.d("Status", status);
+
+                            rewardPointMap.put(status, rewardPoint);
                         }
+                        callback.callBack();
                     }
                 });
         //return rewardPoint[0];
+    }
+
+    private void addRewardDisplayBox(RewardDisplayBox data, String status) {
+        switch(status) {
+            case "critically endangered":
+                criticallyEndangered.add(data);
+            case "breeding endemic":
+                breedingEndemics.add(data);
+            case "endangered":
+                endangered.add(data);
+            case "introduced species":
+                introducedSpecies.add(data);
+            case "rare/accidental":
+                rareAccidental.add(data);
+            case "near-threatened":
+                nearThreatened.add(data);
+            case "vulnerable":
+                vulnerable.add(data);
+            default:
+                Log.d("Error in adding data to display box", status);
+        }
     }
 }
