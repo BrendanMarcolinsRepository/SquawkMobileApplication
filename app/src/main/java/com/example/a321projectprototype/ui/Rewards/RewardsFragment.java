@@ -51,12 +51,17 @@ public class RewardsFragment extends Fragment
     private ArrayList<RewardDisplayBox>nearThreatened;
     private ArrayList<RewardDisplayBox>vulnerable;
 
+    private long dailyScore;
+    private long weeklyScore;
+    private long monthlyScore;
+    private long yearlyScore;
     private long allTimeScore;
     int iteratorInt;
 
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //TODO: Hide UI, Show Loading screen
         rewardsViewModel = new ViewModelProvider(this).get(RewardsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_rewards, container, false);
         homePage = (HomePage) getActivity();
@@ -96,9 +101,9 @@ public class RewardsFragment extends Fragment
             public void callBack() {
                 Log.d("All Time Score", String.valueOf(allTimeScore));
 
-                /******************
-                   Code Goes Here
-                 ******************/
+                //Code for all loaded data goes here
+                //TODO: Hide Loading Screen, Show UI
+                //TODO: Load lists from critically endangered, breeding endemics, endangered, etc into UI
             }
         });
 
@@ -156,6 +161,13 @@ public class RewardsFragment extends Fragment
                                             Log.d("Reward", String.valueOf(score));
 
                                             if(iteratorInt++ == snapshot.size() - 1){ //last iteration
+                                                //calculate daily/weekly/monthly/yearly scores
+                                                //TODO:  Actually calculate these scores
+                                                dailyScore = 0;
+                                                weeklyScore = 0;
+                                                monthlyScore = 0;
+                                                yearlyScore = 0;
+
                                                 callback.callBack();
                                             }
                                         }
