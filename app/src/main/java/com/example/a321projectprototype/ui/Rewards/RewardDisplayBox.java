@@ -1,12 +1,12 @@
 package com.example.a321projectprototype.ui.Rewards;
 
-import java.util.Calendar;
+import com.google.firebase.Timestamp;
 
 public class RewardDisplayBox {
     private String birdName;
-    private Calendar timestamp;
+    private Timestamp timestamp;
 
-    RewardDisplayBox(String birdName, Calendar timestamp) {
+    RewardDisplayBox(String birdName, Timestamp timestamp) {
         this.birdName = birdName;
         this.timestamp = timestamp;
     }
@@ -15,7 +15,7 @@ public class RewardDisplayBox {
         return birdName;
     }
 
-    public Calendar getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 }
