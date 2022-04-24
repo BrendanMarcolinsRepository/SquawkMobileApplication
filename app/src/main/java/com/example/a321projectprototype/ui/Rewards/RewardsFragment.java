@@ -25,9 +25,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +52,7 @@ public class RewardsFragment extends Fragment
     private ArrayList<RewardDisplayBox>vulnerable;
 
     private long allTimeScore;
+    int iteratorInt;
 
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -92,7 +91,16 @@ public class RewardsFragment extends Fragment
 
         allTimeScore = 0;
 
-        setScores();
+        setScores(new onCallBack() {
+            @Override
+            public void callBack() {
+                Log.d("All Time Score", String.valueOf(allTimeScore));
+
+                /******************
+                   Code Goes Here
+                 ******************/
+            }
+        });
 
         Log.d("AllTimeScoreOnCreateView", String.valueOf(allTimeScore));
         return root;
@@ -116,7 +124,7 @@ public class RewardsFragment extends Fragment
         }
     };
 
-    private void setScores() {
+    private void setScores(onCallBack callback) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         firebaseFirestore.collection("identified_bird").orderBy("date", Query.Direction.ASCENDING)
@@ -125,14 +133,16 @@ public class RewardsFragment extends Fragment
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        populateRewardPoint(new onCallBackReward() {
+                        populateRewardPoint(new onCallBack() {
                             @Override
                             public void callBack() {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                QuerySnapshot snapshot = task.getResult();
+                                iteratorInt = 0;
+                                for (QueryDocumentSnapshot document : snapshot) {
                                     String birdName = (String)document.get("bird_name");
                                     Timestamp birdDate = (Timestamp)document.get("date");
 
-                                    getBirdStatus(birdName, new onCallBackStatus() {
+                                    getBirdStatus(birdName, new onCallBackString() {
                                         @Override
                                         public void callBack(String callbackStatus) {
                                             Log.d("Birdname", birdName);
@@ -144,10 +154,13 @@ public class RewardsFragment extends Fragment
                                             allTimeScore += score;
 
                                             Log.d("Reward", String.valueOf(score));
+
+                                            if(iteratorInt++ == snapshot.size() - 1){ //last iteration
+                                                callback.callBack();
+                                            }
                                         }
                                     });
                                 }
-                                Log.d("All Time Score", String.valueOf(allTimeScore));
                             }
                         });
                     }
@@ -155,15 +168,15 @@ public class RewardsFragment extends Fragment
     }
 
 
-    public interface onCallBackStatus {
+    public interface onCallBackString {
     void callBack(String callbackStatus);
     }
 
-    public interface onCallBackReward {
+    public interface onCallBack {
     void callBack();
     }
 
-    private void getBirdStatus(String birdName, onCallBackStatus callback) {
+    private void getBirdStatus(String birdName, onCallBackString callback) {
         firebaseFirestore.collection("bird")
                 .whereEqualTo("bird_name", birdName)
                 .get()
@@ -184,7 +197,7 @@ public class RewardsFragment extends Fragment
                 });
     }
 
-    private void populateRewardPoint(onCallBackReward callback) {
+    private void populateRewardPoint(onCallBack callback) {
         firebaseFirestore.collection("rewardPoint")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -207,20 +220,30 @@ public class RewardsFragment extends Fragment
 
     private void addRewardDisplayBox(RewardDisplayBox data, String status) {
         switch(status) {
-            case "critically endangered":
+            case "critically endangereds":
                 criticallyEndangered.add(data);
+                return;
             case "breeding endemic":
                 breedingEndemics.add(data);
+                return;
+            case "endemic":
+                endemic.add(data);
+                return;
             case "endangered":
                 endangered.add(data);
+                return;
             case "introduced species":
                 introducedSpecies.add(data);
+                return;
             case "rare/accidental":
                 rareAccidental.add(data);
+                return;
             case "near-threatened":
                 nearThreatened.add(data);
+                return;
             case "vulnerable":
                 vulnerable.add(data);
+                return;
             default:
                 Log.d("Error in adding data to display box", status);
         }
