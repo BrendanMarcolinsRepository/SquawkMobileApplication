@@ -42,14 +42,14 @@ public class RewardsFragment extends Fragment
 
     private Map<String, Long>rewardPointMap;
 
-    private ArrayList<RewardDisplayBox>criticallyEndangered;
-    private ArrayList<RewardDisplayBox>breedingEndemics;
-    private ArrayList<RewardDisplayBox>endangered;
-    private ArrayList<RewardDisplayBox>endemic;
-    private ArrayList<RewardDisplayBox>introducedSpecies;
-    private ArrayList<RewardDisplayBox>rareAccidental;
-    private ArrayList<RewardDisplayBox>nearThreatened;
-    private ArrayList<RewardDisplayBox>vulnerable;
+    private ArrayList<rewardsStatusListObject>criticallyEndangered;
+    private ArrayList<rewardsStatusListObject>breedingEndemics;
+    private ArrayList<rewardsStatusListObject>endangered;
+    private ArrayList<rewardsStatusListObject>endemic;
+    private ArrayList<rewardsStatusListObject>introducedSpecies;
+    private ArrayList<rewardsStatusListObject>rareAccidental;
+    private ArrayList<rewardsStatusListObject>nearThreatened;
+    private ArrayList<rewardsStatusListObject>vulnerable;
 
     private long dailyScore;
     private long weeklyScore;
@@ -84,7 +84,10 @@ public class RewardsFragment extends Fragment
         adaptor = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, times);
         rewardSpinner.setAdapter(adaptor);
 
+        //stores reward points with bird status as key
         rewardPointMap = new HashMap<>();
+
+        //a seperate list for each bird status which will be loaded with all the birds in that status the user has identified
         criticallyEndangered = new ArrayList<>();
         breedingEndemics = new ArrayList<>();
         endangered = new ArrayList<>();
@@ -153,7 +156,7 @@ public class RewardsFragment extends Fragment
                                             Log.d("Birdname", birdName);
                                             Log.d("Status", callbackStatus);
 
-                                            addRewardDisplayBox(new RewardDisplayBox(birdName, birdDate), callbackStatus);
+                                            addRewardDisplayBox(new rewardsStatusListObject(birdName, birdDate), callbackStatus);
 
                                             long score = rewardPointMap.get(callbackStatus);
                                             allTimeScore += score;
@@ -230,7 +233,7 @@ public class RewardsFragment extends Fragment
         //return rewardPoint[0];
     }
 
-    private void addRewardDisplayBox(RewardDisplayBox data, String status) {
+    private void addRewardDisplayBox(rewardsStatusListObject data, String status) {
         switch(status) {
             case "critically endangereds":
                 criticallyEndangered.add(data);

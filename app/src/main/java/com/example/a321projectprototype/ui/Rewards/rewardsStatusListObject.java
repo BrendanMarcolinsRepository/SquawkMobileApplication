@@ -2,11 +2,11 @@ package com.example.a321projectprototype.ui.Rewards;
 
 import com.google.firebase.Timestamp;
 
-public class RewardDisplayBox {
+public class rewardsStatusListObject {
     private String birdName;
     private Timestamp timestamp;
 
-    RewardDisplayBox(String birdName, Timestamp timestamp) {
+    rewardsStatusListObject(String birdName, Timestamp timestamp) {
         this.birdName = birdName;
         this.timestamp = timestamp;
     }
