@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
+import com.example.a321projectprototype.User.FlockScoreModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder>
 {
-    protected List<FlockModelData> FullList;
-    protected List<FlockModelData> dataSet;
+    protected List<FlockScoreModel> flockList;
+    protected List<Integer> flockScoreList;
     protected int position;
 
     class MyViewHolder extends RecyclerView.ViewHolder
@@ -34,10 +35,10 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
         }
     }
 
-    AdapterLeaderboard(List<FlockModelData> listItem)
+    AdapterLeaderboard(List<FlockScoreModel> flockList , List<Integer> flockScoreList)
     {
-        this.dataSet = listItem;
-        FullList = new ArrayList<>(listItem);
+        this.flockList = flockList;
+        this.flockScoreList = flockScoreList;
 
     }
 
@@ -56,17 +57,17 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder holder, int position)
     {
-        FlockModelData memberFlock = dataSet.get(position);
-        holder.memberNameTextview.setText(memberFlock.getName());
-        holder.scoreTextview.setText(Integer.toString(0));
-        holder.positionTextview.setText(Integer.toString(1));
-
+        System.out.println("FLOCK NAME ISSSSSSSSSSSS : " + flockList.get(position).getFlockName());
+        holder.memberNameTextview.setText(flockList.get(position).getFlockName());
+        holder.scoreTextview.setText(flockScoreList.get(position).toString());
+        int pos = position + 1;
+        holder.positionTextview.setText("#"+pos);
 
     }
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        return flockList.size();
     }
 
 }

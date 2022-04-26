@@ -148,22 +148,17 @@ public class FlockFragment extends Fragment
 
         progressBar.setVisibility(View.VISIBLE);
         firebaseFirestore.collection("flocks").orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>()
-                {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
-                    {
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                        if(error != null)
-                        {
+                        if(error != null)  {
                             System.out.println("ERROR ================> " + error.getMessage());
                         }
 
-                        for(DocumentChange documentChange : value.getDocumentChanges())
-                        {
+                        for(DocumentChange documentChange : value.getDocumentChanges()) {
 
-                            if(documentChange.getType() == DocumentChange.Type.ADDED)
-                            {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED) {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
                                 System.out.println("Postion clicked is: ======================>?" + flockList.get(0).getFlockId());

@@ -68,8 +68,7 @@ public class FlockCreationFragment extends Fragment
 
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_flock_create, container, false);
 
         homePage = (HomePage)getActivity();
@@ -102,17 +101,14 @@ public class FlockCreationFragment extends Fragment
         return root;
     }
 
-    private final View.OnClickListener selectPhotoMethod = new View.OnClickListener()
-    {
+    private final View.OnClickListener selectPhotoMethod = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             imageChooser();
         }
     };
 
-    void imageChooser()
-    {
+    void imageChooser() {
 
         // create an instance of the
         // intent of the type image
@@ -142,24 +138,18 @@ public class FlockCreationFragment extends Fragment
             }
         }
     }
-    private final View.OnClickListener createFlockMethod = new View.OnClickListener()
-    {
+    private final View.OnClickListener createFlockMethod = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
            confirmNewFlock(v);
-
         }
     };
 
-    private final View.OnClickListener updateFlockMethod = new View.OnClickListener()
-    {
+    private final View.OnClickListener updateFlockMethod = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             confirmNewFlock(v);
             System.out.println("worked ==================================== 1");
-
         }
     };
 
@@ -167,16 +157,11 @@ public class FlockCreationFragment extends Fragment
     {
         flockNameString = name.getText().toString();
         flockDescriptionString = name.getText().toString();
-        if(flockNameString.isEmpty())
-        {
+        if(flockNameString.isEmpty()) {
             name.setError("Please Enter a flock name");
-        }
-        else if(flockDescriptionString.isEmpty())
-        {
+        } else if(flockDescriptionString.isEmpty()) {
             description.setError("Please Enter a small description");
-        }
-        else
-        {
+        } else {
             ownerUsername = homePage.getName();
             
 
@@ -196,39 +181,29 @@ public class FlockCreationFragment extends Fragment
             myMap.put("description",flockDescriptionString);
             myMap.put("created_at",dateString);
             myMap.put("updated_at",dateString);
-
-            System.out.println("worked ==================================== 2");
-
-            documentReference.set(myMap).addOnSuccessListener(new OnSuccessListener<Void>()
-            {
-                @Override
-                public void onSuccess(Void aVoid)
-                {
-                    System.out.println("worked ==================================== 3");
-
-
-                }
-            }).addOnFailureListener(new OnFailureListener()
-            {
-                @Override
-                public void onFailure(@NonNull Exception e)
-                {
-
-                }
-            });
+            documentReference.set(myMap);
 
 
             DocumentReference documentReference1 = firebaseFirestore.collection("flockMembers").document();
-
+            String flockId = documentReference.getId();
 
             HashMap<String,Object> myMap1 = new HashMap<>();
-            myMap1.put("flockId",documentReference.getId());
+            myMap1.put("flockId",flockId);
             myMap1.put("userId", auth.getUid());
             myMap1.put("created_at",dateString);
+            documentReference1.set(myMap1);
 
-
-            documentReference1.set(myMap1).addOnSuccessListener(new OnSuccessListener<Void>()
-            {
+            HashMap<String,Object> map2 = new HashMap<>();
+            myMap1.put("flockname",flockNameString);
+            myMap1.put("scorethisweek", 0);
+            myMap1.put("scorethismonth", 0);
+            myMap1.put("scorethisyear", 0);
+            myMap1.put("created_at",dateString);
+            myMap1.put("updated_at",dateString);
+            documentReference = firebaseFirestore
+                    .collection("flockScore")
+                    .document(flockId);
+            documentReference.set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid)
                 {
@@ -236,32 +211,18 @@ public class FlockCreationFragment extends Fragment
                     navController.navigate(R.id.flock_fragment_nav_return);
 
                 }
-            }).addOnFailureListener(new OnFailureListener()
-            {
-                @Override
-                public void onFailure(@NonNull Exception e)
-                {
-
-                }
             });
         }
-
-
-
     }
 
-    private void checkFlockName()
-    {
+    private void checkFlockName() {
 
-        if(homePage.getFlockModelData() != null)
-        {
+        if(homePage.getFlockModelData() != null) {
             create.setVisibility(View.GONE);
             // create.setOnClickListener(null);
             update.setVisibility(View.VISIBLE);
 
-        }
-        else
-        {
+        } else {
             update.setVisibility(View.GONE);
             //  update.setOnClickListener(null);
             create.setVisibility(View.VISIBLE);

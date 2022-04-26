@@ -20,13 +20,13 @@
 
     <Spinner
         android:id="@+id/leaderboards_Spinner"
+        style="@style/SpinnerTheme"
         android:layout_width="300dp"
         android:layout_height="?attr/dropdownListPreferredItemHeight"
         android:layout_margin="10dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/grey_textbox"
         android:dropDownWidth="300dp"
         android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
         android:paddingRight="14dp"
@@ -47,6 +47,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/leaderboards_Spinner" />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progressBarLeaderboard"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

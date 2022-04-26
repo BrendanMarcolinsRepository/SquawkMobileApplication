@@ -3,20 +3,29 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable-anydpi/ic_logo_record.xml" value="0.315" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/et_style.xml" value="0.334" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/green.xml" value="0.334" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/grey_textbox.xml" value="0.334" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/record_switch_contents.xml" value="0.1975" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/side_nav_bar.xml" value="0.338" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/signupbuttondrawable.xml" value="0.1415" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/spinner_background.xml" value="0.315" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/spinner_style.xml" value="0.315" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/switch_offline.xml" value="0.1975" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/switch_online.xml" value="0.1975" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/switch_record.xml" value="0.1975" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/textviewcustomer.xml" value="0.334" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/activity_home_page.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/activity_sign_up.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/flock_leaderboard_selected.xml" value="0.33229166666666665" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/flock_leaderboard_spinner.xml" value="0.33229166666666665" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragement_record_retrieved_data.xml" value="0.160081053698075" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_flock_leaderboards.xml" value="0.2644927536231884" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_pastrecordings.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_pastrecordings_online.xml" value="0.322463768115942" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_record.xml" value="0.22" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/leaderboard_content.xml" value="0.5" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/login_page.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/pastrecordings_cardview.xml" value="0.33" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/reset_password.xml" value="0.27717391304347827" />
