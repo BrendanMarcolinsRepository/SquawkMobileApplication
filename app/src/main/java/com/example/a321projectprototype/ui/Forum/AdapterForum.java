@@ -133,11 +133,16 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<ForumModel> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
+            String s = constraint.toString();
+            System.out.println("worked 1");
+            if (s.isEmpty()) {
                 filteredList.addAll(FullList);
+                System.out.println("worked 2");
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
+                System.out.println("worked 4" + FullList.size());
                 for (ForumModel item : FullList) {
+                    System.out.println("title: " + item.getTitle().toLowerCase());
                     if (item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }

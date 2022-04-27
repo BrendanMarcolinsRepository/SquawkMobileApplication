@@ -57,7 +57,6 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder holder, int position)
     {
-        System.out.println("FLOCK NAME ISSSSSSSSSSSS : " + flockList.get(position).getFlockName());
         holder.memberNameTextview.setText(flockList.get(position).getFlockName());
         holder.scoreTextview.setText(flockScoreList.get(position).toString());
         int pos = position + 1;

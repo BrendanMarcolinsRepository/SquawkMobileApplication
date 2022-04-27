@@ -13,11 +13,12 @@ public class FlockModelData implements Serializable {
     private String description;
     private String created_at;
     private String updated_at;
+    private String imageUrl;
 
     public FlockModelData() {
     }
 
-    public FlockModelData(String flockId, String userId, String name, int memberCount, String description, String created_at, String updated_at) {
+    public FlockModelData(String flockId, String userId, String name, int memberCount, String description, String created_at, String updated_at, String imageUrl) {
         this.flockId = flockId;
         this.userId = userId;
         this.name = name;
@@ -25,6 +26,7 @@ public class FlockModelData implements Serializable {
         this.description = description;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.imageUrl = imageUrl;
     }
 
     public String getFlockId() {
@@ -81,6 +83,14 @@ public class FlockModelData implements Serializable {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
 

@@ -26,6 +26,7 @@ public class MyRvAdapter extends RecyclerView.Adapter<MyRvAdapter.MyViewHolder>
     onClickInterface onClickInterface;
     private int selectedItem;
 
+
     private View view;
 
     MyRvAdapter(List<String> listItem,Context context,onClickInterface onClickInterface, HomePage homePage)

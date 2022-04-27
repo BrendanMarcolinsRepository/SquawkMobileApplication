@@ -68,12 +68,13 @@ public class HomePage extends AppCompatActivity implements Serializable
     private FlockModelData flockModelData;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_home_page);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -289,5 +290,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     public FlockModelData getFlockModelData() {
         return flockModelData;
     }
+
+
 }
 

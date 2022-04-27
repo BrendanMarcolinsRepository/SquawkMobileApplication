@@ -67,8 +67,6 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         //this.position = holder.getAbsoluteAdapterPosition();
         holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
         Glide.with(homePage.getApplicationContext())
                 .load(listItem.get(position).getBird_image())
                 .fitCenter()

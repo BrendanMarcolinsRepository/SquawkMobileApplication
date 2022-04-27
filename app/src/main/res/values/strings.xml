@@ -23,13 +23,12 @@
     <string name="menu_Reward">Reward</string>
     <string name="menu_Settings">Settings</string>
 
+    <string name="No_Result">No Result</string>
 
     <string name="recordChirp">Press to Record Your Chirps</string>
     <string name="recordRequest">Permission to use recording device</string>
 
     <string name="DiscoverAustralianBirds">Discover Australian Birds</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

@@ -76,6 +76,7 @@ public class PastRecordingsFragment extends Fragment {
     private Button offline, online;
     private NavController navigation;
     private final boolean CLOUD = false;
+    private TextView emptyTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,6 +94,8 @@ public class PastRecordingsFragment extends Fragment {
         recyclerView2 = root.findViewById(R.id.recycleRecordings2);
         date = root.findViewById(R.id.past_date_textview);
         relativeLayout = root.findViewById(R.id.imageButtonCalendar);
+        emptyTextView = root.findViewById(R.id.noResultPastRecordingTextview);
+        emptyTextView.setVisibility(View.INVISIBLE);
 
 
         offline.setOnClickListener(offlineButtomMethod);
@@ -157,8 +160,15 @@ public class PastRecordingsFragment extends Fragment {
 
         filesList.addAll(tempFiles);
 
+        if(filesList.isEmpty()){
+            emptyTextView.setVisibility(View.VISIBLE);
+        }else{
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
+
         if (pastRecordingsCardviewAdpator != null)
             pastRecordingsCardviewAdpator.notifyDataSetChanged();
+
 
 
     }

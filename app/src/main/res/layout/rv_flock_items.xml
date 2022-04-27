@@ -17,7 +17,7 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/flock_group_picture"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

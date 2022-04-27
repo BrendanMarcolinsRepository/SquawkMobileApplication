@@ -1,13 +1,17 @@
 package com.example.a321projectprototype.ui.Flock;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,9 +20,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
+import com.example.a321projectprototype.User.BirdModel;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder>
+public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder> implements Filterable
 {
     List<FlockModelData> FullList;
     List<FlockModelData> dataSet;
@@ -57,22 +64,25 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     private FirebaseFirestore firebaseFirestore;
 
 
+
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         private Button joinButton, infoButton;
-        TextView groupName, groupCountNumber;
-
+        private TextView groupName, groupCountNumber;
+        ImageView image;
 
 
         MyViewHolder(View itemView)
         {
             super(itemView);
             navigation = homePage.getNav();
+            image = itemView.findViewById(R.id.flock_group_picture);
             groupName = itemView.findViewById(R.id.flock_namesearch_textview);
             groupCountNumber = itemView.findViewById(R.id.flock_amount_textview);
             joinButton = itemView.findViewById(R.id.flock_join_button);
             infoButton = itemView.findViewById(R.id.flock_info_button);
             registerLayout = view.findViewById(R.id.registerlayerFlock);
+
 
 
 
@@ -112,7 +122,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
     {
         this.dataSet = listItem;
         this.homePage = homePage;
-        FullList = new ArrayList<>(listItem);
+        FullList = new ArrayList<>(dataSet);
         this.context = context;
 
         this.view = view;
@@ -131,11 +141,21 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
 
     @Override
-    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         currentItem = dataSet.get(position);
         holder.groupName.setText(currentItem.getName());
         name = currentItem.getName();
         holder.groupCountNumber.setText(currentItem.getMemberCount() + "/200");
+
+        System.out.println("PATH LOCATION: = " + currentItem.getName());
+        System.out.println("PATH LOCATION: = " + currentItem.getImageUrl());
+
+        Glide.with(homePage.getApplicationContext())
+                .load(currentItem.getImageUrl())
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.user_profile)
+                .into(holder.image);
 
         holder.joinButton.setOnClickListener(new View.OnClickListener() {
 
@@ -191,10 +211,11 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             return results;
         }
 
+
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();
-            dataSet.addAll((ArrayList) results.values);
+            dataSet.addAll((List) results.values);
             notifyDataSetChanged();
         }
 

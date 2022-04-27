@@ -26,6 +26,7 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.Backend;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -64,9 +65,22 @@ public class Prototype extends AppCompatActivity {
 
 
 
+
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+       if(firebaseUser != null){
+           Intent homepage  = new Intent(Prototype.this, HomePage.class);
+           homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+           startActivity(homepage);
+           finish();
+       }
+    }
 
     private final View.OnClickListener loginAccount = new View.OnClickListener() {
         @Override

@@ -23,11 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
+import com.example.a321projectprototype.User.FlockScoreModel;
 import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -52,6 +56,7 @@ public class FlockInfoFragment extends Fragment
     private FirebaseFirestore firebaseFirestore;
     private FlockModelData flockModelData;
     private ProgressBar progressBar;
+    private UserModel userModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -112,37 +117,17 @@ public class FlockInfoFragment extends Fragment
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        firebaseFirestore.collection("flockMembers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    List<String> list = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        if(flockModelData.getFlockId().equals(document.get("flockId").toString()))
-                        {
-
-                            System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
-                            userIds.add(document.get("userId").toString());
-
-                        }
-                        else
-                        {
-
-                        }
+        firebaseFirestore.collection("flockMembers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if(flockModelData.getFlockId().equals(document.get("flockId").toString())) {
+                        System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
+                        userIds.add(document.get("userId").toString());
                     }
 
-                    loadOtherData();
-
                 }
-                else
-                {
-                    System.out.println("no document");
-                }
+                loadOtherData();
             }
-
         });
 
 
@@ -158,50 +143,20 @@ public class FlockInfoFragment extends Fragment
     {
         if(userIds != null)
         {
-            System.out.println("User Here ==========================> worked 1");
-            firebaseFirestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task)
-                {
-                    if (task.isSuccessful()) {
-
-                        System.out.println("User Here ==========================> worked 2" + userIds.get(0));
-                        for (String s : userIds)
-                        {
-                            System.out.println("User Here ==========================> " + s);
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                //System.out.println("User Here ==========================> " + document.get("userId").toString());
-
-                                if(s.equals(document.get("userId").toString()))
-                                {
-
-                                    UserModel userModel = new UserModel();
-                                    userModel.setUsername(document.get("username").toString());
-                                    System.out.println("User Here ==========================> " + userModel.getUsername());
-                                    userModelList.add(userModel);
-
-                                }
-                                else
-                                {
-
-                                }
+            firebaseFirestore.collection("users")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        for(DocumentSnapshot documentSnapshot : task.getResult()){
+                            if(userIds.contains(documentSnapshot.get("userId").toString())){
+                                userModel = documentSnapshot.toObject(UserModel.class);
+                                System.out.println("User Here ==========================> " + userModel.getUsername());
+                                userModelList.add(userModel);
 
                             }
                         }
 
                         setRecycleVeiw(userModelList);
-
-
-                    }
-                    else
-                    {
-                        System.out.println("no document");
-                    }
-                }
-
-            });
-
+                    });
             progressBar.setVisibility(View.INVISIBLE);
 
         }

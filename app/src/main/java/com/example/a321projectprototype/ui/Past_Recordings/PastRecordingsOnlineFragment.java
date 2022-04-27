@@ -56,6 +56,7 @@ public class PastRecordingsOnlineFragment extends Fragment {
     private int mYear,mMonth,mDay;
     private String stringDate;
     private final boolean CLOUD = true;
+    private TextView emptyTextView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -69,6 +70,8 @@ public class PastRecordingsOnlineFragment extends Fragment {
         recyclerView2 = root.findViewById(R.id.recycleRecordings2);
         date = root.findViewById(R.id.past_date_textview);
         relativeLayout = root.findViewById(R.id.imageButtonCalendar);
+        emptyTextView = root.findViewById(R.id.noResultPastRecordingTextview);
+        emptyTextView.setVisibility(View.INVISIBLE);
 
         relativeLayout.setOnClickListener(calendarLauncher);
 
@@ -181,6 +184,11 @@ public class PastRecordingsOnlineFragment extends Fragment {
                             }
                         }
 
+                        if(filesList.isEmpty()){
+                            emptyTextView.setVisibility(View.VISIBLE);
+                        }else{
+                            emptyTextView.setVisibility(View.INVISIBLE);
+                        }
                        pastRecordingsCardviewAdpator.notifyDataSetChanged();
 
 

@@ -78,8 +78,7 @@ public class ForumFragment extends Fragment
 
 //        System.out.println("Flock name 1 " + flockModelData.getName());
 
-        adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
-        recyclerView.setAdapter(adapterForum);
+
 
         forumSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
@@ -224,7 +223,8 @@ public class ForumFragment extends Fragment
                             }
                         }
 
-                        adapterForum.notifyDataSetChanged();
+                        setRecyclerView();
+                        //adapterForum.notifyDataSetChanged();
 
 
 
@@ -260,6 +260,11 @@ public class ForumFragment extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
+        recyclerView.setAdapter(adapterForum);
+    }
+
+    private void setRecyclerView(){
         adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
         recyclerView.setAdapter(adapterForum);
     }

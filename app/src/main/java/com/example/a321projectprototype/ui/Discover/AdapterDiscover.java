@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> {
+public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> implements Filterable {
 
     List<BirdModel> FullList;
     List<BirdModel> dataSet;
@@ -110,12 +111,16 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<BirdModel> filteredList = new ArrayList<>();
+            System.out.println("worked 1");
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(FullList);
+                System.out.println("worked 2");
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
+                System.out.println("worked 3");
                 for (BirdModel item : FullList) {
                     if (item.getComName().toLowerCase().contains(filterPattern)) {
+                        System.out.println("worked 4");
                         filteredList.add(item);
                     }
                 }

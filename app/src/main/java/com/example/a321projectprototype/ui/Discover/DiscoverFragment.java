@@ -95,7 +95,7 @@ public class DiscoverFragment extends Fragment
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                if(list.contains(query))
+                if(birdList.contains(query))
                 {
                     adapterDiscover.getFilter().filter(query);
                 }

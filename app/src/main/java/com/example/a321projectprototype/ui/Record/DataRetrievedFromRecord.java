@@ -80,35 +80,30 @@ public class DataRetrievedFromRecord extends Fragment
     private void setData()
     {
         firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("bird").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
+        firebaseFirestore.collection("bird").addSnapshotListener((value, error) -> {
 
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                        System.out.println("Bird Section +++++++++++++++++++++++++++++++++++++");
-                        if(error != null)
-                        {
-                            System.out.println("Error ==========?>" +  error);
-                            return;
-                        }
+            System.out.println("Bird Section +++++++++++++++++++++++++++++++++++++");
+            if(error != null)
+            {
+                System.out.println("Error ==========?>" +  error);
+                return;
+            }
 
 
-                        for(DocumentChange documentChange : value.getDocumentChanges())
-                        {
-                            if(documentChange.getType() == DocumentChange.Type.ADDED)
-                            {
+            for(DocumentChange documentChange : value.getDocumentChanges())
+            {
+                if(documentChange.getType() == DocumentChange.Type.ADDED)
+                {
 
-                                BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
-                                birdRewardModelList.add(birdRewardModel);
-                            }
+                    BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
+                    birdRewardModelList.add(birdRewardModel);
+                }
 
-                        }
-                        generator();
-                        loadRewardData();
+            }
+            generator();
+            loadRewardData();
 
-                    }
-                });
+        });
     }
 
     public void loadRewardData() {
