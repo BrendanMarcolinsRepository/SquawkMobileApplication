@@ -1,8 +1,10 @@
 package com.example.a321projectprototype.LoginPackage;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.Toolbar;
+
 
 import android.os.Bundle;
 import android.util.Patterns;
@@ -11,52 +13,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.a321projectprototype.Database.UserDatabase;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.UserModel;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
-    private String fullNameInput, usernameInput, emailInput, password1Input, password2Input, userID;
-    private int id;
+    private String fullNameInput, usernameInput, emailInput, password1Input, password2Input;
     private EditText fullNameEditText, usernameEditText, emailEditText, password1EditText, password2EditText;
     private Button register;
     private TextView returnText, registerText, registerAccountAlready;
-    private UserModel user;
-    private ConstraintLayout registerLayout;
-    private UserDatabase userDatabase;
-    private int amountOfUsers;
-    private ArrayList<UserModel> usersArrayList;
-    private FirebaseDatabase rootNode;
-    private DatabaseReference reference;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private String userFirebaseId;
     private FirebaseFirestore firebaseFirestore;
-    private FirebaseUser firebaseUser;
-    private final String USERS_KEY = "qbPjDm73CVIUz63gDu8D";
+    private Toolbar toolbar;
 
 
     @Override
@@ -65,31 +43,28 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
 
-
-        System.out.println(amountOfUsers);
-
-
-
-
-
         fullNameEditText = findViewById(R.id.fullNameRegister);
         usernameEditText = findViewById(R.id.usernameRegister);
         emailEditText = findViewById(R.id.emailRegister);
         password1EditText = findViewById(R.id.passwordOneRegister);
         password2EditText = findViewById(R.id.passwordTwoRegister);
         register = findViewById(R.id.registerButton);
-        registerLayout = findViewById(R.id.registerlayer);
         returnText = findViewById(R.id.registerSignIn);
         registerText = findViewById(R.id.registerText);
         registerAccountAlready = findViewById(R.id.registerAccountAlready);
+        toolbar = findViewById(R.id.toolbar);
+
         progressBar = findViewById(R.id.signUpProgressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-
+        toolbar.setOnClickListener(returnToolBar);
         returnText.setOnClickListener(returnMethod);
         register.setOnClickListener(registerMethod);
 
     }
+
+
+    private final View.OnClickListener returnToolBar = v -> finish();
 
     private final View.OnClickListener registerMethod = new View.OnClickListener() {
         @Override
@@ -138,6 +113,7 @@ public class SignUp extends AppCompatActivity {
                 setVisiable();
                 setProgress();
             }
+
             if (password2Input.isEmpty()) {
                 password2EditText.setError("Password is required");
                 password2EditText.requestFocus();
@@ -146,18 +122,13 @@ public class SignUp extends AppCompatActivity {
 
             }
 
-            if (password1Input.matches(password2Input) && !password1Input.isEmpty())
-            {
+            if (password1Input.matches(password2Input) && !password1Input.isEmpty()) {
 
                 auth = FirebaseAuth.getInstance();
                 firebaseFirestore = FirebaseFirestore.getInstance();
 
                 auth.createUserWithEmailAndPassword(emailInput,password2Input).addOnCompleteListener((task -> {
-
-
-
-                    if(task.isSuccessful())
-                    {
+                    if(task.isSuccessful()) {
 
                         userFirebaseId = auth.getCurrentUser().getUid();
                         DocumentReference documentReference = firebaseFirestore.collection("users").document(userFirebaseId);
@@ -166,42 +137,33 @@ public class SignUp extends AppCompatActivity {
                         userMap.put("username",usernameInput);
                         userMap.put("password",password1Input);
                         userMap.put("email", emailInput);
-                        documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
-                        {
-                            @Override
-                            public void onSuccess(Void aVoid)
-                            {
-                                System.out.println("worked");
-                            }
-                        });
-
-                        returnToLogin();
-                    }
-                    else
-                    {
+                        documentReference.set(userMap).addOnSuccessListener(aVoid -> returnToLogin());
+                    } else {
                         setVisiable();
                         setProgress();
                         emailEditText.setError("Your Email Is Already In Use");
                         emailEditText.requestFocus();
 
                     }
-                }));
+
+                    if(task.isCanceled()){
+                        finish();
+                    }
+
+                })).addOnFailureListener(e -> {
+                    setVisiable();
+                    setProgress();
+                    emailEditText.setError("Your Email Is Already In Use");
+                    emailEditText.requestFocus();
+                });
             }
-
         }
     };
 
 
 
 
-    private final View.OnClickListener returnMethod = new View.OnClickListener() {
-        @Override
-        public void onClick(View v)
-        {
-            returnToLogin();
-        }
-
-    };
+    private final View.OnClickListener returnMethod = v -> returnToLogin();
 
     private void returnToLogin()
     {
@@ -213,8 +175,7 @@ public class SignUp extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    private void setInvisiable()
-    {
+    private void setInvisiable() {
         fullNameEditText.setVisibility(View.INVISIBLE);
         usernameEditText.setVisibility(View.INVISIBLE);
         emailEditText.setVisibility(View.INVISIBLE);
@@ -226,8 +187,7 @@ public class SignUp extends AppCompatActivity {
         registerText.setVisibility(View.INVISIBLE);
     }
 
-    private void setVisiable()
-    {
+    private void setVisiable() {
         fullNameEditText.setVisibility(View.VISIBLE);
         usernameEditText.setVisibility(View.VISIBLE);
         emailEditText.setVisibility(View.VISIBLE);

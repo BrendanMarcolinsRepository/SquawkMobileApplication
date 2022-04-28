@@ -20,6 +20,7 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,9 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
 {
     protected List<UserModel> FullList;
     protected List<UserModel> dataSet;
-
+    private FlockModelData flockModelData;
+    private UserModel userModel;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private int picked;
     private Context context;
@@ -46,24 +49,17 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
             memberName = itemView.findViewById(R.id.textUsernameTable);
             //score = itemView.findViewById(R.id.memberFockScore);
 
-            memberName.setOnClickListener(memberSettings);
+
         }
 
-        View.OnClickListener memberSettings  = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                popUp();
-            }
-        };
     }
 
-    AdapaterMemberFlock(List<UserModel> listItem, Context context)
+    AdapaterMemberFlock(List<UserModel> listItem, Context context, FlockModelData flockModelData)
     {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
         this.context = context;
+        this.flockModelData = flockModelData;
 
     }
 
@@ -82,8 +78,13 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder holder, int position)
     {
-        UserModel userModel = dataSet.get(position);
+        userModel = dataSet.get(position);
         holder.memberName.setText(userModel.getUsername());
+        holder.memberName.setOnClickListener(v -> {
+            if(flockModelData.getUserId().equals(auth.getUid())){
+                popUp();
+            }
+        });
 
 
 
@@ -93,6 +94,7 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
     public int getItemCount() {
         return dataSet.size();
     }
+
 
     public void popUp()
     {

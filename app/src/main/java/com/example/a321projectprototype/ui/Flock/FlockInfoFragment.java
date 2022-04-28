@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
@@ -45,8 +48,9 @@ public class FlockInfoFragment extends Fragment
     private List<FlockMembersModel> flockMembersModelList;
     private AdapaterMemberFlock adapaterMemberFlock;
     private RecyclerView recyclerView;
-    private Button join,settings,invite;
+    private Button join,invite;
     private TextView groupName, groupScore;
+    private ImageView flockImage,settings;
     private int currentTotalScore = 0;
     private String name;
     private HomePage homePage;
@@ -57,6 +61,7 @@ public class FlockInfoFragment extends Fragment
     private FlockModelData flockModelData;
     private ProgressBar progressBar;
     private UserModel userModel;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
@@ -73,69 +78,72 @@ public class FlockInfoFragment extends Fragment
 
 
         groupName = root.findViewById(R.id.flockInfoGroupName);
-        groupName.setText(flockModelData.getName());
-
+        flockImage = root.findViewById(R.id.flock_group_info_picture);
         recyclerView = root.findViewById(R.id.recycleFlockInfo);
         join = root.findViewById(R.id.flock_info_join);
         groupScore = root.findViewById(R.id.flock_info_score);
         settings = root.findViewById(R.id.flockInfoSettings);
+        settings.setVisibility(View.INVISIBLE);
         invite = root.findViewById(R.id.flock_info_invite);
         progressBar = root.findViewById(R.id.flockMemebersListProgressBar);
         progressBar.setVisibility(View.VISIBLE);
 
 
+
+        loadUsersFlock();
         checkFlockName();
-
-
-
         loadData();
-
-
 
         join.setOnClickListener(joinInfoButtonMethod);
         settings.setOnClickListener(settingsInfoMethod);
         invite.setOnClickListener(inviteInfoMethod);
 
-
-
-       // groupScore.setText("Current Flocks Points: " + Integer.toString(currentTotalScore));
-
-
-
-
         return root;
+    }
+
+    private void loadUsersFlock() {
+        groupName.setText(flockModelData.getName());
+        System.out.println("woreked ");
+        if(flockModelData.getUserId().equals(auth.getUid())){
+            settings.setVisibility(View.VISIBLE);
+            System.out.println("woreked 1");
+
+        }else{
+            settings.setVisibility(ImageView.GONE);
+            settings.setVisibility(View.GONE);
+            settings.setEnabled(false);
+            System.out.println("woreked 2");
+        }
+
+        Glide.with(homePage.getApplicationContext())
+                .load(flockModelData.getImageUrl())
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.user_profile)
+                .into(flockImage);
+
     }
 
     public void loadData()
     {
         userIds = new ArrayList<>();
         userModelList = new ArrayList<>();
-        //assert getArguments() != null;
-
-
-        System.out.println("=========== Flock :" + flockModelData.getName());
 
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("flockMembers")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if(flockModelData.getFlockId().equals(document.get("flockId").toString())) {
+                                System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
+                                userIds.add(document.get("userId").toString());
+                            }
 
-        firebaseFirestore.collection("flockMembers").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    if(flockModelData.getFlockId().equals(document.get("flockId").toString())) {
-                        System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
-                        userIds.add(document.get("userId").toString());
+                        }
+                        loadOtherData();
                     }
-
-                }
-                loadOtherData();
-            }
         });
-
-
-
-
-
-
-
 
     }
 
@@ -171,7 +179,7 @@ public class FlockInfoFragment extends Fragment
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        adapaterMemberFlock = new  AdapaterMemberFlock(userModel,getContext());
+        adapaterMemberFlock = new  AdapaterMemberFlock(userModel,getContext(),flockModelData);
         recyclerView.setAdapter(adapaterMemberFlock);
     }
 
@@ -205,8 +213,7 @@ public class FlockInfoFragment extends Fragment
         }
     };
 
-    private void onButtonShowPopupWindowClick(View view)
-    {
+    private void onButtonShowPopupWindowClick(View view) {
 
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -220,25 +227,14 @@ public class FlockInfoFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        yes.setOnClickListener(new View.OnClickListener()
-        {
+        yes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-               // FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
-                //flockMembersModelList.add(flockMembersModel1);
-
+            public void onClick(View v) {
                 adapaterMemberFlock.notifyDataSetChanged();
-
-                //groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
-
                 alertDialog.dismiss();
             }
         });
-
-
-        no.setOnClickListener(new View.OnClickListener()
-        {
+        no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -248,8 +244,7 @@ public class FlockInfoFragment extends Fragment
         alertDialog.show();
     }
 
-    private void invitePopUpWindow(View view)
-    {
+    private void invitePopUpWindow(View view) {
 
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -263,25 +258,16 @@ public class FlockInfoFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        yes.setOnClickListener(new View.OnClickListener()
-        {
+        yes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-               // FlockMembersModel flockMembersModel1 = new FlockMembersModel("Sydney Flockers", "Brendan", 150);
-                //flockMembersModelList.add(flockMembersModel1);
-
+            public void onClick(View v) {
                 adapaterMemberFlock.notifyDataSetChanged();
-
-               // groupScore.setText("Current Flocks Points: "  + Integer.toString(currentTotalScore));
-
                 alertDialog.dismiss();
             }
         });
 
 
-        no.setOnClickListener(new View.OnClickListener()
-        {
+        no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -291,21 +277,17 @@ public class FlockInfoFragment extends Fragment
         alertDialog.show();
     }
 
-    private void checkFlockName()
-    {
+    private void checkFlockName() {
         FlockModelData flockModelData = homePage.getFlockModelData();
 
-        if(flockModelData != null)
-        {
+        if(flockModelData != null) {
             settings.setVisibility(View.VISIBLE);
             invite.setVisibility(View.VISIBLE);
             join.setVisibility(View.GONE);
 
             join.setOnClickListener(null);
 
-        }
-        else
-        {
+        } else {
             settings.setVisibility(View.GONE);
             invite.setVisibility(View.GONE);
             join.setVisibility(View.VISIBLE);
@@ -314,6 +296,4 @@ public class FlockInfoFragment extends Fragment
             invite.setOnClickListener(null);
         }
     }
-
-
 }

@@ -8,16 +8,34 @@
     android:id="@+id/registerlayer"
     tools:context=".LoginPackage.SignUp">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/buttonColours"
+        app:navigationIcon="?attr/homeAsUpIndicator" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/logo"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
     <TextView
         android:id="@+id/registerText"
         android:layout_width="282dp"
         android:layout_height="59dp"
-        android:layout_marginTop="36dp"
-        android:text="Register Your Account"
+        android:layout_marginTop="80dp"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="20dp"
+        android:text="Register Your Account"
         android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,14 +130,16 @@
         android:id="@+id/registerAccountAlready"
         android:layout_width="186dp"
         android:layout_height="52dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginLeft="84dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="2dp"
         android:clickable="true"
-        android:gravity="center"
         android:elevation="10dp"
-        android:textColor="@color/black"
+        android:gravity="center"
         android:text="Already Have An Account?"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/registerSignIn"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerButton" />
 
@@ -129,7 +149,6 @@
         android:layout_height="52dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp"
         android:clickable="true"
         android:gravity="center"
         android:text="Sign in"

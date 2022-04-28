@@ -12,10 +12,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,38 +30,34 @@ public class ResetPassword extends AppCompatActivity
     private String email;
     private Button confirmPasswordChange;
     private TextView header;
-    private EditText emailEditText, currentPasswordText, newPasswordText;
+    private EditText emailEditText;
+    private Toolbar toolbar;
 
-    protected void onCreate(Bundle savedInstanceState)
-    {
+
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reset_password);
         getSupportActionBar().hide();
 
         emailEditText = findViewById(R.id.currentEmailEdittext);
         confirmPasswordChange = findViewById(R.id.confirmRestPasswordButton);
-
+        toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressBarResetPassword);
 
         confirmPasswordChange.setOnClickListener(confirmResetPassword);
 
+        toolbar.setOnClickListener(returnToolBar);
+
     }
 
-    private final View.OnClickListener confirmResetPassword = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            updatePassword();
-        }
-    };
+    private final View.OnClickListener confirmResetPassword = v -> updatePassword();
 
-    private void updatePassword()
-    {
+    private final View.OnClickListener returnToolBar = v -> finish();
+
+    private void updatePassword() {
         email = emailEditText.getText().toString();
 
-        if(checkEmail(email))
-        {
+        if(checkEmail(email)) {
             header = findViewById(R.id.resetTextviewHeader);
             header.setVisibility(View.INVISIBLE);
             emailEditText.setVisibility(View.INVISIBLE);
@@ -68,8 +66,7 @@ public class ResetPassword extends AppCompatActivity
 
             sendEmailToUpdatePassword(email);
         }
-        else
-        {
+        else {
             return;
         }
 
@@ -78,46 +75,41 @@ public class ResetPassword extends AppCompatActivity
     private void sendEmailToUpdatePassword(String email)
     {
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                if(task.isSuccessful())
-                {
-                    finish();
-                }
-                else
-                {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    header.setVisibility(View.VISIBLE);
-                    emailEditText.setVisibility(View.VISIBLE);
-                    confirmPasswordChange.setVisibility(View.VISIBLE);
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                finish();
+            } else {
 
-                    Toast.makeText(ResetPassword.this,"There was an error that has occured,please try again",Toast.LENGTH_SHORT);
-                }
+                progressBar.setVisibility(View.INVISIBLE);
+                header.setVisibility(View.VISIBLE);
+                emailEditText.setVisibility(View.VISIBLE);
+                confirmPasswordChange.setVisibility(View.VISIBLE);
+
+                emailEditText.setError("Email Incorrect Or Account Does Not Exist");
+                emailEditText.requestFocus();
+                Toast.makeText(ResetPassword.this,"Email Incorrect Or Account Does Not Exist",Toast.LENGTH_SHORT).show();
+            }
+
+            if(task.isCanceled()){
+                finish();
             }
         });
     }
 
-    private boolean checkEmail(String email)
-    {
+    private boolean checkEmail(String email) {
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-        {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailEditText.setError("Email is required");
             emailEditText.requestFocus();
             return false;
         }
 
-        if(email.isEmpty())
-        {
+        if(email.isEmpty()) {
             emailEditText.setError("Email is required");
             emailEditText.requestFocus();
             return false;
 
         }
-
         return true;
     }
 }
