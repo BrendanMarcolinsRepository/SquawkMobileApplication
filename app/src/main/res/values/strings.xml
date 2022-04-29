@@ -25,6 +25,9 @@
 
     <string name="No_Result">No Result</string>
 
+
+    <string name="Comment">Comment</string>
+
     <string name="recordChirp">Press to Record Your Chirps</string>
     <string name="recordRequest">Permission to use recording device</string>
 

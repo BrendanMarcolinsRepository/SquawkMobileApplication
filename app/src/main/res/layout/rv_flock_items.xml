@@ -19,21 +19,22 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/flock_group_picture"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="82dp"
+                android:layout_height="78dp"
                 android:src="@drawable/ic_account_profile_picture"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/flocklinearlayout"
-                app:layout_constraintHorizontal_bias="0.35"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.482" />
 
             <LinearLayout
                 android:id="@+id/flocklinearlayout"
-                android:layout_width="269dp"
-                android:layout_height="47dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="4dp"
+                android:layout_width="217dp"
+                android:layout_height="43dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +45,9 @@
                     android:layout_width="150dp"
                     android:layout_height="31dp"
                     android:gravity="center"
+                    android:text="sadsa"
+                    android:textSize="17dp"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     tools:layout_editor_absoluteX="121dp"
                     tools:layout_editor_absoluteY="16dp" />
@@ -65,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/green"
                 android:text="Info"
                 android:textColor="@color/white"

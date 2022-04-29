@@ -56,20 +56,12 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             topic = itemView.findViewById(R.id.forumTopicRv);
             description = itemView.findViewById(R.id.forumDescriptionRv);
             username = itemView.findViewById(R.id.forumUserRv);
-
             name = username.getText().toString();
 
 
-
-
-
-            //System.out.println("Flock name 2 " + name);
-
-            itemView.setOnClickListener(new View.OnClickListener()
-            {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     picked = getLayoutPosition();
                     System.out.println("worked");
                     Bundle bundle = new Bundle();
@@ -113,7 +105,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         currentItem = dataSet.get(position);
 
         holder.topic.setText("Topic: " + currentItem.getTitle());
-        holder.username.setText("Cherper: " + currentItem.getUsername());
+        holder.username.setText("Chirper: " + currentItem.getUsername());
         holder.description.setText(currentItem.getDescription());
 
 

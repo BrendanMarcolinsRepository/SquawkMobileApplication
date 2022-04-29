@@ -147,32 +147,28 @@ public class DataRetrievedFromRecord extends Fragment
 
 
         int counter = 0;
-        while(counter < MAX_IDENTIFIER)
-        {
+        while(counter < MAX_IDENTIFIER) {
             int randomInteger = randomObject.nextInt(23);
 
-            System.out.println("list size here +++++++++++++++ : " + birdRewardModelList.size());
-
-            if(counter == 0)
-            {
+            if(numberBirds.isEmpty()){
                 numberBirds.add(randomInteger);
                 tempBirdList.add(birdRewardModelList.get(randomInteger));
-            }
-
-            for(int i = 0; i < numberBirds.size(); i++)
-            {
-                if(numberBirds.get(i) != randomInteger)
-                {
-                    numberBirds.add(randomInteger);
-                    tempBirdList.add(birdRewardModelList.get(randomInteger));
+            }else{
+                for(int i = 0; i < numberBirds.size(); i++) {
+                    if(numberBirds.get(i) != randomInteger) {
+                        numberBirds.add(randomInteger);
+                        tempBirdList.add(birdRewardModelList.get(randomInteger));
+                    }
                 }
             }
 
             counter++;
         }
 
+
+
         birdRewardModelList = null;
-        birdRewardModelList = tempBirdList;
+        birdRewardModelList.addAll(tempBirdList);
     }
 
     public void setRecyclerView() {

@@ -93,9 +93,6 @@ public class ForumAdd extends Fragment
                 firebaseFirestore = FirebaseFirestore.getInstance();
 
                 userID = auth.getCurrentUser().getUid();
-                DocumentReference documentReference2 = firebaseFirestore.collection("users").document(userID);
-
-
 
                 DocumentReference documentReference = firebaseFirestore.collection("posts").document();
 
@@ -113,14 +110,7 @@ public class ForumAdd extends Fragment
                 userMap.put("username", homePage.getUserModel().getUsername());
 
 
-                documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        System.out.println("worked");
-                    }
-                });
+                documentReference.set(userMap).addOnSuccessListener(aVoid -> System.out.println("worked"));
 
                 navController.navigate(R.id.action_nav_add_to_forum);
             }

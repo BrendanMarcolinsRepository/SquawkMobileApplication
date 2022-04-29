@@ -82,9 +82,6 @@ public class HomePage extends AppCompatActivity implements Serializable
         checkUserSession();
 
 
-
-
-
         recordButton = findViewById(R.id.homeButton1);
         recordButton.setOnClickListener(record);
 
@@ -120,6 +117,29 @@ public class HomePage extends AppCompatActivity implements Serializable
         //use to display the users details in the navigation header
 
         getUserInformation();
+
+        boolean widget = false;
+
+        Intent intent = getIntent();
+        if(savedInstanceState == null) {
+
+            System.out.println("worked 1");
+            Bundle extras = intent.getExtras();
+            if (extras == null) {
+                System.out.println("worked 2");
+                widget = false;
+            } else{
+                System.out.println("worked 3");
+                widget = (boolean) extras.getSerializable("widget");
+                if(widget){
+                    System.out.println("worked 4");
+                    navController.navigate(R.id.action_nav_Home_to_nav_Record);
+                }
+            }
+        }else{
+            System.out.println("worked 5");
+            navController.navigate(R.id.action_nav_Home_to_nav_Record);
+        }
 
 
     }
