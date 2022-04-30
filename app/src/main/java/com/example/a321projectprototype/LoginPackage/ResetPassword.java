@@ -43,6 +43,7 @@ public class ResetPassword extends AppCompatActivity
         confirmPasswordChange = findViewById(R.id.confirmRestPasswordButton);
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressBarResetPassword);
+        progressBar.setVisibility(View.INVISIBLE);
 
         confirmPasswordChange.setOnClickListener(confirmResetPassword);
 
@@ -67,6 +68,7 @@ public class ResetPassword extends AppCompatActivity
             sendEmailToUpdatePassword(email);
         }
         else {
+            progressBar.setVisibility(View.INVISIBLE);
             return;
         }
 
@@ -74,9 +76,11 @@ public class ResetPassword extends AppCompatActivity
 
     private void sendEmailToUpdatePassword(String email)
     {
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                progressBar.setVisibility(View.INVISIBLE);
                 finish();
             } else {
 
@@ -84,7 +88,6 @@ public class ResetPassword extends AppCompatActivity
                 header.setVisibility(View.VISIBLE);
                 emailEditText.setVisibility(View.VISIBLE);
                 confirmPasswordChange.setVisibility(View.VISIBLE);
-
                 emailEditText.setError("Email Incorrect Or Account Does Not Exist");
                 emailEditText.requestFocus();
                 Toast.makeText(ResetPassword.this,"Email Incorrect Or Account Does Not Exist",Toast.LENGTH_SHORT).show();

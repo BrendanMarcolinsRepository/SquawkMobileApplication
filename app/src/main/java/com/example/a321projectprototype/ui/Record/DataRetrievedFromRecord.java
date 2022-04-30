@@ -277,14 +277,11 @@ public class DataRetrievedFromRecord extends Fragment
                                                 .collection("flockScore")
                                                 .whereEqualTo("flockname",flockName)
                                                 .get()
-                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                        FlockExist = true;
-                                                        System.out.println("Worked Finished 2");
-                                                        flockScoreModel = queryDocumentSnapshots.getDocumentChanges().get(0).getDocument().toObject(FlockScoreModel.class);
-                                                        setRewardPoints();
-                                                    }
+                                                .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                                                    FlockExist = true;
+                                                    System.out.println("Worked Finished 2");
+                                                    flockScoreModel = queryDocumentSnapshots1.getDocumentChanges().get(0).getDocument().toObject(FlockScoreModel.class);
+                                                    setRewardPoints();
                                                 });
 
 

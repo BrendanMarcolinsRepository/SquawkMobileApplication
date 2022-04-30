@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -47,7 +48,7 @@ public class ForumFragment extends Fragment
     private HomePage homePage;
     private NavController navController;
 
-    private Button filterButton, addButton;
+    private ImageView filterButton, addButton;
     private String s = "No Change", filterOrder = "o";
     private boolean reversed = false;
 

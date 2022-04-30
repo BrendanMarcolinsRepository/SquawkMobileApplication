@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.ui.Forum;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,6 +22,11 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.ForumModel;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +54,9 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView topic, description, username;
+        ImageView imageDeleteComment;
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
 
 
 
@@ -57,6 +68,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             description = itemView.findViewById(R.id.forumDescriptionRv);
             username = itemView.findViewById(R.id.forumUserRv);
             name = username.getText().toString();
+            imageDeleteComment = itemView.findViewById(R.id.deletePostForum);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +112,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
         currentItem = dataSet.get(position);
 
@@ -108,7 +120,48 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         holder.username.setText("Chirper: " + currentItem.getUsername());
         holder.description.setText(currentItem.getDescription());
 
+        if(currentItem.getUserId().matches(holder.firebaseAuth.getUid()))
+        {
+            holder.imageDeleteComment.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.imageDeleteComment.setVisibility(View.GONE);
+        }
 
+        holder.imageDeleteComment.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+                String commentID = dataSet.get(position).getPostId();
+                DocumentReference documentReference = firebaseFirestore.collection("forums").document(commentID);
+                documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful())
+                        {
+                            dataSet.remove(position);
+                            updateData(dataSet);
+                            System.out.println("worked =====================================================================");
+                            Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
+
+                        }
+                        else
+                        {
+                            Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void updateData(List dataSet) {
+        this.dataSet = dataSet;
+        notifyDataSetChanged();
     }
 
 

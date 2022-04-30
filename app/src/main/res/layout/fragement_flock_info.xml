@@ -49,7 +49,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="28dp"
-        android:src="@drawable/ic_settings"
+        android:src="@drawable/settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.763"
         app:layout_constraintStart_toEndOf="@+id/flockInfoGroupName"

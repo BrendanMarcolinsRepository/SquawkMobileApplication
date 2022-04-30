@@ -9,6 +9,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
+    <string name="menu_profile">Profile</string>
     <string name="menu_record">Record</string>
     <string name="menu_record_processing">Record</string>
     <string name="menu_PastRecordings">Past Recordings</string>

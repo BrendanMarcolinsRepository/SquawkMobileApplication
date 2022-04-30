@@ -8,37 +8,38 @@
     android:layout_height="90dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/grey_textbox"
-    android:layout_width="355dp"
-    android:layout_height="70dp">
-
-
-    <TextView
-        android:id="@+id/textUsernameTable"
-        android:layout_width="148dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:gravity="center"
-        android:text="UserName"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toStartOf="@+id/textScoreTable"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textScoreTable"
-        android:layout_width="133dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="44dp"
-        android:gravity="center"
-        android:text="score"
-        android:textAlignment="textEnd"
+        android:layout_width="355dp"
+        android:layout_height="70dp"
+        android:background="@drawable/grey_textbox"
+        android:backgroundTint="@color/buttonColours"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/textUsernameTable"
+            android:layout_width="148dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center|start"
+            android:text="UserName"
+            app:layout_constraintEnd_toStartOf="@+id/textScoreTable"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textScoreTable"
+            android:layout_width="133dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center|end"
+            android:text="score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.864"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

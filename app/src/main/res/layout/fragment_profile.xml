@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/profileImage"
+        android:layout_width="191dp"
+        android:layout_height="163dp"
+        android:layout_marginTop="64dp"
+
+        android:src="@drawable/ic_account_profile_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/profileNameEdittext"
+        android:layout_width="232dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:paddingLeft="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/profileEditImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.308"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileNameEdittext" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/profileSettings"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.691"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileNameEdittext" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/criticallyEndangeredImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="536dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/criticallyEndangeredTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/criticallyEndangeredImage" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/endangeredImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="536dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/endangeredImageTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endangeredImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/totalBirdCountImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="420dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/totalBirdCountTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalBirdCountImage" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/nearThreatenedImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="536dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.342"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/nearThreatenedTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.342"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nearThreatenedImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/rareAccidentalImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="536dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.657"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/rareAccidentaTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.657"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rareAccidentalImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/vulnerableImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="648dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/vulnerableTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vulnerableImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/breedingEndemicImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="648dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.342"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/breedingEndemicTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.342"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/breedingEndemicImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/endemicImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="648dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.657"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/endemicTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.657"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endemicImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/introducedSpeciesImage"
+        android:layout_width="66dp"
+        android:layout_height="57dp"
+        tools:layout_editor_absoluteX="312dp"
+        tools:layout_editor_absoluteY="648dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/introducedSpeciesTextView"
+        android:layout_width="66dp"
+        android:layout_height="31dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/introducedSpeciesImage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
