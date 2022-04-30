@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ProfileFragment extends Fragment
@@ -110,8 +111,6 @@ public class ProfileFragment extends Fragment
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for(QueryDocumentSnapshot q : queryDocumentSnapshots) {
                         birdRewardModel = q.toObject(BirdRewardModel.class);
-                        System.out.println("=================Status : " + birdRewardModel.getBird_status());
-                        scoreHashMap.put(birdRewardModel.getBird_status(),0);
                         birdRewardModelList.add(birdRewardModel);
                     }
 
@@ -128,6 +127,8 @@ public class ProfileFragment extends Fragment
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for(QueryDocumentSnapshot q : queryDocumentSnapshots) {
                         rewardPointsModel = q.toObject(RewardPointsModel.class);
+                        System.out.println("=================Status : " + rewardPointsModel.getBird_status());
+                        scoreHashMap.put(rewardPointsModel.getBird_status(),0);
                         rewardPointsModelList.add(rewardPointsModel);
                     }
                     performCalculations();
@@ -136,12 +137,19 @@ public class ProfileFragment extends Fragment
 
     private void performCalculations() {
 
+
+        System.out.println("SCORE UPDATE JERE ++++++++ " + scoreHashMap.get("vulnerable"));
+
         for(IdentifiedBirds i : identifiedBirdsList){
             for(BirdRewardModel b : birdRewardModelList){
-                for(RewardPointsModel r : rewardPointsModelList){
-                    if(i.getBird_name().matches(b.getBird_name())){
+                if(i.getBird_name().matches(b.getBird_name())){
+                    for(RewardPointsModel r : rewardPointsModelList){
                         if(b.getBird_status().matches(r.getBird_status())){
-                            scoreHashMap.put(b.getBird_status(),scoreHashMap.get(b.getBird_status()+r.getReward_points()));
+                            String status = r.getBird_status();
+                            if(scoreHashMap.containsKey(status)){
+                                scoreHashMap.put(status,scoreHashMap.get(status) + 1 );
+                                System.out.println("SCORE UPDATE JERE ++++++++ " + scoreHashMap.get(status.toLowerCase()));
+                            }
                         }
                     }
                 }
@@ -153,21 +161,21 @@ public class ProfileFragment extends Fragment
 
     private void loadDataToUI() {
 
-        vulnerableTextView.setText(scoreHashMap.get("vulnerable"));
-        endemicTextView.setText(scoreHashMap.get("endemic"));
-        rareAccidentalTextView.setText(scoreHashMap.get("rare/accidental"));
-        criticallyEndangeredTextView.setText(scoreHashMap.get("critically endangered"));
-        endangeredTextView.setText(scoreHashMap.get("endangered"));
-        introducedSpeciesTextView.setText(scoreHashMap.get("introduced species"));
-        breedingEndemicTextView.setText(scoreHashMap.get("breeding endemic"));
-        nearThreatenedTextView.setText(scoreHashMap.get("near-threatened"));
+        vulnerableTextView.setText(String.valueOf(scoreHashMap.get("vulnerable")));
+        endemicTextView.setText(String.valueOf(scoreHashMap.get("endemic")));
+        rareAccidentalTextView.setText(String.valueOf(scoreHashMap.get("rare/accidental")));
+        criticallyEndangeredTextView.setText(String.valueOf(scoreHashMap.get("critically endangered")));
+        endangeredTextView.setText(String.valueOf(scoreHashMap.get("endangered")));
+        introducedSpeciesTextView.setText(String.valueOf(scoreHashMap.get("introduced species")));
+        breedingEndemicTextView.setText(String.valueOf(scoreHashMap.get("breeding endemic")));
+        nearThreatenedTextView.setText(String.valueOf(scoreHashMap.get("near-threatened")));
 
         int total = 0;
         for(Map.Entry<String, Integer> set : scoreHashMap.entrySet()){
             total += set.getValue();
         }
 
-        totalTextView.setText(total);
+        totalTextView.setText(String.valueOf(total));
 
     }
 
