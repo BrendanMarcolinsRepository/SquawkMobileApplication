@@ -8,14 +8,16 @@ public class UserModel implements Serializable
     private String name;
     private String username;
     private String email;
+    private String photo_url;
 
     public UserModel() { }
 
 
-    public UserModel(String name, String username, String email) {
+    public UserModel(String name, String username, String email, String photo_url) {
         this.name = name;
         this.username = username;
         this.email = email;
+        this.photo_url = photo_url;
     }
 
     public int getId() {
@@ -48,5 +50,13 @@ public class UserModel implements Serializable
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPhoto_url() {
+        return photo_url;
+    }
+
+    public void setPhoto_url(String photo_url) {
+        this.photo_url = photo_url;
     }
 }

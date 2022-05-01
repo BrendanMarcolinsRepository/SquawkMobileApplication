@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -61,19 +62,18 @@ public class HomeFragment extends Fragment
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
-        homePage = (HomePage) getActivity();
-
-
-        navController = homePage.getNav();
-
-
-
-
+                             ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        homePage = (HomePage) getActivity();
+        navController = homePage.getNav();
+
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        if(drawerLayout != null){
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
 
 
         progressBar = root.findViewById(R.id.usernameHomepageProgressBar);
@@ -104,8 +104,7 @@ public class HomeFragment extends Fragment
         return root;
     }
 
-    private final View.OnClickListener record = new View.OnClickListener()
-    {
+    private final View.OnClickListener record = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
@@ -113,8 +112,7 @@ public class HomeFragment extends Fragment
         }
     };
 
-    private final View.OnClickListener discover = new View.OnClickListener()
-    {
+    private final View.OnClickListener discover = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
@@ -122,8 +120,7 @@ public class HomeFragment extends Fragment
         }
     };
 
-    private final View.OnClickListener reward = new View.OnClickListener()
-    {
+    private final View.OnClickListener reward = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
@@ -160,8 +157,5 @@ public class HomeFragment extends Fragment
             }
         });
     }
-
-
-
 
 }

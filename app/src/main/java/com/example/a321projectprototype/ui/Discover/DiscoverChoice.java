@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -53,7 +54,8 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 
         root = inflater.inflate(R.layout.fragment_discover_choice, container, false);
         homePage = (HomePage) getActivity();
-
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         comBirdName = getArguments().getString("birdName");
         sciName = getArguments().getString("sciName");
         date = getArguments().getString("date");

@@ -1,8 +1,11 @@
 package com.example.a321projectprototype.ui.Profile;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,18 +15,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.BirdRewardModel;
 import com.example.a321projectprototype.User.BirdScores;
+import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.FlockScoreModel;
 import com.example.a321projectprototype.User.IdentifiedBirds;
 import com.example.a321projectprototype.User.RewardPointsModel;
+import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,8 +58,8 @@ public class ProfileFragment extends Fragment
     private ImageView userImage,totalBirdImage,editProfileImage,privacyProfileImage,
                         vulnerableImageView, endemicImageView, rareAccidentalImageView, criticallyEndangeredImageView,
                         endangeredImageView, introducedSpeciesImageView,breedingEndemicImageView, nearThreatenedImageView;
-    private TextView totalTextView, vulnerableTextView, endemicTextView, rareAccidentalTextView, criticallyEndangeredTextView, endangeredTextView, introducedSpeciesTextView,breedingEndemicTextView, nearThreatenedTextView;
-    private EditText usersName;
+    private TextView usersName,totalTextView, vulnerableTextView, endemicTextView, rareAccidentalTextView, criticallyEndangeredTextView, endangeredTextView, introducedSpeciesTextView,breedingEndemicTextView, nearThreatenedTextView;
+
     private FirebaseAuth auth;
     private FirebaseFirestore firebaseFirestore;
     private BirdRewardModel birdRewardModel;
@@ -57,6 +70,7 @@ public class ProfileFragment extends Fragment
     private List<RewardPointsModel> rewardPointsModelList;
     private List<IdentifiedBirds> identifiedBirdsList;
     private HashMap<String,Integer> scoreHashMap;
+    private View root;
 
 
 
@@ -66,10 +80,12 @@ public class ProfileFragment extends Fragment
         navController = homePage.getNav();
         profileViewModel =
                 new ViewModelProvider(this).get(ProfileViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_profile, container, false);
+        root = inflater.inflate(R.layout.fragment_profile, container, false);
 
 
 
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         AssignVariables(root);
         retrieveFireBaseData();
 
@@ -87,6 +103,15 @@ public class ProfileFragment extends Fragment
 
         identifiedBirdsList = new ArrayList<>();
 
+        UserModel userModel = homePage.getUserModel();
+
+        usersName.setText(userModel.getUsername());
+        Glide.with(homePage.getApplicationContext())
+                .load(userModel.getPhoto_url())
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.user_profile)
+                .into(userImage);
 
 
         firebaseFirestore.collection("identified_bird")
@@ -196,6 +221,7 @@ public class ProfileFragment extends Fragment
         introducedSpeciesImageView  = root.findViewById(R.id.introducedSpeciesImage);
         breedingEndemicImageView  = root.findViewById(R.id.breedingEndemicImage);
         nearThreatenedImageView  = root.findViewById(R.id.nearThreatenedImage);
+
 
         totalTextView = root.findViewById(R.id.totalBirdCountTextView);
         vulnerableTextView = root.findViewById(R.id.vulnerableTextView);

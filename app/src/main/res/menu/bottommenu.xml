@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-    <item
-        android:id="@+id/offline"
-        android:title="Offline"/>
-    <item
-        android:id="@+id/online"
-        android:title="Online"/>
+
+    <group android:checkableBehavior="single" android:id="@+id/group1">
+
+        <item
+            android:title="                         Rarity"
+            android:id="@+id/menu_search_option"
+            app:showAsAction="ifRoom|withText">
+
+        </item>
+    </group>
+
+
+
+
+    <group android:checkableBehavior="single" android:id="@+id/group2">
+        <item
+            android:id="@+id/vulnerable"
+            android:icon="@drawable/vulnerable"
+            android:title="vulnerable"/>
+        <item
+            android:id="@+id/endemic"
+            android:icon="@drawable/near_threatened"
+            android:title="endemic"/>
+        <item
+            android:id="@+id/rareaccidental"
+            android:icon="@drawable/extinct"
+            android:title="rare/accidental"/>
+        <item
+            android:id="@+id/criticallyendangered"
+            android:icon="@drawable/critically_endangered"
+            android:title="critically endangered"/>
+        <item
+            android:id="@+id/endangered"
+            android:icon="@drawable/endangered"
+            android:title="endangered"/>
+        <item
+            android:id="@+id/introducedspecies"
+            android:icon="@drawable/least_concern"
+            android:title="introduced species"/>
+        <item
+            android:id="@+id/breedingendemic"
+            android:icon="@drawable/extinct"
+            android:title="breeding endemic"/>
+        <item
+            android:id="@+id/nearthreatened"
+            android:icon="@drawable/extinct_in_wild"
+            android:title="near-threatened"/>
+    </group>
 
 </menu>

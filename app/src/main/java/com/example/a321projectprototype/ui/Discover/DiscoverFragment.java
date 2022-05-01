@@ -178,45 +178,29 @@ public class DiscoverFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        popular.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                s = "Populer Order";
-                filterOrder = "p";
-                alertDialog.dismiss();
-            }
+
+        popular.setOnClickListener(v -> {
+            s = "Populer Order";
+            filterOrder = "p";
+            alertDialog.dismiss();
         });
 
 
-        alphabetical.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                orderAlgorithm();
-                alertDialog.dismiss();
-            }
+        alphabetical.setOnClickListener(v -> {
+            orderAlgorithm();
+            alertDialog.dismiss();
         });
-        reverseAlphabetical.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                reverseOrderAlgorithm();
-                alertDialog.dismiss();
-            }
+
+        reverseAlphabetical.setOnClickListener(v -> {
+            reverseOrderAlgorithm();
+            alertDialog.dismiss();
         });
-        exitPopup.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                s = "No Change";
-                alertDialog.dismiss();
-            }
+
+        exitPopup.setOnClickListener(v -> {
+            s = "No Change";
+            alertDialog.dismiss();
         });
+
         alertDialog.show();
 
 

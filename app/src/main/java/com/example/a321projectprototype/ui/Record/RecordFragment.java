@@ -136,6 +136,9 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         homePage = (HomePage)getActivity();
         navController = homePage.getNav();
 
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         context = homePage.getApplicationContext();
 
 

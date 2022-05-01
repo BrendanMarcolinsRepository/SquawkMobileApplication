@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.LoginPackage.Prototype;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
@@ -53,15 +55,16 @@ import java.util.Objects;
 public class HomePage extends AppCompatActivity implements Serializable
 {
 
-    private AppBarConfiguration mAppBarConfiguration;
+    private AppBarConfiguration mAppBarConfiguration,mAppBarConfiguration2;
     private HomeViewModel homeViewModel;
     private TextView headName, headEmail;
     private Button recordButton, discoverButton,rewardButton;
-    private  NavController navController;
+    private NavController navController;
     private UserModel userModel;
     private String userID;
     private Button logout;
-    private DrawerLayout drawer;
+    private ImageView imageViewProfile;
+    private DrawerLayout drawer,drawerRight;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private Toolbar toolbar;
@@ -72,11 +75,9 @@ public class HomePage extends AppCompatActivity implements Serializable
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_home_page);
         toolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         checkUserSession();
@@ -96,6 +97,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
 
         drawer = findViewById(R.id.drawer_layout);
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
 
@@ -111,10 +113,27 @@ public class HomePage extends AppCompatActivity implements Serializable
         NavigationUI.setupWithNavController(navigationView, navController);
 
 
+        drawerRight = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView2 = findViewById(R.id.nav_view_right);
+        navigationView2.setItemIconTintList(null);
+
+        mAppBarConfiguration2 = new AppBarConfiguration.Builder(
+                R.id.vulnerable,R.id.endemic, R.id.rareaccidental, R.id.criticallyendangered, R.id.endangered, R.id.introducedspecies,
+                R.id.breedingendemic, R.id.nearthreatened)
+                .setDrawerLayout(drawerRight)
+                .build();
+
+        drawerRight.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+
+
+
 
         View header = navigationView.getHeaderView(0);
         headName = (TextView) header.findViewById(R.id.navhead_name);
         headEmail = (TextView) header.findViewById(R.id.navhead_email);
+        imageViewProfile = header.findViewById(R.id.nav_head_imageView);
 
         //use to display the users details in the navigation header
 
@@ -232,10 +251,16 @@ public class HomePage extends AppCompatActivity implements Serializable
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists())
                         {
-                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),document.getString("email"));
+                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),document.getString("email"),document.getString("photo_Url"));
 
                             headName.setText(userModel.getUsername());
                             headEmail.setText(userModel.getEmail());
+                            Glide.with(getApplicationContext())
+                                    .load(userModel.getPhoto_url())
+                                    .circleCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(R.drawable.user_profile)
+                                    .into(imageViewProfile);
 
                         }
                         else
@@ -281,6 +306,8 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
+
+
     public void enableMenuItems()
     {
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -304,6 +331,14 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
+
+
+    public DrawerLayout getDrawer(){
+        return drawerRight;
+    }
+
+
+
     public void setFlockModelData(FlockModelData flockModelData)
     {
         this.flockModelData = flockModelData;
@@ -312,6 +347,8 @@ public class HomePage extends AppCompatActivity implements Serializable
     public FlockModelData getFlockModelData() {
         return flockModelData;
     }
+
+
 
 
 }

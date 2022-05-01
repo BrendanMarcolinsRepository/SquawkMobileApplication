@@ -19,6 +19,10 @@
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/textviewcustomer.xml" value="0.334" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/activity_home_page.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/activity_sign_up.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/app_bar_main.xml" value="0.22890559732664995" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/content_main.xml" value="0.22890559732664995" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/content_main_right.xml" value="0.2717391304347826" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/discover_popup_filter.xml" value="0.22890559732664995" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/flock_group_table.xml" value="0.33" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/flock_leaderboard_selected.xml" value="0.33229166666666665" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/flock_leaderboard_spinner.xml" value="0.33229166666666665" />
@@ -41,9 +45,13 @@
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_record.xml" value="0.22" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/leaderboard_content.xml" value="0.5" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/login_page.xml" value="0.33177083333333335" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/nav_header_main.xml" value="0.22890559732664995" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/pastrecordings_cardview.xml" value="0.33" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/rarity_drawer.xml" value="0.22890559732664995" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/rarity_popup.xml" value="0.22890559732664995" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/record_data_retrival_cardview.xml" value="0.17844202898550723" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/reset_password.xml" value="0.27717391304347827" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/right_fragment_drawer.xml" value="0.4683760683760684" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/rv_discover_items.xml" value="0.27717391304347827" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/rv_flock_items.xml" value="0.33" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/rv_forum_comments.xml" value="0.27717391304347827" />

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -88,6 +89,9 @@ public class PastRecordingsFragment extends Fragment {
 
         homePage = (HomePage) getActivity();
         navigation = homePage.getNav();
+
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         offline = root.findViewById(R.id.offlineButton);
         online = root.findViewById(R.id.onlineButton);

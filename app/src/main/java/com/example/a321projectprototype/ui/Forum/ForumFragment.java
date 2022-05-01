@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -59,6 +60,9 @@ public class ForumFragment extends Fragment
 
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
+
+        DrawerLayout drawerLayout = homePage.getDrawer();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         recyclerView = root.findViewById(R.id.recycleDiscover);
         filterButton = root.findViewById(R.id.forumFillterButton);
