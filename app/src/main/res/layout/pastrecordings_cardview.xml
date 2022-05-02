@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:replace="android:label"
-    android:layout_width="400dp"
+    android:layout_width="match_parent"
     android:layout_height="185dp"
     android:layout_margin="5dp"
     app:cardBackgroundColor="@color/buttonColours"
@@ -57,19 +57,8 @@
             android:id="@+id/pastrecordingRecycleViewPlayer"
             android:layout_width="46dp"
             android:layout_height="34dp"
-            android:layout_marginTop="108dp"
+            android:layout_marginTop="100dp"
             android:src="@drawable/play"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.48"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/pastrecordingPauseRecycleViewPlayer"
-            android:layout_width="46dp"
-            android:layout_height="34dp"
-            android:layout_marginTop="108dp"
-            android:src="@drawable/pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,6 +71,30 @@
             android:layout_marginTop="68dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pastReocordingStartTimer"
+            android:layout_width="62dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="96dp"
+            android:gravity="center"
+            android:text="@string/timer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.121"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pastReocordingEndTimer"
+            android:layout_width="62dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:text="@string/timer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.872"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

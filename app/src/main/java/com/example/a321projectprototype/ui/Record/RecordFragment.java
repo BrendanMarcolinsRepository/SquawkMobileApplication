@@ -365,8 +365,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     private void noSqlRecordingPath() {
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
-        Files files = new Files(dateString,desciption,fileName,filePath);
-
+        Files files = new Files(dateString.substring(0,10),desciption,fileName,filePath,dateString);
         recordingPathFileDatabase.addFile(files);
         enableMenuItems();
         navController.navigate(R.id.action_nav_record_data);
@@ -400,7 +399,10 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         DocumentReference documentReference = firebaseFirestore.collection("files").document();
 
         HashMap<String,Object> userMap = new HashMap<>();
-        userMap.put("created_at",dateString);
+
+        String time = dateString.substring(0,10);
+
+        userMap.put("created_at",time);
         userMap.put("description",desciption);
         userMap.put("filename",fileName);
         userMap.put("path", storageReference.getPath());

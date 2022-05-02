@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.a321projectprototype.Database.RecordingPathFileDatabase;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.CommentModel;
@@ -47,25 +49,17 @@ import java.util.TimerTask;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
-public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRecordingsCardviewAdpator.MyViewHolder>
-{
+public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRecordingsCardviewAdpator.MyViewHolder> {
 
     List<Files> files;
     HomePage homePage;
-
-
-
     private MediaPlayer mediaPlayer;
-    private Handler handler;
+    private Handler progressBarHandler, timeHandler;
     private Runnable runnable;
-    private String filePath, fileDescription, fileName,time;
-    private Files fileObjects;
-    private String date;
     private boolean cloud;
-    private ProgressBar progressBar;
 
-    PastRecordingsCardviewAdpator(HomePage homePage, List<Files> files, boolean cloud)
-    {
+
+    PastRecordingsCardviewAdpator(HomePage homePage, List<Files> files, boolean cloud) {
         this.homePage = homePage;
         this.files = files;
         this.cloud = cloud;
@@ -73,8 +67,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     }
     @NonNull
     @Override
-    public PastRecordingsCardviewAdpator.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public PastRecordingsCardviewAdpator.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pastrecordings_cardview,parent,false);
         return new PastRecordingsCardviewAdpator.MyViewHolder(view);
     }
@@ -82,9 +75,9 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
     @Override
     public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        fileDescription = files.get(position).getDescription();
-        fileName = files.get(position).getFilename();
-        time = files.get(position).getCreated_at();
+
+        String fileName = files.get(position).getFilename();
+        String time = files.get(position).getUpdated_at();
 
         holder.name.setText(fileName);
 
@@ -98,55 +91,57 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             @Override
             public void onClick(View v) {
 
+                System.out.println("worked1");
 
-                if (cloud) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    holder.seekBar.setVisibility(View.INVISIBLE);
-                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                if(mediaPlayer != null){
+                    if(mediaPlayer.isPlaying()){
+                        stopPlayer(mediaPlayer,holder);
+                        System.out.println("worked2");
+                    }
+                    else {
+                        System.out.println("worked3");
+                        setUpPlayer(holder,position);
+                    }
+                }else{
+                    System.out.println("worked4");
+                    setUpPlayer(holder,position);
+                }
+            }
+        });
+    }
 
-                    firebaseStorage.getReference().child(files.get(position).getPath()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            holder.seekBar.setVisibility(View.VISIBLE);
-                            mediaPlayer = MediaPlayer.create(homePage, uri);
-                            setUpMediaPlayer(holder);
-                        }
+    public void setUpPlayer(MyViewHolder holder, int position){
+        if(cloud) {
+            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.seekBar.setVisibility(View.INVISIBLE);
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+            firebaseStorage.getReference().child(files.get(position)
+                    .getPath())
+                    .getDownloadUrl()
+                    .addOnSuccessListener(uri -> {
+
+                        System.out.println("URI:" + uri.toString());
+                        holder.iconPlayer.setImageResource(R.drawable.pause);
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                        holder.seekBar.setVisibility(View.VISIBLE);
+                        mediaPlayer = MediaPlayer.create(homePage, uri);
+                        setUpSeekBar(holder);
                     });
-
-
-                } else {
-                    String path = files.get(position).getPath();
-                    mediaPlayer = MediaPlayer.create(homePage, Uri.parse(path));
-                    setUpMediaPlayer(holder);
-                }
-
-
-            }
-        });
-
-
-        holder.pause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                    mediaPlayer.reset();
-                    holder.seekBar.setProgress(0);
-                    holder.pause.setVisibility(View.INVISIBLE);
-                    holder.iconPlayer.setVisibility(View.VISIBLE);
-                    System.out.println("worked stopped");
-                }
-            }
-        });
-
-
+        } else {
+            String path = files.get(position).getPath();
+            mediaPlayer = MediaPlayer.create(homePage, Uri.parse(path));
+            setUpSeekBar(holder);
+        }
 
     }
 
-    public void setUpMediaPlayer(MyViewHolder holder){
-        handler = new Handler();
+    public void setUpSeekBar(MyViewHolder holder){
 
+
+        progressBarHandler = new Handler();
+        timeHandler = new Handler();
+        System.out.println("worked5");
         holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -157,42 +152,44 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) { }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                System.out.println("worked");
-                holder.seekBar.setMax(mp.getDuration());
-                mp.start();
-                holder.upDateSeekBar();
-                holder.pause.setVisibility(View.VISIBLE);
-                holder.iconPlayer.setVisibility(View.INVISIBLE);
-            }
+        mediaPlayer.setOnPreparedListener(mp -> {
+            startPlayer(mp,holder);
         });
+
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-
-                mediaPlayer.stop();
-                mediaPlayer.reset();
-                holder.seekBar.setProgress(0);
-                holder.pause.setVisibility(View.INVISIBLE);
-                holder.iconPlayer.setVisibility(View.VISIBLE);
-                System.out.println("worked stopped");
-
+                stopPlayer( mp,holder);
             }
         });
+
+    }
+
+    public void startPlayer(MediaPlayer mp,MyViewHolder holder){
+        holder.seekBar.setMax(mp.getDuration());
+        mp.start();
+        holder.end.setText(holder.convertTimer(mp.getDuration()));
+        holder.iconPlayer.setImageResource(R.drawable.pause);
+        holder.upDateSeekBar();
+        holder.updateTime();
+
+    }
+
+
+    public void stopPlayer(MediaPlayer mp,MyViewHolder holder){
+        mp.stop();
+        mp.reset();
+        holder.seekBar.setProgress(0);
+        holder.progressBar.setVisibility(View.INVISIBLE);
+        holder.start.setText(R.string.timer);
+        holder.iconPlayer.setImageResource(R.drawable.play);
     }
 
 
@@ -203,11 +200,12 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
         return files.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
-        TextView name,time, description;
-        ImageView iconPlayer, pause;
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView name,time, start,end;
+        ImageView iconPlayer;
         SeekBar seekBar;
+        private ProgressBar progressBar;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -215,19 +213,19 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             time = itemView.findViewById(R.id.past_recording_day_time);
             seekBar = itemView.findViewById(R.id.pastRecordingSeekBar);
             iconPlayer = itemView.findViewById(R.id.pastrecordingRecycleViewPlayer);
-            pause = itemView.findViewById(R.id.pastrecordingPauseRecycleViewPlayer);
-            pause.setVisibility(View.INVISIBLE);
+            start = itemView.findViewById(R.id.pastReocordingStartTimer);
+            end = itemView.findViewById(R.id.pastReocordingEndTimer);
             progressBar = itemView.findViewById(R.id.pastRecordingCardViewProgressBar);
             progressBar.setVisibility(View.INVISIBLE);
 
 
         }
 
-        public void upDateSeekBar(){
+        public void updateTime(){
 
             int position;
             position = mediaPlayer.getCurrentPosition();
-            seekBar.setProgress(position);
+
 
             runnable = new Runnable() {
                 @Override
@@ -238,14 +236,55 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
                     }
 
                     if(mediaPlayer.isPlaying()){
+                        start.setText(convertTimer(position));
+                        updateTime();
+                    }
+                }
+            };
+
+            timeHandler.postDelayed(runnable,0);
+        }
+
+        public void upDateSeekBar(){
+
+            int position;
+            position = mediaPlayer.getCurrentPosition();
+
+
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    if(mediaPlayer == null){
+                        return;
+                    }
+
+                    if(mediaPlayer.isPlaying()){
+                        seekBar.setProgress(position);
                         upDateSeekBar();
                     }
                 }
             };
 
-            handler.postDelayed(runnable,1000);
+            progressBar.postDelayed(runnable,1000);
         }
 
+
+
+
+        public String convertTimer(long convert) {
+            String audioTime;
+            int minutes = (int) (convert % (1000 * 60 * 60)) / (1000 * 60);
+            int seconds = (int) ((convert % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+            audioTime = String.format("%02d:%02d", minutes, seconds);
+            return audioTime;
+        }
+
+
+    }
+
+    public void setCloudBoolean(boolean cloudBoolean){
+        this.cloud = cloudBoolean;
     }
 
 }

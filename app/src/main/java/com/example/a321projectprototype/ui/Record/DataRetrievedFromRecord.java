@@ -48,7 +48,7 @@ public class DataRetrievedFromRecord extends Fragment
     private List<Integer> numberList;
     private List<BirdRewardModel> birdRewardModelList;
     private List<RewardPointsModel> rewardPoints;
-    private final int MAX_IDENTIFIER = 3;
+    private int maxIdentifer;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseFirestore firebaseFirestore;
     private LinearLayoutManager linearLayoutManager;
@@ -147,7 +147,7 @@ public class DataRetrievedFromRecord extends Fragment
 
 
         int counter = 0;
-        while(counter < MAX_IDENTIFIER) {
+        while(counter < randomObject.nextInt(4) + 1) {
             int randomInteger = randomObject.nextInt(23);
 
             if(numberBirds.isEmpty()){
@@ -166,9 +166,12 @@ public class DataRetrievedFromRecord extends Fragment
         }
 
 
+        birdRewardModelList.clear();
 
-        birdRewardModelList = null;
-        birdRewardModelList.addAll(tempBirdList);
+        if(!tempBirdList.isEmpty()){
+            birdRewardModelList.addAll(tempBirdList);
+        }
+
     }
 
     public void setRecyclerView() {

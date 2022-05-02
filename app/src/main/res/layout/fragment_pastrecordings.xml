@@ -66,12 +66,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleRecordings2"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="453dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButtonCalendar"
         app:layout_constraintVertical_bias="0.0" />

@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,6 +44,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -58,25 +61,15 @@ import java.util.List;
 public class PastRecordingsFragment extends Fragment {
 
     private PastRecordingsViewModel pastRecordingsViewModel;
-    private RecyclerView recyclerView;
     private RecyclerView recyclerView2;
-    private onClickInterface onClickInterface;
     private TextView date;
-    private SimpleDateFormat formatter;
-    private String dateString;
     private HomePage homePage;
-    private List<String> listItem;
     private List<Files> filesList;
-    private List<String> listItem2;
-    private List<Date> dateList;
-    private Files files;
     private PastRecordingsCardviewAdpator pastRecordingsCardviewAdpator;
     private RelativeLayout relativeLayout;
     private int mYear, mMonth, mDay;
-    private String stringDate;
     private Button offline, online;
-    private NavController navigation;
-    private final boolean CLOUD = false;
+    private boolean cloud = false;
     private TextView emptyTextView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -88,7 +81,7 @@ public class PastRecordingsFragment extends Fragment {
         View cardView = inflater.inflate(R.layout.record_data_retrival_cardview, container, false);
 
         homePage = (HomePage) getActivity();
-        navigation = homePage.getNav();
+
 
         DrawerLayout drawerLayout = homePage.getDrawer();
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -113,11 +106,10 @@ public class PastRecordingsFragment extends Fragment {
         recyclerView2.setHasFixedSize(true);
 
 
-        listItem = new ArrayList<>();
         filesList = new ArrayList<>();
 
 
-        pastRecordingsCardviewAdpator = new PastRecordingsCardviewAdpator(homePage, filesList,CLOUD);
+        pastRecordingsCardviewAdpator = new PastRecordingsCardviewAdpator(homePage, filesList,cloud);
         updateRecyclerView(new Date());
         recyclerView2.setAdapter(pastRecordingsCardviewAdpator);
 
@@ -129,10 +121,16 @@ public class PastRecordingsFragment extends Fragment {
                 return false;
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 Toast.makeText(homePage, "File Deleted  ", Toast.LENGTH_SHORT).show();
-                //Remove swiped item from list and notify the RecyclerView
+                if(cloud){
+                    deleteRecordingFromCloud(filesList.get(viewHolder.getAbsoluteAdapterPosition()));
+
+                }else{
+                    deleteRecordingFromSQLDatabase(filesList.get(viewHolder.getAbsoluteAdapterPosition()));
+                }
                 filesList.remove(viewHolder.getAbsoluteAdapterPosition());
 
                 if (pastRecordingsCardviewAdpator != null) {
@@ -140,42 +138,13 @@ public class PastRecordingsFragment extends Fragment {
                 }
 
             }
+
         }).attachToRecyclerView(recyclerView2);
 
 
         return root;
     }
 
-    private void updateRecyclerView(Date tempDate) {
-
-
-        if (filesList.size() > 0)
-            filesList.clear();
-
-
-        RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
-        String stringDate = ft.format(tempDate);
-
-        date.setText(stringDate);
-        System.out.println("Date Here: " + stringDate);
-
-        List<Files> tempFiles = recordingPathFileDatabase.getAllFiles(ft.format(tempDate));
-
-        filesList.addAll(tempFiles);
-
-        if(filesList.isEmpty()){
-            emptyTextView.setVisibility(View.VISIBLE);
-        }else{
-            emptyTextView.setVisibility(View.INVISIBLE);
-        }
-
-        if (pastRecordingsCardviewAdpator != null)
-            pastRecordingsCardviewAdpator.notifyDataSetChanged();
-
-
-
-    }
 
     private final View.OnClickListener calendarLauncher = new View.OnClickListener() {
         @Override
@@ -210,7 +179,13 @@ public class PastRecordingsFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            navigation.navigate(R.id.action_nav_online);
+           if(!cloud){
+               cloud = true;
+               pastRecordingsCardviewAdpator.setCloudBoolean(cloud);
+               updateRecyclerViewFirebase(new Date());
+           }else{
+               Toast.makeText(homePage,"Already in the Online Section ", Toast.LENGTH_LONG).show();
+           }
 
         }
     };
@@ -219,8 +194,123 @@ public class PastRecordingsFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            Toast.makeText(homePage,"Already in the Offline Section ", Toast.LENGTH_LONG).show();
+            if(cloud){
+                cloud = false;
+                pastRecordingsCardviewAdpator.setCloudBoolean(cloud);
+                updateRecyclerView(new Date());
+            }else{
+                Toast.makeText(homePage,"Already in the Offline Section ", Toast.LENGTH_LONG).show();
+            }
 
         }
     };
+
+    private void updateRecyclerView(Date tempDate) {
+
+
+        if (filesList.size() > 0)
+            filesList.clear();
+
+
+        RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
+
+        String stringDateTextView = simpleDateFormat(tempDate);
+        date.setText(stringDateTextView);
+
+
+        List<Files> tempFiles = recordingPathFileDatabase.getAllFiles(stringDateTextView);
+
+        filesList.addAll(tempFiles);
+
+        if(filesList.isEmpty()){
+            emptyTextView.setVisibility(View.VISIBLE);
+        }else{
+            emptyTextView.setVisibility(View.INVISIBLE);
+        }
+
+        if (pastRecordingsCardviewAdpator != null)
+            pastRecordingsCardviewAdpator.notifyDataSetChanged();
+    }
+
+
+    private void updateRecyclerViewFirebase(Date tempDate) {
+
+
+        if (filesList.size() > 0)
+            filesList.clear();
+
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        String userID = auth.getCurrentUser().getUid();
+        String stringDateTextView = simpleDateFormat(tempDate);
+        date.setText(stringDateTextView);
+
+
+        firebaseFirestore.collection("files")
+                .whereEqualTo("uploadedBy", userID)
+                .whereEqualTo("created_at", stringDateTextView)
+                .addSnapshotListener((value, error) -> {
+                    if (error == null) {
+                        for (DocumentChange documentChange : value.getDocumentChanges()) {
+                            Files f = documentChange.getDocument().toObject(Files.class);
+                            System.out.println("RANDOM HERE : " + f.getCreated_at());
+                            filesList.add(f);
+                        }
+                    } else {
+                        System.out.println("ERRor is : " + error);
+                    }
+
+                    if (filesList.isEmpty()) {
+                        emptyTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        emptyTextView.setVisibility(View.INVISIBLE);
+                    }
+                    pastRecordingsCardviewAdpator.notifyDataSetChanged();
+
+                });
+    }
+
+    private String simpleDateFormat(Date tempDate){
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
+        String stringDate = ft.format(tempDate);
+        return stringDate;
+    }
+
+    private void deleteRecordingFromSQLDatabase(Files file) {
+
+        RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
+        recordingPathFileDatabase.deleteFile(file);
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void deleteRecordingFromCloud(Files file) {
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = firebaseFirestore.collection("files");
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference();
+
+
+        Query query = collectionReference.whereEqualTo("uploadedBy",auth.getUid())
+                .whereEqualTo("updated_at",file.getUpdated_at());
+        String path;
+
+        query.get().addOnCompleteListener(task -> {
+                    if(task.isComplete()){
+
+                        task.getResult().forEach(documentSnapshot ->
+                                storageReference.child(documentSnapshot.getString("path")).delete());
+
+                        task.getResult().forEach(documentSnapshot ->
+                                collectionReference.document(documentSnapshot.getId()).delete());
+                    }
+                });
+
+
+    }
 }
