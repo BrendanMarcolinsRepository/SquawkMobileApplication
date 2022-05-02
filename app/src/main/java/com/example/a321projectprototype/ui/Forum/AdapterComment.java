@@ -102,7 +102,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
         }
         else
         {
-            holder.imageDeleteComment.setVisibility(View.INVISIBLE);
+            holder.imageDeleteComment.setVisibility(View.GONE);
         }
 
 

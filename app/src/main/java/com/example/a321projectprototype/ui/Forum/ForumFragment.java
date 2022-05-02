@@ -230,9 +230,6 @@ public class ForumFragment extends Fragment
 
                         setRecyclerView();
                         //adapterForum.notifyDataSetChanged();
-
-
-
                     }
                 });
     }
