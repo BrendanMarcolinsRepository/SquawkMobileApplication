@@ -105,7 +105,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home,R.id.nav_Profile, R.id.nav_Record, R.id.nav_PastRecording, R.id.nav_Discover, R.id.nav_Forum,
-                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings, R.id.nav_PastRecording_Online)
+                R.id.nav_Flock, R.id.nav_Reward, R.id.nav_Settings)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -244,30 +244,23 @@ public class HomePage extends AppCompatActivity implements Serializable
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {
-                task.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot)
-                    {
-                        DocumentSnapshot document = task.getResult();
-                        if (document != null && document.exists())
-                        {
-                            userModel = new UserModel(document.getString("fullname"),document.getString("username"),document.getString("email"),document.getString("photo_Url"));
+                task.addOnSuccessListener(documentSnapshot -> {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        userModel = new UserModel(document.getString("fullname"),document.getString("username")
+                                ,document.getString("email"),document.getString("password"),document.getString("photo_Url"));
 
-                            headName.setText(userModel.getUsername());
-                            headEmail.setText(userModel.getEmail());
-                            Glide.with(getApplicationContext())
-                                    .load(userModel.getPhoto_url())
-                                    .circleCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(R.drawable.user_profile)
-                                    .into(imageViewProfile);
+                        headName.setText(userModel.getUsername());
+                        headEmail.setText(userModel.getEmail());
+                        Glide.with(getApplicationContext())
+                                .load(userModel.getPhoto_url())
+                                .circleCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .placeholder(R.drawable.user_profile)
+                                .into(imageViewProfile);
 
-                        }
-                        else
-                        {
-                            System.out.println("no document");
-                        }
-
+                    } else {
+                        System.out.println("no document");
                     }
                 });
 
@@ -283,8 +276,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
-    public void disableMenuItems()
-    {
+    public void disableMenuItems() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
         MenuItem item1 = menu.findItem(R.id.nav_home);
@@ -308,8 +300,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
 
 
-    public void enableMenuItems()
-    {
+    public void enableMenuItems() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
         MenuItem item1 = menu.findItem(R.id.nav_home);
@@ -337,12 +328,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         return drawerRight;
     }
 
-
-
-    public void setFlockModelData(FlockModelData flockModelData)
-    {
-        this.flockModelData = flockModelData;
-    }
+    public void setFlockModelData(FlockModelData flockModelData) { this.flockModelData = flockModelData; }
 
     public FlockModelData getFlockModelData() {
         return flockModelData;

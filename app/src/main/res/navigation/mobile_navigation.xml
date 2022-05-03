@@ -25,6 +25,18 @@
         android:name="com.example.a321projectprototype.ui.Profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_Profile_to_nav_Profile_Settings"
+            app:destination="@id/nav_Profile_Settings" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Profile_Settings"
+        android:name="com.example.a321projectprototype.ui.Profile.ProfileSettingsFragment"
+        tools:layout="@layout/fragment_profile_settings" >
+        <action
+            android:id="@+id/action_nav_Profile_Settings_to_nav_Profile"
+            app:destination="@id/nav_Profile" />
     </fragment>
 
     <fragment
@@ -56,24 +68,8 @@
         android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsFragment"
         android:label="@string/menu_PastRecordings"
         tools:layout="@layout/fragment_pastrecordings" >
-
-        <action
-            android:id="@+id/action_nav_online"
-            app:destination="@id/nav_PastRecording_Online" />
-
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_PastRecording_Online"
-        android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsOnlineFragment"
-        android:label="@string/menu_PastRecordings_Online"
-        tools:layout="@layout/fragment_pastrecordings_online" >
-
-        <action
-            android:id="@+id/action_nav_online"
-            app:destination="@id/nav_PastRecording" />
-
-    </fragment>
 
     <fragment
         android:id="@+id/nav_Discover"

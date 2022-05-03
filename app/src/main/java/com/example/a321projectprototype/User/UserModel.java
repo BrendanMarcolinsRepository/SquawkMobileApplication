@@ -7,15 +7,17 @@ public class UserModel implements Serializable
     private int id;
     private String name;
     private String username;
+    private String password;
     private String email;
     private String photo_url;
 
     public UserModel() { }
 
 
-    public UserModel(String name, String username, String email, String photo_url) {
+    public UserModel(String name, String username, String email,String password, String photo_url) {
         this.name = name;
         this.username = username;
+        this.password = password;
         this.email = email;
         this.photo_url = photo_url;
     }
@@ -58,5 +60,13 @@ public class UserModel implements Serializable
 
     public void setPhoto_url(String photo_url) {
         this.photo_url = photo_url;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

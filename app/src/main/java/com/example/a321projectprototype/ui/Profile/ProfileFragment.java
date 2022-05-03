@@ -83,18 +83,25 @@ public class ProfileFragment extends Fragment
         root = inflater.inflate(R.layout.fragment_profile, container, false);
 
 
-
         DrawerLayout drawerLayout = homePage.getDrawer();
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         AssignVariables(root);
         retrieveFireBaseData();
 
+        editProfileImage.setOnClickListener(updateProfileNavigatorMethod);
 
 
 
 
         return root;
     }
+
+    private final View.OnClickListener updateProfileNavigatorMethod = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.action_nav_Profile_to_nav_Profile_Settings);
+        }
+    };
 
     private void retrieveFireBaseData() {
 

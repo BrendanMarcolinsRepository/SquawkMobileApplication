@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/greenBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <FrameLayout
+        android:id="@+id/profileSettingImageLayout"
+        android:layout_width="292dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="104dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/updateProfileImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/updateProfileImageButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/photoupdate"
+            android:layout_marginRight="20dp"
+            android:layout_marginVertical="10dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="120dp"
+             />
+
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/profileSettingsUsernameEdittext"
+        android:layout_width="330dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:paddingLeft="15dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileSettingImageLayout" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/profileSettingsEmailEdittext"
+        android:layout_width="330dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textPersonName"
+        android:paddingLeft="15dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileSettingsUsernameEdittext" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/profileSettingsPasswordEdittext"
+        android:layout_width="330dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="15dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileSettingsEmailEdittext" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/updateProfileSettingButton"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/et_style"
+        android:gravity="center"
+        android:text="Update"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileSettingsPasswordEdittext" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
