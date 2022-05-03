@@ -37,4 +37,9 @@
     <string name="DiscoverAustralianBirds">Discover Australian Birds</string>
 
 
+    <string name="errorPopUp">Sorry, We Screwed Up, Please Try Again!</string>
+    <string name="okay">Okay</string>
+
+
+
 </resources>

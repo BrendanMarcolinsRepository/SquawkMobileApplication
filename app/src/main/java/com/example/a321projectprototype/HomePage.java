@@ -61,7 +61,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     private Button recordButton, discoverButton,rewardButton;
     private NavController navController;
     private UserModel userModel;
-    private String userID;
+    private String userID,password;
     private Button logout;
     private ImageView imageViewProfile;
     private DrawerLayout drawer,drawerRight;
@@ -77,6 +77,8 @@ public class HomePage extends AppCompatActivity implements Serializable
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         toolbar = findViewById(R.id.toolbar);
+        Intent intent = getIntent();
+        password = intent.getStringExtra("password");
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -141,11 +143,12 @@ public class HomePage extends AppCompatActivity implements Serializable
 
         boolean widget = false;
 
-        Intent intent = getIntent();
+/*
+        Intent intent1 = getIntent();
         if(savedInstanceState == null) {
 
             System.out.println("worked 1");
-            Bundle extras = intent.getExtras();
+            Bundle extras = intent1.getExtras();
             if (extras == null) {
                 System.out.println("worked 2");
                 widget = false;
@@ -161,6 +164,9 @@ public class HomePage extends AppCompatActivity implements Serializable
             System.out.println("worked 5");
             navController.navigate(R.id.action_nav_Home_to_nav_Record);
         }
+
+ */
+
 
 
     }
@@ -230,7 +236,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         }
     };
 
-    private void getUserInformation()
+    public void getUserInformation()
     {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -248,7 +254,7 @@ public class HomePage extends AppCompatActivity implements Serializable
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
                         userModel = new UserModel(document.getString("fullname"),document.getString("username")
-                                ,document.getString("email"),document.getString("password"),document.getString("photo_Url"));
+                                ,document.getString("email"),password,document.getString("photo_Url"));
 
                         headName.setText(userModel.getUsername());
                         headEmail.setText(userModel.getEmail());
@@ -333,6 +339,7 @@ public class HomePage extends AppCompatActivity implements Serializable
     public FlockModelData getFlockModelData() {
         return flockModelData;
     }
+
 
 
 

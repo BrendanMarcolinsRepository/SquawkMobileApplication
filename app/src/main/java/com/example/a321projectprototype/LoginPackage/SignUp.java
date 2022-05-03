@@ -114,6 +114,13 @@ public class SignUp extends AppCompatActivity {
                 setProgress();
             }
 
+            if (password1Input.length() < 7) {
+                password1EditText.setError("Password is required");
+                password1EditText.requestFocus();
+                setVisiable();
+                setProgress();
+            }
+
             if (password2Input.isEmpty()) {
                 password2EditText.setError("Password is required");
                 password2EditText.requestFocus();

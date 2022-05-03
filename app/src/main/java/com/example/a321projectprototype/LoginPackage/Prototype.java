@@ -119,6 +119,7 @@ public class Prototype extends AppCompatActivity {
                     if(user.isEmailVerified()){
 
                         Intent homepage  = new Intent(Prototype.this, HomePage.class);
+                        homepage.putExtra("password",stringUserpassword);
                         homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homepage);
                         finish();

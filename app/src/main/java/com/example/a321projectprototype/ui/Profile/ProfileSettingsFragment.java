@@ -2,10 +2,12 @@ package com.example.a321projectprototype.ui.Profile;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -58,8 +61,8 @@ public class ProfileSettingsFragment extends Fragment {
         userProfileImageView = root.findViewById(R.id.updateProfileImageView);
         updateProfileImageButton = root.findViewById(R.id.updateProfileImageButton);
         usernameTextView  = root.findViewById(R.id.profileSettingsUsernameEdittext);
-        passwordTextView = root.findViewById(R.id.profileSettingsEmailEdittext);
-        emailTextView = root.findViewById(R.id.profileSettingsPasswordEdittext);
+        passwordTextView = root.findViewById(R.id.profileSettingsPasswordEdittext);
+        emailTextView = root.findViewById(R.id.profileSettingsEmailEdittext);
         profileUpdateButton = root.findViewById(R.id.updateProfileSettingButton);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -71,7 +74,6 @@ public class ProfileSettingsFragment extends Fragment {
 
         setUpViewVariables();
         setUpCurrentProfileImage();
-
 
 
         profileUpdateButton.setOnClickListener(profileUpdateMethod);
@@ -155,10 +157,20 @@ public class ProfileSettingsFragment extends Fragment {
             if (!username.isEmpty()) {
                 updateUserNameMethod();
             } else if (!email.isEmpty()) {
-                updateEmailMethod();
+
+                if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    updateEmailMethod();
+                }else{
+                    Toast.makeText(homePage, "Please Enter A Proper Email Address! ", Toast.LENGTH_LONG).show();
+                }
 
             } else if (!password.isEmpty()) {
-                updatePasswordMethod();
+
+                if (password.length() > 6) {
+                    updatePasswordMethod();
+                }else{
+                    Toast.makeText(homePage, "Please Enter A Password With More Than 6 Letters! ", Toast.LENGTH_LONG).show();
+                }
 
             } else if (updateImage) {
                 updateImageMethod();
@@ -168,39 +180,30 @@ public class ProfileSettingsFragment extends Fragment {
                 return;
             }
 
-            if (updateSuccess) {
-                Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
-
-                CountDownTimer countDownTimer = new CountDownTimer(4000, 5) {
-
-                    @Override
-                    public void onTick(long millisUntilFinished_) {
-                        if (millisUntilFinished_ == 2000) {
-                            Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        navController.navigate(R.id.action_nav_Profile_Settings_to_nav_Profile);
-                    }
-                }.start();
-            }
+            Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
         }
 
         private void updateImageMethod() {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference storageReference = firebaseStorage.getReference("UserImages").child(auth.getUid()+"/");
+            StorageReference storageReference = firebaseStorage.getReference("UserImages").child(auth.getUid());
             storageReference.delete().addOnCompleteListener(task -> storageReference
                     .putFile(selectedImageUri)
                     .addOnSuccessListener(taskSnapshot -> {
-                        String urlString = storageReference.getDownloadUrl().toString();
-                        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-                        firebaseFirestore.collection("users")
-                                .document(auth.getUid())
-                                .update("photo_Url",urlString);
-                        updateSuccess = true;
-                    }));
+                        storageReference.getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                                    firebaseFirestore.collection("users")
+                                            .document(auth.getUid())
+                                            .update("photo_Url",uri.toString());
+                                    homePage.getUserInformation();
+                                });
+
+
+
+
+                    })).addOnFailureListener(e -> {
+                onButtonShowPopupWindowClick();
+            });
 
         }
 
@@ -211,20 +214,20 @@ public class ProfileSettingsFragment extends Fragment {
             FirebaseUser user = auth.getCurrentUser();
 
             user.reauthenticate(credential)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            FirebaseUser user = auth.getCurrentUser();
-                            user.updatePassword(email)
-                                    .addOnCompleteListener(task1 -> {
-                                        firebaseFirestore.collection("users")
-                                                .document(auth.getUid())
-                                                .update("password",password);
-                                        updateSuccess = true;
-                                    });
+                    .addOnCompleteListener(task -> {
+                        FirebaseUser user1 = user;
+                        user1.updatePassword(password)
+                                .addOnCompleteListener(task1 -> {
+                                    updateSuccess = true;
+                                })
+                                .addOnFailureListener(e -> {
+                                    onButtonShowPopupWindowClick();
+                            });
 
-                        }
-                    });
+                    })
+                    .addOnFailureListener(e -> {
+                onButtonShowPopupWindowClick();
+            });
 
 
         }
@@ -233,23 +236,30 @@ public class ProfileSettingsFragment extends Fragment {
 
             AuthCredential credential = EmailAuthProvider
                     .getCredential(userModel.getEmail(), userModel.getPassword());
-            FirebaseUser user = auth.getCurrentUser();
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            System.out.println("user emial :" + userModel.getEmail());
+            System.out.println("user passowrd :" + userModel.getPassword());
 
             user.reauthenticate(credential)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            FirebaseUser user = auth.getCurrentUser();
-                            user.updateEmail(email)
-                                    .addOnCompleteListener(task1 -> {
-                                        firebaseFirestore.collection("users")
-                                                .document(auth.getUid())
-                                                .update("email",email);
-                                        updateSuccess = true;
-                                    });
+                    .addOnCompleteListener(task -> {
+                        FirebaseUser user1 = user;
+                        user1.updateEmail(email)
+                                .addOnCompleteListener(task1 -> {
+                                    firebaseFirestore.collection("users")
+                                            .document(auth.getUid())
+                                            .update("email",email);
+                                            homePage.getUserInformation();
+                                })
+                                .addOnFailureListener(e -> {
+                                    onButtonShowPopupWindowClick();
+                                });
 
-                        }
-                    });
+                    })
+                    .addOnFailureListener(e -> {
+                            onButtonShowPopupWindowClick();
+            });
 
 
         }
@@ -260,9 +270,33 @@ public class ProfileSettingsFragment extends Fragment {
                     .document(auth.getUid())
                     .update("username",username)
                     .addOnCompleteListener(task -> {
-                        updateSuccess = true;
-                    });
+                        homePage.getUserInformation();
+                    }).addOnFailureListener(e -> {
+                onButtonShowPopupWindowClick();
+            });
         }
     };
+
+    private void onButtonShowPopupWindowClick() {
+
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        View mView = getLayoutInflater().inflate(R.layout.failure_pop,null);
+        alert.setView(mView);
+
+        Button yes  = (Button) mView.findViewById(R.id.popUpFailureButton);
+
+
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(true);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+    }
 }
 
