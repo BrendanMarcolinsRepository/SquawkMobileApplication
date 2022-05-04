@@ -2,40 +2,43 @@ package com.example.a321projectprototype.ui.Flock;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Filter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a321projectprototype.Database.UserDatabase;
-import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder>
 {
     protected List<UserModel> FullList;
     protected List<UserModel> dataSet;
+    protected List<String> userIds;
     private FlockModelData flockModelData;
     private UserModel userModel;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private int size;
+    private  RecyclerView recyclerView;
+    private  ProgressBar progressBar;
+    private TextView score;
 
-    private int picked;
     private Context context;
 
     class MyViewHolder extends RecyclerView.ViewHolder
@@ -47,19 +50,24 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
             super(itemView);
 
             memberName = itemView.findViewById(R.id.textUsernameTable);
-            //score = itemView.findViewById(R.id.memberFockScore);
+            score = itemView.findViewById(R.id.textScoreTable);
 
 
         }
 
     }
 
-    AdapaterMemberFlock(List<UserModel> listItem, Context context, FlockModelData flockModelData)
+    AdapaterMemberFlock(List<UserModel> listItem, Context context, FlockModelData flockModelData,
+                        int size, RecyclerView recyclerView, ProgressBar progressBar,TextView score)
     {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
         this.context = context;
         this.flockModelData = flockModelData;
+        this.size = size;
+        this.recyclerView = recyclerView;
+        this.progressBar = progressBar;
+        this.score = score;
 
     }
 
@@ -79,12 +87,40 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder holder, int position)
     {
         userModel = dataSet.get(position);
-        holder.memberName.setText(userModel.getUsername());
+        getUserScores(userModel, holder);
+
+
         holder.memberName.setOnClickListener(v -> {
             if(flockModelData.getUserId().equals(auth.getUid())){
                 popUp();
             }
         });
+
+
+
+    }
+
+    private void getUserScores(UserModel userModel,MyViewHolder holder) {
+
+
+
+
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("userScore").whereEqualTo("userId",userModel.getUserId())
+                .get()
+                .addOnCompleteListener(task -> {
+                    String result = task.getResult().getDocuments().get(0).get("totalScore").toString();
+                    holder.memberName.setText(userModel.getUsername());
+                    holder.score.setText(result);
+
+                    if(size == getItemCount()){
+                        recyclerView.setAlpha(1);
+                        progressBar.setVisibility(View.GONE);
+                        score.setVisibility(View.VISIBLE);
+
+                    }
+                });
+
 
 
 

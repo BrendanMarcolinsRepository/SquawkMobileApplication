@@ -20,12 +20,15 @@ import com.example.a321projectprototype.User.FlockScoreModel;
 import com.example.a321projectprototype.User.ItemDataModel;
 import com.example.a321projectprototype.User.RecordByModel;
 import com.example.a321projectprototype.User.RewardPointsModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -235,15 +238,23 @@ public class DataRetrievedFromRecord extends Fragment
             batchFlockScore.update(documentReference,"scorethisweek",flockScoreModel.getScorethisweek());
             batchFlockScore.update(documentReference,"scorethismonth",flockScoreModel.getScorethismonth());
             batchFlockScore.update(documentReference,"scorethisyear",flockScoreModel.getScorethisyear());
+            batchFlockScore.update(documentReference,"totalScore",flockScoreModel.getScorethisyear());
             batchFlockScore.update(documentReference,"updated_at",dataString);
-            batchFlockScore.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+            batchFlockScore.commit().addOnSuccessListener(unused -> System.out.println("Worked Finished")).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onSuccess(Void unused) {
-
-                    System.out.println("Worked Finished");
-
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println("Worked Failed : " + e);
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+            });
+
+            WriteBatch userScore = firebaseFirestore.batch();
+            documentReference = firebaseFirestore.collection("userScore").document(auth.getUid());
+            userScore.update(documentReference,"scorethisweek",flockScoreModel.getScorethisweek());
+            userScore.update(documentReference,"scorethismonth",flockScoreModel.getScorethismonth());
+            userScore.update(documentReference,"scorethisyear",flockScoreModel.getScorethisyear());
+            userScore.update(documentReference,"totalScore",flockScoreModel.getScorethisyear());
+            userScore.update(documentReference,"updated_at",dataString);
+            userScore.commit().addOnSuccessListener(unused -> System.out.println("Worked Finished")).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     System.out.println("Worked Failed : " + e);
@@ -275,15 +286,13 @@ public class DataRetrievedFromRecord extends Fragment
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                                        String flockName = queryDocumentSnapshots.getDocumentChanges().get(0).getDocument().get("name").toString();
                                         firebaseFirestore
-                                                .collection("flockScore")
-                                                .whereEqualTo("flockname",flockName)
+                                                .collection("flockScore").document(flockId)
                                                 .get()
-                                                .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                                                .addOnCompleteListener(task -> {
                                                     FlockExist = true;
                                                     System.out.println("Worked Finished 2");
-                                                    flockScoreModel = queryDocumentSnapshots1.getDocumentChanges().get(0).getDocument().toObject(FlockScoreModel.class);
+                                                    flockScoreModel = task.getResult().toObject(FlockScoreModel.class);
                                                     setRewardPoints();
                                                 });
 

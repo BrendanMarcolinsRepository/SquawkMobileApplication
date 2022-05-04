@@ -43,16 +43,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
+
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/flockInfoSettings"
+        android:id="@+id/flockInfoSettingsImageView"
         android:layout_width="64dp"
         android:layout_height="48dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="32dp"
         android:src="@drawable/settings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.763"
-        app:layout_constraintStart_toEndOf="@+id/flockInfoGroupName"
+        app:layout_constraintHorizontal_bias="0.942"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
 
     <View
@@ -91,7 +91,7 @@
         android:id="@+id/flock_info_join"
         android:layout_width="178dp"
         android:layout_height="43dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/green"
         android:text="join"
         android:textColor="@color/white"
@@ -104,7 +104,7 @@
         android:id="@+id/flock_info_invite"
         android:layout_width="178dp"
         android:layout_height="43dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/green"
         android:text="Invite"
         android:textColor="@color/white"
@@ -117,10 +117,13 @@
         android:id="@+id/flock_info_score"
         android:layout_width="205dp"
         android:layout_height="33dp"
-        android:layout_marginTop="20dp"
-        android:text="Total Points: "
+        android:layout_marginTop="24dp"
+        android:gravity="center|end"
+        android:text="d"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintHorizontal_bias="0.771"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
 

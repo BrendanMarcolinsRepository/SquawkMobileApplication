@@ -54,7 +54,7 @@ public class UserDatabase extends SQLiteOpenHelper
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(USERS_COLUMN_ID, user.getId());
+        contentValues.put(USERS_COLUMN_ID, user.getUserId());
         contentValues.put(USERS_COLUMN_NAME, user.getName());
         contentValues.put(USERS_COLUMN_USERNAME, user.getUsername());
         contentValues.put(USERS_COLUMN_EMAIL, user.getEmail());

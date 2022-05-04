@@ -253,7 +253,7 @@ public class HomePage extends AppCompatActivity implements Serializable
                 task.addOnSuccessListener(documentSnapshot -> {
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
-                        userModel = new UserModel(document.getString("fullname"),document.getString("username")
+                        userModel = new UserModel(auth.getUid(),document.getString("fullname"),document.getString("username")
                                 ,document.getString("email"),password,document.getString("photo_Url"));
 
                         headName.setText(userModel.getUsername());

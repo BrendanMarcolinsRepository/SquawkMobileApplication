@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class UserModel implements Serializable
 {
-    private int id;
+    private String userId;
     private String name;
     private String username;
     private String password;
@@ -14,20 +14,21 @@ public class UserModel implements Serializable
     public UserModel() { }
 
 
-    public UserModel(String name, String username, String email,String password, String photo_url) {
+    public UserModel(String userId,String name, String username, String email,String password, String photo_url) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;
         this.photo_url = photo_url;
+        this.userId = userId;
     }
 
-    public int getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {

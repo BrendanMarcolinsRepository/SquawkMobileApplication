@@ -1,8 +1,7 @@
 package com.example.a321projectprototype.User;
 
-public class FlockScoreModel {
-
-    private String flockname;
+public class UserScore {
+    private String userID;
     private int scorethisweek;
     private int scorethismonth;
     private int scorethisyear;
@@ -10,25 +9,25 @@ public class FlockScoreModel {
     private String created_at;
     private String updated_at;
 
-    public FlockScoreModel() {
+    public UserScore() {
     }
 
-    public FlockScoreModel(String flockname, int scorethisweek, int scorethismonth, int scorethisyear, int totalScore, String created_at, String updated_at) {
-        this.flockname = flockname;
+    public UserScore( String userID, int scorethisweek, int scorethismonth, int scorethisyear,int totalScore, String created_at, String updated_at) {
+        this.userID = userID;
         this.scorethisweek = scorethisweek;
         this.scorethismonth = scorethismonth;
         this.scorethisyear = scorethisyear;
-        this.totalScore = totalScore;
         this.created_at = created_at;
         this.updated_at = updated_at;
-    }
-
-    public int getTotalScore() {
-        return totalScore;
-    }
-
-    public void setTotalScore(int totalScore) {
         this.totalScore = totalScore;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public int getScorethisweek() {
@@ -71,11 +70,11 @@ public class FlockScoreModel {
         this.updated_at = updated_at;
     }
 
-    public String getFlockname() {
-        return flockname;
+    public int getTotalScore() {
+        return totalScore;
     }
 
-    public void setFlockname(String flockname) {
-        this.flockname = flockname;
+    public void setTotalScore(int totalScore) {
+        this.totalScore = totalScore;
     }
 }

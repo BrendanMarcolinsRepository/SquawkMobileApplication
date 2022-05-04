@@ -95,6 +95,8 @@ public class FlockFragment extends Fragment
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        constraintLayout = root.findViewById(R.id.registerlayerFlock);
+        constraintLayout.setVisibility(View.INVISIBLE);
         textViewFlockName = root.findViewById(R.id.text_flocks);
         flockSearchView = root.findViewById(R.id.flock_search_bar);
         recyclerView = root.findViewById(R.id.recycleFlock);
@@ -104,6 +106,7 @@ public class FlockFragment extends Fragment
         leaderboard = root.findViewById(R.id.flockLeaderBoards);
         firebaseFirestore = FirebaseFirestore.getInstance();
         progressBar = root.findViewById(R.id.flockListProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
         imageView = root.findViewById(R.id.flockImage);
         flockList = new ArrayList<>();
 
@@ -149,8 +152,6 @@ public class FlockFragment extends Fragment
 
     private void EventChangeListener()
     {
-
-        progressBar.setVisibility(View.VISIBLE);
         firebaseFirestore.collection("flocks")
                 .orderBy("name", Query.Direction.ASCENDING)
                 .addSnapshotListener((value, error) -> {
@@ -184,6 +185,7 @@ public class FlockFragment extends Fragment
                         List<String> list = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             if(userID.equals(document.get("userId").toString())) {
+                                constraintLayout.setVisibility(View.VISIBLE);
                                 createFlockButton.setVisibility(View.GONE);
                                 createFlockButton.setOnClickListener(null);
                                 myflock.setVisibility(View.VISIBLE);
@@ -195,18 +197,21 @@ public class FlockFragment extends Fragment
                             }
 
                         }
+
+                        if(flockModelData == null) {
+                            myflock.setVisibility(View.GONE);
+                            flockImage.setVisibility(View.GONE);
+                            createFlockButton.setVisibility(View.VISIBLE);
+                            System.out.println("===========> not in a flock");
+                            System.out.println("no document");
+                            constraintLayout.setVisibility(View.VISIBLE);
+
+                        }
+
                     } else {
                         System.out.println("no document");
                     }
                 });
-
-        if(flockModelData == null) {
-            myflock.setVisibility(View.GONE);
-            flockImage.setVisibility(View.GONE);
-            createFlockButton.setVisibility(View.VISIBLE);
-            System.out.println("===========> not in a flock");
-            System.out.println("no document");
-        }
     }
 
     private void getFlockName(String flockId) {

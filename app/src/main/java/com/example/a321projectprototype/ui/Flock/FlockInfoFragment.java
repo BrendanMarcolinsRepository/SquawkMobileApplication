@@ -28,6 +28,7 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.FlockScoreModel;
 import com.example.a321projectprototype.User.UserModel;
+import com.example.a321projectprototype.User.UserScore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -57,8 +58,10 @@ public class FlockInfoFragment extends Fragment
     private NavController navController;
     private List<String> userIds;
     private List<UserModel> userModelList;
+    private List<UserScore> userScoreList;
     private FirebaseFirestore firebaseFirestore;
     private FlockModelData flockModelData;
+    private UserScore userScore;
     private ProgressBar progressBar;
     private UserModel userModel;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -82,8 +85,8 @@ public class FlockInfoFragment extends Fragment
         recyclerView = root.findViewById(R.id.recycleFlockInfo);
         join = root.findViewById(R.id.flock_info_join);
         groupScore = root.findViewById(R.id.flock_info_score);
-        settings = root.findViewById(R.id.flockInfoSettings);
-        settings.setVisibility(View.INVISIBLE);
+        groupScore.setVisibility(View.INVISIBLE);
+        settings = root.findViewById(R.id.flockInfoSettingsImageView);
         invite = root.findViewById(R.id.flock_info_invite);
         progressBar = root.findViewById(R.id.flockMemebersListProgressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -103,14 +106,14 @@ public class FlockInfoFragment extends Fragment
 
     private void loadUsersFlock() {
         groupName.setText(flockModelData.getName());
+
         System.out.println("woreked ");
         if(flockModelData.getUserId().equals(auth.getUid())){
-            settings.setVisibility(View.VISIBLE);
             System.out.println("woreked 1");
+            settings.setVisibility(View.VISIBLE);
 
         }else{
-            settings.setVisibility(ImageView.GONE);
-            settings.setVisibility(View.GONE);
+            settings.setImageResource(0);
             settings.setEnabled(false);
             System.out.println("woreked 2");
         }
@@ -128,8 +131,22 @@ public class FlockInfoFragment extends Fragment
     {
         userIds = new ArrayList<>();
         userModelList = new ArrayList<>();
+        userScoreList  = new ArrayList<>();
+
+
 
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+        firebaseFirestore.collection("flockScore").document(flockModelData.getFlockId())
+                .get()
+                .addOnCompleteListener(task -> {
+                            String result = task.getResult().get("totalScore").toString();
+                    groupScore.setText("Total Points: "+ result);
+                });
+
+
+
         firebaseFirestore.collection("flockMembers")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -164,9 +181,8 @@ public class FlockInfoFragment extends Fragment
                         }
 
                         setRecycleVeiw(userModelList);
-                    });
-            progressBar.setVisibility(View.INVISIBLE);
 
+                    });
         }
     }
 
@@ -178,8 +194,9 @@ public class FlockInfoFragment extends Fragment
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAlpha(0);
 
-        adapaterMemberFlock = new  AdapaterMemberFlock(userModel,getContext(),flockModelData);
+        adapaterMemberFlock = new  AdapaterMemberFlock(userModel,getContext(),flockModelData,userIds.size(), recyclerView, progressBar,groupScore);
         recyclerView.setAdapter(adapaterMemberFlock);
     }
 

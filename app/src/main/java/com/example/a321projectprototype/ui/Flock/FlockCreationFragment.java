@@ -3,7 +3,6 @@ package com.example.a321projectprototype.ui.Flock;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,40 +11,28 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.a321projectprototype.Database.UserDatabase;
+import com.example.a321projectprototype.FirebaseCustomFailure;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.Files;
-import com.example.a321projectprototype.User.FlockMembers;
 import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 public class FlockCreationFragment extends Fragment
 {
     private EditText name,description;
-    private ImageView flockImage;
+    private ImageView flockImage,flockUpdateImage;
     private Button create,update;
     private int SELECT_PICTURE = 200;
     private String flockNameString,flockDescriptionString;
@@ -70,6 +57,8 @@ public class FlockCreationFragment extends Fragment
     private String ownerUsername;
     private StorageReference storageReference;
     private Uri selectedImageUri;
+    private boolean updateImage = false;
+    private FirebaseCustomFailure failure;
 
 
 
@@ -81,8 +70,10 @@ public class FlockCreationFragment extends Fragment
 
 
 
+
         userModel = homePage.getUserModel();
         userDatabase = new UserDatabase(homePage);
+
 
 
         name = root.findViewById(R.id.flock_name_editText);
@@ -90,6 +81,7 @@ public class FlockCreationFragment extends Fragment
         flockImage = root.findViewById(R.id.flock_create_image);
         create = root.findViewById(R.id.flock_Create_Button);
         update = root.findViewById(R.id.flock_update_Button);
+        flockUpdateImage = root.findViewById(R.id.uploadFlockImageButton);
 
 
         auth = FirebaseAuth.getInstance();
@@ -99,7 +91,7 @@ public class FlockCreationFragment extends Fragment
 
         checkFlockName();
 
-        flockImage.setOnClickListener(selectPhotoMethod);
+        flockUpdateImage.setOnClickListener(selectPhotoMethod);
         create.setOnClickListener(createFlockMethod);
         update.setOnClickListener(updateFlockMethod);
 
@@ -109,12 +101,7 @@ public class FlockCreationFragment extends Fragment
         return root;
     }
 
-    private final View.OnClickListener selectPhotoMethod = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            imageChooser();
-        }
-    };
+    private final View.OnClickListener selectPhotoMethod = v -> imageChooser();
 
     void imageChooser() {
 
@@ -141,33 +128,32 @@ public class FlockCreationFragment extends Fragment
                 selectedImageUri = data.getData();
                 if (null != selectedImageUri) {
                     // update the preview image in the layout
-                    flockImage.setImageURI(selectedImageUri);
+
+                    Glide.with(homePage.getApplicationContext())
+                            .load(selectedImageUri)
+                            .circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.user_profile)
+                            .into(flockImage);
+                    updateImage = true;
                 }
             }
         }
     }
-    private final View.OnClickListener createFlockMethod = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-           confirmNewFlock(v);
-        }
-    };
+    private final View.OnClickListener createFlockMethod = v -> confirmNewFlock();
 
-    private final View.OnClickListener updateFlockMethod = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            confirmNewFlock(v);
-            System.out.println("worked ==================================== 1");
-        }
-    };
+    private final View.OnClickListener updateFlockMethod = v -> updateFlockInformation();
 
-    private void confirmNewFlock(View v) {
+
+    private void confirmNewFlock() {
         flockNameString = name.getText().toString();
         flockDescriptionString = name.getText().toString();
         if(flockNameString.isEmpty()) {
             name.setError("Please Enter a flock name");
+            return;
         } else if(flockDescriptionString.isEmpty()) {
             description.setError("Please Enter a small description");
+            return;
         }else if(selectedImageUri == null) {
             return;
         } else {
@@ -176,10 +162,75 @@ public class FlockCreationFragment extends Fragment
         }
     }
 
+    private void updateFlockInformation() {
+        flockNameString = name.getText().toString();
+        flockDescriptionString = name.getText().toString();
+        failure = new FirebaseCustomFailure();
+
+        if (!flockNameString.isEmpty()) {
+            updateFlockNameMethod();
+        } else if (!flockDescriptionString.isEmpty()) {
+            updateFlockDescriptionMethod();
+        } else if (updateImage) {
+            updateImageMethod();
+
+        } else {
+            Toast.makeText(homePage, "Sorry, Looks like theres nothing to update! ", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
+    }
+
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = homePage.getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getMimeTypeFromExtension(contentResolver.getType(uri));
+    }
+
+
+    private void updateFlockNameMethod() {
+
+        firebaseFirestore.collection("flocks")
+                .document(homePage.getFlockModelData().getFlockId())
+                .update("name", flockNameString)
+                .addOnCompleteListener(task -> {
+                    homePage.getUserInformation();
+                }).addOnFailureListener(e -> {
+            failure.onButtonShowPopupWindowClick(getContext());
+        });
+    }
+
+
+        private void updateFlockDescriptionMethod(){
+
+            firebaseFirestore.collection("flocks")
+                    .document(homePage.getFlockModelData().getFlockId())
+                    .update("description", flockDescriptionString)
+                    .addOnCompleteListener(task -> {
+                        homePage.getUserInformation();
+                    }).addOnFailureListener(e -> {
+                failure.onButtonShowPopupWindowClick(getContext());
+            });
+        }
+
+    private void updateImageMethod() {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference("FlockImages").child(homePage.getFlockModelData().getFlockId());
+        storageReference.delete().addOnCompleteListener(task -> storageReference
+                .putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageReference.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                                firebaseFirestore.collection("flocks")
+                                        .document(homePage.getFlockModelData().getFlockId())
+                                        .update("imageUrl",uri.toString());
+                                homePage.getUserInformation();
+                            });
+                })).addOnFailureListener(e -> {
+            failure.onButtonShowPopupWindowClick(getContext());
+        });
     }
 
     private void uploadFirebaseData(String storage){
@@ -223,30 +274,25 @@ public class FlockCreationFragment extends Fragment
         documentReference = firebaseFirestore
                 .collection("flockScore")
                 .document(flockId);
-        documentReference.set(map2).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
+        documentReference.set(map2).addOnSuccessListener(aVoid -> {
 
-                navController = homePage.getNav();
-                navController.navigate(R.id.flock_fragment_nav_return);
+            navController = homePage.getNav();
+            navController.navigate(R.id.flock_fragment_nav_return);
 
 
 
-            }
         });
     }
 
     private void uploadImage(){
         storageReference.child(flockNameString + getFileExtension(selectedImageUri))
-                .putFile(selectedImageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        String storeReference = storageReference.getPath();
-                        uploadFirebaseData(storeReference);
+        .putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageReference.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                uploadFirebaseData(uri.toString());
 
-                    }
+                            });
                 });
     }
 

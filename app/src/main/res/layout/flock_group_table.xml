@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/flock_info_fragment"
 
-    android:layout_width="355dp"
+    android:layout_width="match_parent"
     android:layout_height="90dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:gravity="center|start"
-            android:text="UserName"
+            android:text=""
             app:layout_constraintEnd_toStartOf="@+id/textScoreTable"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="4dp"
             android:gravity="center|end"
-            android:text="score"
+            android:text=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.864"
             app:layout_constraintStart_toStartOf="parent"
