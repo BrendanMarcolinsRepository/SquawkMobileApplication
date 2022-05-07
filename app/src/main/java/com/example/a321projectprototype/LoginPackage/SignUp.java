@@ -17,11 +17,14 @@ import android.widget.TextView;
 import com.example.a321projectprototype.R;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,17 +137,39 @@ public class SignUp extends AppCompatActivity {
                 auth = FirebaseAuth.getInstance();
                 firebaseFirestore = FirebaseFirestore.getInstance();
 
+                Date date = new Date();
+                SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
+                String dataString = ft.format(date);
+
                 auth.createUserWithEmailAndPassword(emailInput,password2Input).addOnCompleteListener((task -> {
                     if(task.isSuccessful()) {
 
                         userFirebaseId = auth.getCurrentUser().getUid();
                         DocumentReference documentReference = firebaseFirestore.collection("users").document(userFirebaseId);
                         HashMap<String,Object> userMap = new HashMap<>();
+                        userMap.put("userId",userFirebaseId);
                         userMap.put("fullname",fullNameInput);
                         userMap.put("username",usernameInput);
                         userMap.put("password",password1Input);
                         userMap.put("email", emailInput);
-                        documentReference.set(userMap).addOnSuccessListener(aVoid -> returnToLogin());
+                        userMap.put("photo_Url","");
+                        userMap.put("created_at",dataString);
+                        userMap.put("updated_at",dataString);
+                        documentReference.set(userMap).addOnSuccessListener(aVoid -> {
+
+                            DocumentReference documentReference1 = firebaseFirestore.collection("userScore").document(userFirebaseId);
+                            HashMap<String,Object> scoreMap = new HashMap<>();
+                            scoreMap.put("scoreThisMonth",0);
+                            scoreMap.put("scoreThisWeek",0);
+                            scoreMap.put("scoreThisYear",0);
+                            scoreMap.put("totalScore",0);
+                            scoreMap.put("created_at",dataString);
+                            scoreMap.put("updated_at",dataString);
+                            scoreMap.put("userId", userFirebaseId);
+                            documentReference1.set(scoreMap).addOnSuccessListener(unused -> finish());
+
+
+                        });
                     } else {
                         setVisiable();
                         setProgress();

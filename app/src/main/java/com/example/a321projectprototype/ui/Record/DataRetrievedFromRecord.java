@@ -20,6 +20,7 @@ import com.example.a321projectprototype.User.FlockScoreModel;
 import com.example.a321projectprototype.User.ItemDataModel;
 import com.example.a321projectprototype.User.RecordByModel;
 import com.example.a321projectprototype.User.RewardPointsModel;
+import com.example.a321projectprototype.User.UserScore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +44,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class DataRetrievedFromRecord extends Fragment
@@ -52,11 +55,12 @@ public class DataRetrievedFromRecord extends Fragment
     private List<BirdRewardModel> birdRewardModelList;
     private List<RewardPointsModel> rewardPoints;
     private int maxIdentifer;
-    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private FirebaseAuth auth;
     private FirebaseFirestore firebaseFirestore;
     private LinearLayoutManager linearLayoutManager;
     private RecordDataCardViewAdapter recordDataCardViewAdapter;
     private FlockScoreModel flockScoreModel;
+    private UserScore userScore;
     private boolean FlockExist = false;
     private String flockId;
 
@@ -65,6 +69,8 @@ public class DataRetrievedFromRecord extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View root = inflater.inflate(R.layout.fragement_record_retrieved_data, container, false);
+
+        auth = FirebaseAuth.getInstance();
 
         recyclerView = root.findViewById(R.id.recycleRecordData);
         homePage = (HomePage) getActivity();
@@ -188,79 +194,113 @@ public class DataRetrievedFromRecord extends Fragment
         getFlockData();
     }
 
+    public void getUserScore(){
+        firebaseFirestore.collection("userScore")
+            .document(auth.getUid())
+            .get()
+            .addOnCompleteListener(task -> {
+                if(task.isSuccessful() && task.getResult() != null){
+                    System.out.println("User Score Week" + auth.getUid());
+
+                    userScore = task.getResult().toObject(UserScore.class);
+                    setRewardPoints();
+            }
+        });
+    }
+
     public void setRewardPoints(){
+
+
 
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         DocumentReference documentReference;
 
+
+
         for(int i = 0; i < birdRewardModelList.size(); i++) {
-
-            WriteBatch batchIdentifiedBird = firebaseFirestore.batch();
-
-
-
-            documentReference = firebaseFirestore.collection("identified_bird").document();
 
 
             RecordByModel  recordByModel = new RecordByModel(birdRewardModelList.get(i).getBird_name(),firebaseAuth.getUid());
 
-            batchIdentifiedBird.set(documentReference,recordByModel);
+            documentReference = firebaseFirestore.collection("identified_bird").document();
+            documentReference.set(recordByModel)
+                    .addOnFailureListener(e -> {
 
-            batchIdentifiedBird.commit().addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    System.out.println("++++++++++++++++++++++++ Didnt Worked: " + e);
-                }
             });
 
-            if(FlockExist){
-                for(int k = 0; k < rewardPoints.size();k++) {
 
-                    if(rewardPoints.get(k).getBird_status().matches(birdRewardModelList.get(i).getBird_status())){
+
+            for(int k = 0; k < rewardPoints.size();k++) {
+
+                if(rewardPoints.get(k).getBird_status().matches(birdRewardModelList.get(i).getBird_status())){
+
+                    userScore.setScoreThisWeek(rewardPoints.get(k).getReward_points() + userScore.getScoreThisWeek());
+                    userScore.setScoreThisMonth(rewardPoints.get(k).getReward_points() + userScore.getScoreThisMonth());
+                    userScore.setScoreThisYear(rewardPoints.get(k).getReward_points() + userScore.getScoreThisYear());
+
+                    if(FlockExist){
                         flockScoreModel.setScorethisweek(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethisweek());
                         flockScoreModel.setScorethismonth(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethismonth());
                         flockScoreModel.setScorethisyear(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethisyear());
-                        System.out.println("Worked Finished");
                     }
+
+                    System.out.println("Worked Finished");
                 }
             }
+
         }
 
         if(FlockExist){
-
-            Date date = new Date();
-            SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
-            String dataString = ft.format(date);
-
-            WriteBatch batchFlockScore = firebaseFirestore.batch();
-            documentReference = firebaseFirestore.collection("flockScore").document(flockId);
-            batchFlockScore.update(documentReference,"scorethisweek",flockScoreModel.getScorethisweek());
-            batchFlockScore.update(documentReference,"scorethismonth",flockScoreModel.getScorethismonth());
-            batchFlockScore.update(documentReference,"scorethisyear",flockScoreModel.getScorethisyear());
-            batchFlockScore.update(documentReference,"totalScore",flockScoreModel.getScorethisyear());
-            batchFlockScore.update(documentReference,"updated_at",dataString);
-            batchFlockScore.commit().addOnSuccessListener(unused -> System.out.println("Worked Finished")).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    System.out.println("Worked Failed : " + e);
-                }
-            });
-
-            WriteBatch userScore = firebaseFirestore.batch();
-            documentReference = firebaseFirestore.collection("userScore").document(auth.getUid());
-            userScore.update(documentReference,"scorethisweek",flockScoreModel.getScorethisweek());
-            userScore.update(documentReference,"scorethismonth",flockScoreModel.getScorethismonth());
-            userScore.update(documentReference,"scorethisyear",flockScoreModel.getScorethisyear());
-            userScore.update(documentReference,"totalScore",flockScoreModel.getScorethisyear());
-            userScore.update(documentReference,"updated_at",dataString);
-            userScore.commit().addOnSuccessListener(unused -> System.out.println("Worked Finished")).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    System.out.println("Worked Failed : " + e);
-                }
-            });
+            updateFlockScore();
+        }else{
+            updateUserScore();
         }
+    }
+
+    public void updateFlockScore(){
+
+
+        Map<String, Object> flockScoreUpdateHashMap =  new HashMap<>();
+
+        flockScoreUpdateHashMap.put("scorethisweek",flockScoreModel.getScorethisweek());
+        flockScoreUpdateHashMap.put("scorethismonth",flockScoreModel.getScorethismonth());
+        flockScoreUpdateHashMap.put("scorethisyear",flockScoreModel.getScorethisyear());
+        flockScoreUpdateHashMap.put("totalScore",flockScoreModel.getTotalScore());
+        flockScoreUpdateHashMap.put("updated_at",getDate());
+
+        DocumentReference documentReferenceFlockScore = firebaseFirestore.collection("flockScore").document(flockId);
+        documentReferenceFlockScore.update(flockScoreUpdateHashMap)
+                .addOnCompleteListener(task -> {
+                    updateUserScore();
+                })
+                .addOnFailureListener(e -> {
+                    updateUserScore();
+                });
+
+    }
+
+
+    public void updateUserScore(){
+        Map<String, Object> userScoreUpdateHashMap =  new HashMap<>();
+
+        userScoreUpdateHashMap.put("scoreThisWeek",userScore.getScoreThisWeek());
+        userScoreUpdateHashMap.put("scoreThisMonth",userScore.getScoreThisMonth());
+        userScoreUpdateHashMap.put("scoreThisYear",userScore.getScoreThisYear());
+        userScoreUpdateHashMap.put("totalScore",userScore.getTotalScore());
+        userScoreUpdateHashMap.put("updated_at",getDate());
+
+
+        DocumentReference documentReferenceUserScore = firebaseFirestore.collection("userScore").document(auth.getUid());
+
+        documentReferenceUserScore
+                .update(userScoreUpdateHashMap)
+                .addOnCompleteListener(task -> {
+
+                })
+                .addOnFailureListener(e -> {
+
+                });
     }
 
     public void getFlockData(){
@@ -268,43 +308,40 @@ public class DataRetrievedFromRecord extends Fragment
         firebaseFirestore.collection("flockMembers")
                 .whereEqualTo("userId",auth.getUid())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if(!queryDocumentSnapshots.getDocumentChanges().isEmpty()){
                         flockId = queryDocumentSnapshots.getDocumentChanges().get(0).getDocument().get("flockId").toString();
-                        if(flockId == null){
-                            setRewardPoints();
-                            System.out.println("Worked Finished 1");
-                            return;
-                        }
+
                         firebaseFirestore
                                 .collection("flocks")
                                 .whereEqualTo("flockId",flockId)
                                 .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                        firebaseFirestore
-                                                .collection("flockScore").document(flockId)
-                                                .get()
-                                                .addOnCompleteListener(task -> {
-                                                    FlockExist = true;
-                                                    System.out.println("Worked Finished 2");
-                                                    flockScoreModel = task.getResult().toObject(FlockScoreModel.class);
-                                                    setRewardPoints();
-                                                });
-
-
-                                    }
-                                });
-
+                                .addOnSuccessListener(queryDocumentSnapshots1 -> firebaseFirestore
+                                        .collection("flockScore").document(flockId)
+                                        .get()
+                                        .addOnCompleteListener(task -> {
+                                            FlockExist = true;
+                                            System.out.println("Worked Finished 2");
+                                            flockScoreModel = task.getResult().toObject(FlockScoreModel.class);
+                                            getUserScore();
+                                        }));
+                    }else{
+                        getUserScore();
                     }
                 });
     }
 
-    public void getCurrentFlockData(){
+  public String  getDate(){
 
-    }
+      Date date = new Date();
+      SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
+      String dataString = ft.format(date);
+
+      if(dataString == null || dataString.isEmpty()){
+          dataString = "";
+      }
+
+      return  dataString;
+
+  }
 }
