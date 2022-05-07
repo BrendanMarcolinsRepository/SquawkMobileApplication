@@ -235,14 +235,17 @@ public class DataRetrievedFromRecord extends Fragment
 
                 if(rewardPoints.get(k).getBird_status().matches(birdRewardModelList.get(i).getBird_status())){
 
-                    userScore.setScoreThisWeek(rewardPoints.get(k).getReward_points() + userScore.getScoreThisWeek());
-                    userScore.setScoreThisMonth(rewardPoints.get(k).getReward_points() + userScore.getScoreThisMonth());
-                    userScore.setScoreThisYear(rewardPoints.get(k).getReward_points() + userScore.getScoreThisYear());
+                    int rewardPoint = rewardPoints.get(k).getReward_points();
+                    userScore.setScoreThisWeek(rewardPoint + userScore.getScoreThisWeek());
+                    userScore.setScoreThisMonth(rewardPoint + userScore.getScoreThisMonth());
+                    userScore.setScoreThisYear(rewardPoint + userScore.getScoreThisYear());
+                    userScore.setTotalScore(rewardPoint + userScore.getTotalScore());
 
                     if(FlockExist){
-                        flockScoreModel.setScorethisweek(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethisweek());
-                        flockScoreModel.setScorethismonth(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethismonth());
-                        flockScoreModel.setScorethisyear(rewardPoints.get(k).getReward_points() + flockScoreModel.getScorethisyear());
+                        flockScoreModel.setScorethisweek(rewardPoint + flockScoreModel.getScorethisweek());
+                        flockScoreModel.setScorethismonth(rewardPoint + flockScoreModel.getScorethismonth());
+                        flockScoreModel.setScorethisyear(rewardPoint + flockScoreModel.getScorethisyear());
+                        flockScoreModel.setTotalScore(rewardPoint + flockScoreModel.getTotalScore());
                     }
 
                     System.out.println("Worked Finished");
