@@ -23,6 +23,7 @@ import com.example.a321projectprototype.User.FlockScoreModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -34,8 +35,7 @@ import java.util.List;
 
 public class FlockLeaderboardFragment  extends Fragment
 {
-    private String[] timeFrame = { "This Week","This Month", "This Year"};
-    private List<String> dateList;
+    private String[] timeFrame = { "This Week","This Month", "This Year","All Time Scores"};
     private RecyclerView recyclerView;
     private HomePage homePage;
     private Spinner leaderBoardsSpinner;
@@ -45,6 +45,7 @@ public class FlockLeaderboardFragment  extends Fragment
     private ProgressBar progressBar;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
@@ -57,6 +58,7 @@ public class FlockLeaderboardFragment  extends Fragment
         homePage = (HomePage) getActivity();
         scoreList = new ArrayList<>();
 
+        leaderBoardsSpinner.setOnItemSelectedListener (spinnerLeaderBoardMethod);
 
         leaderBoardsSpinner.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -86,6 +88,9 @@ public class FlockLeaderboardFragment  extends Fragment
                 case 2:
                     sortDataByYear();
                     break;
+                case 3:
+                    sortDataByAllTime();
+                    break;
 
             }
         }
@@ -97,6 +102,7 @@ public class FlockLeaderboardFragment  extends Fragment
 
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void getData() {
 
 
@@ -104,33 +110,26 @@ public class FlockLeaderboardFragment  extends Fragment
         firebaseFirestore
                 .collection("flockScore")
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        flockScoreList = new ArrayList<>();
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    flockScoreList = new ArrayList<>();
 
-                        for(DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                            if(documentChange.getType() == DocumentChange.Type.ADDED) {
-                                flockScoreList.add(documentChange.getDocument().toObject(FlockScoreModel.class));
-                            }
+                    for(DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                        if(documentChange.getType() == DocumentChange.Type.ADDED) {
+                            flockScoreList.add(documentChange.getDocument().toObject(FlockScoreModel.class));
                         }
+                    }
 
-                        sortDataByWeek();
-                        setRecyclerViewMethod();
+                    sortDataByAllTime();
+                    setRecyclerViewMethod();
 
-                    };
                 });
     }
 
     private void setRecyclerViewMethod(){
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.flock_leaderboard_selected, timeFrame);
-        adapter.setDropDownViewResource(R.layout.flock_leaderboard_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, timeFrame);
         leaderBoardsSpinner.setAdapter(adapter);
 
-
-        leaderBoardsSpinner.setOnItemSelectedListener (spinnerLeaderBoardMethod);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -146,11 +145,8 @@ public class FlockLeaderboardFragment  extends Fragment
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByWeek(){
         scoreList.clear();
-        Collections.sort(flockScoreList, Comparator.comparingInt(FlockScoreModel::getScorethisweek));
-
-        for(int i = 0; i < flockScoreList.size(); i++){
-            scoreList.add(flockScoreList.get(i).getScorethisweek());
-        }
+        Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
+        flockScoreList.forEach(i -> scoreList.add(i.getScorethisweek()));
         updateAdapterFlock();
 
     }
@@ -159,11 +155,10 @@ public class FlockLeaderboardFragment  extends Fragment
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByMonth(){
         scoreList.clear();
-        Collections.sort(flockScoreList, Comparator.comparingInt(FlockScoreModel::getScorethismonth));
+        Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
 
-        for(int i = 0; i < flockScoreList.size(); i++){
-            scoreList.add(flockScoreList.get(i).getScorethismonth());
-        }
+        flockScoreList.forEach(i -> scoreList.add(i.getScorethismonth()));
+
 
         updateAdapterFlock();
     }
@@ -171,11 +166,19 @@ public class FlockLeaderboardFragment  extends Fragment
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByYear(){
         scoreList.clear();
-        Collections.sort(flockScoreList, Comparator.comparingInt(FlockScoreModel::getScorethisyear));
+        Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
 
-        for(int i = 0; i < flockScoreList.size(); i++){
-            scoreList.add(flockScoreList.get(i).getScorethisyear());
-        }
+        flockScoreList.forEach(i -> scoreList.add(i.getScorethisyear()));
+
+        updateAdapterFlock();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void sortDataByAllTime(){
+        scoreList.clear();
+        Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
+
+        flockScoreList.forEach(i -> scoreList.add(i.getTotalScore()));
 
         updateAdapterFlock();
     }

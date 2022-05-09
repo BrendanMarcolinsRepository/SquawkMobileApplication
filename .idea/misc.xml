@@ -11,6 +11,7 @@
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/record_switch_contents.xml" value="0.1975" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/side_nav_bar.xml" value="0.338" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/signupbuttondrawable.xml" value="0.1415" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/spinner.xml" value="0.2975" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/spinner_background.xml" value="0.315" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/spinner_style.xml" value="0.315" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/drawable/switch_offline.xml" value="0.1975" />
@@ -45,6 +46,7 @@
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_profile.xml" value="0.47136752136752136" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_profile_settings.xml" value="0.22" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_record.xml" value="0.22" />
+        <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/fragment_rewards.xml" value="0.13826232247284878" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/leaderboard_content.xml" value="0.5" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/login_page.xml" value="0.33177083333333335" />
         <entry key="..\:/Users/Brendan/Documents/Univeristy/Project/Prototype/app/src/main/res/layout/nav_header_main.xml" value="0.22890559732664995" />

@@ -33,6 +33,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -193,7 +194,7 @@ public class FlockCreationFragment extends Fragment
 
         firebaseFirestore.collection("flocks")
                 .document(homePage.getFlockModelData().getFlockId())
-                .update("name", flockNameString)
+                .update("name", flockNameString,"updated_at",getDate())
                 .addOnCompleteListener(task -> {
                     homePage.getUserInformation();
                 }).addOnFailureListener(e -> {
@@ -206,7 +207,7 @@ public class FlockCreationFragment extends Fragment
 
             firebaseFirestore.collection("flocks")
                     .document(homePage.getFlockModelData().getFlockId())
-                    .update("description", flockDescriptionString)
+                    .update("description", flockDescriptionString,"updated_at",getDate())
                     .addOnCompleteListener(task -> {
                         homePage.getUserInformation();
                     }).addOnFailureListener(e -> {
@@ -225,7 +226,7 @@ public class FlockCreationFragment extends Fragment
                                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
                                 firebaseFirestore.collection("flocks")
                                         .document(homePage.getFlockModelData().getFlockId())
-                                        .update("imageUrl",uri.toString());
+                                        .update("imageUrl",uri.toString(),"updated_at",getDate());
                                 homePage.getUserInformation();
                             });
                 })).addOnFailureListener(e -> {
@@ -233,48 +234,48 @@ public class FlockCreationFragment extends Fragment
         });
     }
 
-    private void uploadFirebaseData(String storage){
+    private void uploadFirebaseData(String storage, DocumentReference documentReference){
 
         ownerUsername = homePage.getName();
         String userID = auth.getCurrentUser().getUid();
 
-        Date date = new Date();
-        String dateString = String.format("dd-M-yyyy hh:mm:ss", date.getTime());
 
-        DocumentReference documentReference = firebaseFirestore.collection("flocks").document();
 
-        HashMap<String,Object> myMap = new HashMap<>();
-        myMap.put("userId",userID);
-        myMap.put("flockId",documentReference.getId());
-        myMap.put("name",flockNameString);
-        myMap.put("memberCount",1);
-        myMap.put("flockImage",storage);
-        myMap.put("description",flockDescriptionString);
-        myMap.put("created_at",dateString);
-        myMap.put("updated_at",dateString);
-        documentReference.set(myMap);
+        HashMap<String,Object> flockMap = new HashMap<>();
+        flockMap.put("userId",userID);
+        flockMap.put("flockId",documentReference.getId());
+        flockMap.put("name",flockNameString);
+        flockMap.put("memberCount",1);
+        flockMap.put("imageUrl",storage);
+        flockMap.put("description",flockDescriptionString);
+        flockMap.put("created_at",getDate());
+        flockMap.put("updated_at",getDate());
+        documentReference.set(flockMap);
 
 
         DocumentReference documentReference1 = firebaseFirestore.collection("flockMembers").document();
-        String flockId = documentReference.getId();
 
-        HashMap<String,Object> myMap1 = new HashMap<>();
-        myMap1.put("flockId",flockId);
-        myMap1.put("userId", auth.getUid());
-        myMap1.put("created_at",dateString);
-        documentReference1.set(myMap1);
 
-        HashMap<String,Object> map2 = new HashMap<>();
-        myMap1.put("flockname",flockNameString);
-        myMap1.put("scorethisweek", 0);
-        myMap1.put("scorethismonth", 0);
-        myMap1.put("scorethisyear", 0);
-        myMap1.put("created_at",dateString);
-        myMap1.put("updated_at",dateString);
-        documentReference = firebaseFirestore
-                .collection("flockScore")
-                .document(flockId);
-        documentReference.set(map2).addOnSuccessListener(aVoid -> {
+        HashMap<String,Object> flockMembersMap = new HashMap<>();
+        flockMembersMap.put("flockId",documentReference.getId());
+        flockMembersMap.put("userId", auth.getUid());
+        flockMembersMap.put("created_at",getDate());
+        flockMembersMap.put("updated_at",getDate());
+        documentReference1.set(flockMembersMap);
+
+
+        DocumentReference documentReference2 = firebaseFirestore.collection("flockScore").document(documentReference.getId());
+
+        HashMap<String,Object> flockScoreMap = new HashMap<>();
+        flockScoreMap.put("flockname",flockNameString);
+        flockScoreMap.put("scorethisweek", 0);
+        flockScoreMap.put("scorethismonth", 0);
+        flockScoreMap.put("scorethisyear", 0);
+        flockScoreMap.put("totalScore", 0);
+        flockScoreMap.put("created_at",getDate());
+        flockScoreMap.put("updated_at",getDate());
+
+        documentReference2.set(flockScoreMap).addOnSuccessListener(aVoid -> {
 
             navController = homePage.getNav();
             navController.navigate(R.id.flock_fragment_nav_return);
@@ -285,12 +286,16 @@ public class FlockCreationFragment extends Fragment
     }
 
     private void uploadImage(){
-        storageReference.child(flockNameString + getFileExtension(selectedImageUri))
+
+        DocumentReference documentReference = firebaseFirestore.collection("flocks").document();
+        storageReference.child(documentReference.getId())
         .putFile(selectedImageUri)
                 .addOnSuccessListener(taskSnapshot -> {
-                    storageReference.getDownloadUrl()
+                    storageReference
+                            .child(documentReference.getId())
+                            .getDownloadUrl()
                             .addOnSuccessListener(uri -> {
-                                uploadFirebaseData(uri.toString());
+                                uploadFirebaseData(uri.toString(), documentReference);
 
                             });
                 });
@@ -308,5 +313,19 @@ public class FlockCreationFragment extends Fragment
             //  update.setOnClickListener(null);
             create.setVisibility(View.VISIBLE);
         }
+    }
+
+    public String  getDate(){
+
+        Date date = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-M-yyyy hh:mm:ss");
+        String dataString = ft.format(date);
+
+        if(dataString == null || dataString.isEmpty()){
+            dataString = "";
+        }
+
+        return  dataString;
+
     }
 }

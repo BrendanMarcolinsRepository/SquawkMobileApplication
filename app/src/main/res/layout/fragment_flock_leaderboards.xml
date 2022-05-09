@@ -18,21 +18,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/leaderboards_Spinner"
-        style="@style/SpinnerTheme"
-        android:layout_width="300dp"
-        android:layout_height="?attr/dropdownListPreferredItemHeight"
-        android:layout_margin="10dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:dropDownWidth="300dp"
-        android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
-        android:paddingRight="14dp"
-        android:popupBackground="@android:color/white"
-        android:popupElevation="3dp"
-        android:text="Today"
+        android:background="@drawable/spinner_background"
+        android:layout_width="303dp"
+        android:layout_height="39dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +31,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleLeaderboard"
-        android:layout_width="395dp"
-        android:layout_height="456dp"
+        android:layout_width="350dp"
+        android:layout_height="622dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

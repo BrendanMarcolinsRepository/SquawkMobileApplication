@@ -83,35 +83,10 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             infoButton = itemView.findViewById(R.id.flock_info_button);
             registerLayout = view.findViewById(R.id.registerlayerFlock);
 
-
-
-
             countNumber = groupCountNumber.getText().toString();
 
             System.out.println(name);
             System.out.println(countNumber);
-
-
-
-
-
-            //System.out.println("Flock name 2 " + name);
-
-            infoButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    picked = getLayoutPosition();
-                    System.out.println("worked");
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("flock",dataSet.get(position));
-                    navigation.navigate(R.id.info_fragment_nav,bundle);
-                }
-            });
-
-
-
 
         }
 
@@ -147,8 +122,6 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
         name = currentItem.getName();
         holder.groupCountNumber.setText(currentItem.getMemberCount() + "/200");
 
-        System.out.println("PATH LOCATION: = " + currentItem.getName());
-        System.out.println("PATH LOCATION: = " + currentItem.getImageUrl());
 
         Glide.with(homePage.getApplicationContext())
                 .load(currentItem.getImageUrl())
@@ -157,28 +130,25 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 .placeholder(R.drawable.user_profile)
                 .into(holder.image);
 
-        holder.joinButton.setOnClickListener(new View.OnClickListener() {
+        holder.infoButton.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-                if (dataSet.get(position).getMemberCount() <= 200)
-                {
-                    flockModelData = homePage.getFlockModelData();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("flock",dataSet.get(position));
+            navigation.navigate(R.id.info_fragment_nav,bundle);
+        });
 
-                    if(flockModelData == null)
-                    {
-                        popUp(position);
-                    }
-                    else
-                    {
-                        Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
-                    }
+        holder.joinButton.setOnClickListener(v -> {
+            if (dataSet.get(position).getMemberCount() <= 200) {
+                flockModelData = homePage.getFlockModelData();
 
+                if(flockModelData == null) {
+                    popUp(position);
+                } else {
+                    Toast.makeText(context, "You Have Already Joined A Group", Toast.LENGTH_LONG).show();
                 }
-                else
-                {
-                    Toast.makeText(context, "Flock Is Too Full", Toast.LENGTH_LONG).show();
-                }
+
+            } else {
+                Toast.makeText(context, "Flock Is Too Full", Toast.LENGTH_LONG).show();
             }
         });
     }

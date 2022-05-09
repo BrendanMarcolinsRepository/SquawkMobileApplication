@@ -80,6 +80,7 @@ public class FlockFragment extends Fragment
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
@@ -174,42 +175,34 @@ public class FlockFragment extends Fragment
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void checkFlockName() {
         String userID = auth.getCurrentUser().getUid();
 
 
         firebaseFirestore.collection("flockMembers")
+                .whereEqualTo("userId",userID)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<String> list = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if(userID.equals(document.get("userId").toString())) {
-                                constraintLayout.setVisibility(View.VISIBLE);
-                                createFlockButton.setVisibility(View.GONE);
-                                createFlockButton.setOnClickListener(null);
-                                myflock.setVisibility(View.VISIBLE);
-                                flockImage.setVisibility(View.VISIBLE);
-                                System.out.println("===========> in a flock");
+                    if(!task.getResult().isEmpty()){
+                        constraintLayout.setVisibility(View.VISIBLE);
+                        createFlockButton.setVisibility(View.GONE);
+                        createFlockButton.setOnClickListener(null);
+                        myflock.setVisibility(View.VISIBLE);
+                        flockImage.setVisibility(View.VISIBLE);
+                        System.out.println("===========> in a flock");
 
-                                getFlockName(document.getString("flockId").toString());
-                                return;
-                            }
+                        task.getResult().forEach(i -> getFlockName(i.get("flockId").toString()));
 
-                        }
+                    }else{
 
-                        if(flockModelData == null) {
-                            myflock.setVisibility(View.GONE);
-                            flockImage.setVisibility(View.GONE);
-                            createFlockButton.setVisibility(View.VISIBLE);
-                            System.out.println("===========> not in a flock");
-                            System.out.println("no document");
-                            constraintLayout.setVisibility(View.VISIBLE);
-
-                        }
-
-                    } else {
+                        myflock.setVisibility(View.GONE);
+                        flockImage.setVisibility(View.GONE);
+                        createFlockButton.setVisibility(View.VISIBLE);
+                        System.out.println("===========> not in a flock");
                         System.out.println("no document");
+                        constraintLayout.setVisibility(View.VISIBLE);
+
                     }
                 });
     }
