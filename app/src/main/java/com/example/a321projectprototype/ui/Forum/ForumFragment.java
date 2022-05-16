@@ -120,15 +120,10 @@ public class ForumFragment extends Fragment
         }
     };
 
-    private final View.OnClickListener filter = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            onButtonShowPopupWindowClick(v);
-            Snackbar.make(v, s, Snackbar.LENGTH_LONG);
+    private final View.OnClickListener filter = v -> {
+        onButtonShowPopupWindowClick(v);
+        Snackbar.make(v, s, Snackbar.LENGTH_LONG);
 
-        }
     };
 
 
@@ -147,44 +142,26 @@ public class ForumFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        popular.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                s = "Populer Order";
-                filterOrder = "p";
-                alertDialog.dismiss();
-            }
+        popular.setOnClickListener(v -> {
+            s = "Populer Order";
+            filterOrder = "p";
+            alertDialog.dismiss();
         });
 
 
-        alphabetical.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                order();
-                alertDialog.dismiss();
-            }
+        alphabetical.setOnClickListener(v -> {
+            order();
+            alertDialog.dismiss();
         });
-        reverseAlphabetical.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                reverseOrder();
-                alertDialog.dismiss();
-            }
+
+        reverseAlphabetical.setOnClickListener(v -> {
+            reverseOrder();
+            alertDialog.dismiss();
         });
-        exitPopup.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                s = "No Change";
-                alertDialog.dismiss();
-            }
+
+        exitPopup.setOnClickListener(v -> {
+            s = "No Change";
+            alertDialog.dismiss();
         });
         alertDialog.show();
 

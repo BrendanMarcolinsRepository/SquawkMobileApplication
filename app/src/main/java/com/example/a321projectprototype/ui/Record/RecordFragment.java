@@ -83,6 +83,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private StorageReference storageReference;
-    private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString, dateStringFile, filePathFirebase;
+    private String userID, filePath, desciption = "bird recording", fileName = "birdRecording", dateString, timeString, filePathFirebase;
     private Date date;
     private SwitchCompat recordSwitch;
 
@@ -257,10 +258,12 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     private String getRecordingFilePath() {
         date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
-        SimpleDateFormat ft2 = new SimpleDateFormat ("dd-MM-yyyy-hh:mm:ss");
+        SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy ");
         dateString = ft.format(date);
-        dateStringFile = ft2.format(date);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeString = timeFormat.format(cal);
 
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         filePathFirebase = homePage.getExternalCacheDir().getAbsolutePath();
@@ -365,7 +368,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     private void noSqlRecordingPath() {
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
-        Files files = new Files(dateString.substring(0,10),desciption,fileName,filePath,dateString);
+        Files files = new Files(dateString,desciption,fileName,filePath,dateString,timeString);
         recordingPathFileDatabase.addFile(files);
         enableMenuItems();
         navController.navigate(R.id.action_nav_record_data);
@@ -385,13 +388,8 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                System.out.println("--------------------------- worked");
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("--------------------------- failured  " + e);
+
             }
         });
 
@@ -407,16 +405,13 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         userMap.put("filename",fileName);
         userMap.put("path", storageReference.getPath());
         userMap.put("updated_at", dateString);
+        userMap.put("time", timeString);
         userMap.put("uploadedBy", userID);
 
 
-        documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid)
-            {
-                enableMenuItems();
-                navController.navigate(R.id.action_nav_record_data);
-            }
+        documentReference.set(userMap).addOnSuccessListener(aVoid -> {
+            enableMenuItems();
+            navController.navigate(R.id.action_nav_record_data);
         });
 
 

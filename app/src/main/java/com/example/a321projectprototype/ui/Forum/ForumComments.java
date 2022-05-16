@@ -89,7 +89,7 @@ public class ForumComments extends Fragment
                 DocumentReference documentReference = firebaseFirestore.collection("comments").document();
 
                 Date date = new Date();
-                SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy hh:mm:ss");
+                SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy");
                 String dateString = ft.format(date);
 
 

@@ -156,7 +156,6 @@ public class FlockLeaderboardFragment  extends Fragment
     private void sortDataByMonth(){
         scoreList.clear();
         Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
-
         flockScoreList.forEach(i -> scoreList.add(i.getScorethismonth()));
 
 
@@ -167,9 +166,7 @@ public class FlockLeaderboardFragment  extends Fragment
     private void sortDataByYear(){
         scoreList.clear();
         Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
-
         flockScoreList.forEach(i -> scoreList.add(i.getScorethisyear()));
-
         updateAdapterFlock();
     }
 
@@ -177,9 +174,7 @@ public class FlockLeaderboardFragment  extends Fragment
     private void sortDataByAllTime(){
         scoreList.clear();
         Collections.sort(flockScoreList, Collections.reverseOrder(Comparator.comparingInt(FlockScoreModel::getScorethismonth)));
-
         flockScoreList.forEach(i -> scoreList.add(i.getTotalScore()));
-
         updateAdapterFlock();
     }
 

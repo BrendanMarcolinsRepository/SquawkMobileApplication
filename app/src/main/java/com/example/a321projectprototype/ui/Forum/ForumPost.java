@@ -104,27 +104,24 @@ public class ForumPost extends Fragment {
         System.out.println("post id ===============" + postIdString);
 
         DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
+        documentReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
 
-                    if (documentSnapshot.exists()) {
+                if (documentSnapshot.exists()) {
 
-                        String databaseName = documentSnapshot.getString("username");
+                    String databaseName = documentSnapshot.getString("username");
 
-                        System.out.println("names ===============" + usernameString);
-                        System.out.println("names ===============" + databaseName);
-                        System.out.println(databaseName + "============================= names ===============" + usernameString);
-                        if (usernameString.matches(databaseName)) {
-                            deleteIcon.setVisibility(View.VISIBLE);
-                        }
-
+                    System.out.println("names ===============" + usernameString);
+                    System.out.println("names ===============" + databaseName);
+                    System.out.println(databaseName + "============================= names ===============" + usernameString);
+                    if (usernameString.matches(databaseName)) {
+                        deleteIcon.setVisibility(View.VISIBLE);
                     }
-                }
 
+                }
             }
+
         });
     }
 
@@ -166,14 +163,11 @@ public class ForumPost extends Fragment {
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
             DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
-            documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful())
-                    {
-                        Toast.makeText(homePage,"Your Post Has Been Deleted",Toast.LENGTH_LONG);
-                        System.out.println("worked 1");
-                    }
+            documentReference.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                {
+                    Toast.makeText(homePage,"Your Post Has Been Deleted",Toast.LENGTH_LONG);
+                    System.out.println("worked 1");
                 }
             });
 
@@ -181,23 +175,20 @@ public class ForumPost extends Fragment {
             CollectionReference collectionReference = firebaseFirestore.collection("comments");
             Query query = collectionReference.whereEqualTo("post_id", postIdString);
 
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot documentSnapshot : task.getResult())
+            query.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot : task.getResult())
+                    {
+                        if(documentSnapshot.getString("post_id").equals(postIdString))
                         {
-                            if(documentSnapshot.getString("post_id").equals(postIdString))
-                            {
-                                collectionReference.document(documentSnapshot.getId()).delete();
-                            }
-
+                            collectionReference.document(documentSnapshot.getId()).delete();
                         }
 
-                        System.out.println("worked 2");
                     }
 
+                    System.out.println("worked 2");
                 }
+
             });
 
         }
@@ -216,38 +207,32 @@ public class ForumPost extends Fragment {
 
 
         firebaseFirestore.collection("comments").orderBy("created_at", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        System.out.println("Error ==========?>" + error);
+                        return;
+                    }
 
-
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            System.out.println("Error ==========?>" + error);
-                            return;
-                        }
-
-                        for (DocumentChange documentChange : value.getDocumentChanges())
+                    for (DocumentChange documentChange : value.getDocumentChanges())
+                    {
+                        if (documentChange.getType() == DocumentChange.Type.ADDED)
                         {
-                            if (documentChange.getType() == DocumentChange.Type.ADDED)
+
+                            CommentModel commentModel = documentChange.getDocument().toObject(CommentModel.class);
+
+                            System.out.println(commentModel.getpost_id() + " ============== " + postIdString);
+                            System.out.println("Error ==========?>" + error);
+
+                            if(commentModel.getpost_id().equals(postIdString))
                             {
-
-                                CommentModel commentModel = documentChange.getDocument().toObject(CommentModel.class);
-
-                                System.out.println(commentModel.getpost_id() + " ============== " + postIdString);
-                                System.out.println("Error ==========?>" + error);
-
-                                if(commentModel.getpost_id().equals(postIdString))
-                                {
-                                    commentList.add(commentModel);
-                                }
+                                commentList.add(commentModel);
                             }
                         }
-
-
-
-                        adapterComment.notifyDataSetChanged();
                     }
+
+
+
+                    adapterComment.notifyDataSetChanged();
                 });
     }
 }

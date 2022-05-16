@@ -10,22 +10,25 @@ public class Files
     private String path;
     private String updated_at;
     private String uploadedBy;
+    private String time;
 
-    public Files(String created_at, String description, String filename, String path, String updated_at, String uploadedBy) {
+    public Files(String created_at, String description, String filename, String path, String updated_at, String uploadedBy, String time) {
         this.created_at = created_at;
         this.description = description;
         this.filename = filename;
         this.path = path;
         this.updated_at = updated_at;
         this.uploadedBy = uploadedBy;
+        this.time = time;
     }
 
-    public Files(String created_at, String description, String filename, String path, String updated_at) {
+    public Files(String created_at, String description, String filename, String path, String updated_at, String time) {
         this.created_at = created_at;
         this.description = description;
         this.filename = filename;
         this.path = path;
         this.updated_at = updated_at;
+        this.time = time;
 
     }
 
@@ -79,6 +82,14 @@ public class Files
 
     public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
 

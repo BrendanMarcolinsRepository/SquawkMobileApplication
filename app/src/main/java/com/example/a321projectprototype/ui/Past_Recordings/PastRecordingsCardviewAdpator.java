@@ -77,35 +77,27 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         String fileName = files.get(position).getFilename();
-        String time = files.get(position).getUpdated_at();
+        String time = files.get(position).getTime();
 
         holder.name.setText(fileName);
+        holder.time.setText(time);
 
-        if (time.length() > 10) {
-            holder.time.setText(time.substring(10, 16));
-        } else {
-            holder.time.setText(time);
-        }
+        holder.iconPlayer.setOnClickListener(v -> {
 
-        holder.iconPlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            System.out.println("worked1");
 
-                System.out.println("worked1");
-
-                if(mediaPlayer != null){
-                    if(mediaPlayer.isPlaying()){
-                        stopPlayer(mediaPlayer,holder);
-                        System.out.println("worked2");
-                    }
-                    else {
-                        System.out.println("worked3");
-                        setUpPlayer(holder,position);
-                    }
-                }else{
-                    System.out.println("worked4");
+            if(mediaPlayer != null){
+                if(mediaPlayer.isPlaying()){
+                    stopPlayer(mediaPlayer,holder);
+                    System.out.println("worked2");
+                }
+                else {
+                    System.out.println("worked3");
                     setUpPlayer(holder,position);
                 }
+            }else{
+                System.out.println("worked4");
+                setUpPlayer(holder,position);
             }
         });
     }

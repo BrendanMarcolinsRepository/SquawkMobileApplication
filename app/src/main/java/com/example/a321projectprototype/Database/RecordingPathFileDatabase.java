@@ -24,6 +24,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
     public static final String USERS_COLUMN_DESCRIPTION = "description";
     public static final String USERS_COLUMN_PATH = "path";
     public static final String USERS_COLUMN_CREATED_AT = "created_at";
+    public static final String USERS_COLUMN_TIME = "time";
     public static final String USERS_COLUMN_UPDATED_AT = "updated_at";
 
 
@@ -45,7 +46,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
     {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + USERS_TABLE_NAME + "("
                 + USERS_COLUMN_ID + " INTEGER  PRIMARY KEY," + USERS_COLUMN_NAME + " TEXT," + USERS_COLUMN_DESCRIPTION + " TEXT,"
-                + USERS_COLUMN_PATH + " TEXT," + USERS_COLUMN_CREATED_AT + " TEXT," + USERS_COLUMN_UPDATED_AT + " TEXT" + ")";
+                + USERS_COLUMN_PATH + " TEXT," + USERS_COLUMN_CREATED_AT + " TEXT," + USERS_COLUMN_TIME + " TEXT," + USERS_COLUMN_UPDATED_AT + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -67,6 +68,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
         contentValues.put(USERS_COLUMN_DESCRIPTION, files.getDescription());
         contentValues.put(USERS_COLUMN_PATH,files.getPath());
         contentValues.put(USERS_COLUMN_CREATED_AT, files.getCreated_at());
+        contentValues.put(USERS_COLUMN_TIME, files.getTime());
         contentValues.put(USERS_COLUMN_UPDATED_AT, files.getUpdated_at());
         database.insert(USERS_TABLE_NAME, null, contentValues);
         database.close();
@@ -88,7 +90,8 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
         file.setDescription(cursor.getString(2));
         file.setPath(cursor.getString(3));
         file.setCreated_at(cursor.getString(4));
-        file.setUpdated_at(cursor.getString(5));
+        file.setTime(cursor.getString(5));
+        file.setUpdated_at(cursor.getString(6));
         cursor.close();
         database.close();
         return file;
@@ -120,7 +123,8 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
             files.setDescription(cursor.getString(2));
             files.setPath(cursor.getString(3));
             files.setCreated_at(cursor.getString(4));
-            files.setUpdated_at(cursor.getString(5));
+            files.setTime(cursor.getString(5));
+            files.setUpdated_at(cursor.getString(6));
             fileList.add(files);
 
             System.out.println(files.getCreated_at() + " here database");
