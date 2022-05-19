@@ -292,6 +292,7 @@ public class RewardsFragment extends Fragment
     private void getTimePeriodStatusScore(ArrayList<rewardsStatusListObject> list, String status) {
         long statusScore = rewardPointMap.get(status);
 
+
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.YEAR, -1);
         for(rewardsStatusListObject i:list) {
