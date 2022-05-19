@@ -1,5 +1,6 @@
 package com.example.a321projectprototype.ui.Rewards;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,7 +27,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,12 +104,21 @@ public class RewardsFragment extends Fragment
         nearThreatened = new ArrayList<>();
         vulnerable = new ArrayList<>();
 
+        dailyScore = 0;
+        weeklyScore = 0;
+        monthlyScore = 0;
+        yearlyScore = 0;
         allTimeScore = 0;
 
         setScores(new onCallBack() {
             @Override
             public void callBack() {
                 Log.d("All Time Score", String.valueOf(allTimeScore));
+                Log.d("Daily Score", String.valueOf(dailyScore));
+                Log.d("Weekly Score", String.valueOf(weeklyScore));
+                Log.d("Monthly Score", String.valueOf(monthlyScore));
+                Log.d("Yearly Score", String.valueOf(yearlyScore));
+
 
                 //Code for all loaded data goes here
                 //TODO: Hide Loading Screen, Show UI
@@ -132,10 +148,11 @@ public class RewardsFragment extends Fragment
         }
     };
 
+    //load identified birds and their scores from firebase and calculate scores
     private void setScores(onCallBack callback) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        firebaseFirestore.collection("identified_bird").orderBy("date", Query.Direction.ASCENDING)
+        firebaseFirestore.collection("identified_bird").orderBy("date", Query.Direction.ASCENDING) //ordering list makes it easier to search through later
                 .whereEqualTo("recorded_by", auth.getCurrentUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -165,11 +182,7 @@ public class RewardsFragment extends Fragment
 
                                             if(iteratorInt++ == snapshot.size() - 1){ //last iteration
                                                 //calculate daily/weekly/monthly/yearly scores
-                                                //TODO:  Actually calculate these scores
-                                                dailyScore = 0;
-                                                weeklyScore = 0;
-                                                monthlyScore = 0;
-                                                yearlyScore = 0;
+                                                getTimePeriodScores();
 
                                                 callback.callBack();
                                             }
@@ -235,7 +248,7 @@ public class RewardsFragment extends Fragment
 
     private void addRewardDisplayBox(rewardsStatusListObject data, String status) {
         switch(status) {
-            case "critically endangereds":
+            case "critically endangered":
                 criticallyEndangered.add(data);
                 return;
             case "breeding endemic":
@@ -261,6 +274,52 @@ public class RewardsFragment extends Fragment
                 return;
             default:
                 Log.d("Error in adding data to display box", status);
+        }
+    }
+
+    //populates each time periods score with each bird status score list
+    private void getTimePeriodScores() {
+        getTimePeriodStatusScore(criticallyEndangered, "critically endangered");
+        getTimePeriodStatusScore(breedingEndemics, "breeding endemic");
+        getTimePeriodStatusScore(endemic, "endemic");
+        getTimePeriodStatusScore(endangered, "endangered");
+        getTimePeriodStatusScore(introducedSpecies, "introduced species");
+        getTimePeriodStatusScore(rareAccidental, "rare/accidental");
+        getTimePeriodStatusScore(nearThreatened, "near-threatened");
+        getTimePeriodStatusScore(vulnerable, "vulnerable");
+    }
+
+    private void getTimePeriodStatusScore(ArrayList<rewardsStatusListObject> list, String status) {
+        long statusScore = rewardPointMap.get(status);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        for(rewardsStatusListObject i:list) {
+            //switch statements don't work with Calendar objects so nested if statements used
+            if(i.getTimestamp().toDate().after(cal.getTime())) { //if in yearly period
+                yearlyScore+=statusScore;
+
+                cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, -1);
+
+                if(i.getTimestamp().toDate().after(cal.getTime())) { //if in monthly period
+                    monthlyScore+=statusScore;
+
+                    cal = Calendar.getInstance();
+                    cal.add(Calendar.DATE, -7);
+                    if(i.getTimestamp().toDate().after(cal.getTime())) { //if in weekly period
+                        weeklyScore+=statusScore;
+
+                        cal = Calendar.getInstance();
+                        cal.add(Calendar.DATE, -1);
+                        if(i.getTimestamp().toDate().after(cal.getTime())) { //if in daily period
+                            dailyScore+=statusScore;
+                        } else { //return if nothing in daily range
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 }
