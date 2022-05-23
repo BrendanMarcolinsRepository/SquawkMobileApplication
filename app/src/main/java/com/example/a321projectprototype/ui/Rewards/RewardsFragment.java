@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -324,9 +325,12 @@ public class RewardsFragment extends Fragment
 
         UserScoreObject score = new UserScoreObject(weeklyScore, monthlyScore, yearlyScore, allTimeScore);
 
-        Map<String, Object>scoreValues = score.toMap();
-
-        firebaseFirestore.document("/userScore/"+auth.getUid()).set(scoreValues);
+        score.toMap(new UserScoreObject.onCallBackMap() {
+            @Override
+            public void callBack(Map<String, Object> map) {
+                firebaseFirestore.document("/userScore/"+auth.getUid()).set(map);
+            }
+        });
     }
 
 }

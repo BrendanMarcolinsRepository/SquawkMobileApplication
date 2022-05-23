@@ -12,6 +12,7 @@ import com.google.firebase.firestore.model.Document;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,17 +27,11 @@ public class UserScoreObject {
 
     public UserScoreObject(long scoreThisMonth, long scoreThisWeek, long scoreThisYear, long totalScore) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        //if created at field doesn't exist
-        if(!firebaseFirestore.document("/userScore/"+user_id).get().getResult().contains("created_at")) {
-            createdAt = timeFormat.format(cal);
-        }
-
-        updatedAt = timeFormat.format(cal);
+        updatedAt = timeFormat.format(date);
 
         this.scoreThisMonth = scoreThisMonth;
         this.scoreThisWeek = scoreThisWeek;
@@ -45,16 +40,49 @@ public class UserScoreObject {
         this.user_id = auth.getUid();
     }
 
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("scoreThisMonth", scoreThisMonth);
-        result.put("scoreThisWeek", scoreThisWeek);
-        result.put("scoreThisYear", scoreThisYear);
-        result.put("totalScore", totalScore);
-        result.put("user_id", user_id);
-        result.put("created_at", createdAt);
-        result.put("updated_at", updatedAt);
+    public void getCreatedAt(String userID, onCallBack callback) {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.document("/userScore/"+userID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.getResult().contains("created_at")) {
+                            createdAt = task.getResult().get("created_at").toString();
+                        } else {
+                            Date date = new Date();
+                            SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        return result;
+                            createdAt = timeFormat.format(date);
+                        }
+                        callback.callBack();
+                    }
+                });
+    }
+
+    public void toMap(onCallBackMap callback) {
+        getCreatedAt(user_id, new onCallBack() {
+            @Override
+            public void callBack() {
+                HashMap<String, Object> result = new HashMap<>();
+                result.put("scoreThisMonth", scoreThisMonth);
+                result.put("scoreThisWeek", scoreThisWeek);
+                result.put("scoreThisYear", scoreThisYear);
+                result.put("totalScore", totalScore);
+                result.put("user_id", user_id);
+                result.put("created_at", createdAt);
+                result.put("updated_at", updatedAt);
+
+                callback.callBack(result);
+            }
+        });
+    }
+
+    public interface onCallBack {
+        void callBack();
+    }
+
+    public interface onCallBackMap {
+        void callBack(Map<String, Object> map);
     }
 }
