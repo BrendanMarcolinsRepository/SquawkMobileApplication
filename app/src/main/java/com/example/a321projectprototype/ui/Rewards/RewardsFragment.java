@@ -1,6 +1,5 @@
 package com.example.a321projectprototype.ui.Rewards;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,12 +25,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,8 +115,6 @@ public class RewardsFragment extends Fragment
 
 
                 //Code for all loaded data goes here
-                //TODO: Hide Loading Screen, Show UI
-                //TODO: Load lists from critically endangered, breeding endemics, endangered, etc into UI
             }
         });
 
@@ -183,6 +175,8 @@ public class RewardsFragment extends Fragment
                                             if(iteratorInt++ == snapshot.size() - 1){ //last iteration
                                                 //calculate daily/weekly/monthly/yearly scores
                                                 getTimePeriodScores();
+
+                                                setUserScoreFirestore();
 
                                                 callback.callBack();
                                             }
@@ -323,4 +317,25 @@ public class RewardsFragment extends Fragment
             }
         }
     }
+
+    public void setUserScoreFirestore() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        UserScoreObject score = new UserScoreObject(weeklyScore, monthlyScore, yearlyScore, allTimeScore);
+
+        Map<String, Object>scoreValues = score.toMap();
+
+        firebaseFirestore.collection("userScore")
+                .whereEqualTo("user_id", auth.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            document.getReference().set(scoreValues);
+                        }
+                    }
+                });
+    }
+
 }
