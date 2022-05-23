@@ -326,17 +326,7 @@ public class RewardsFragment extends Fragment
 
         Map<String, Object>scoreValues = score.toMap();
 
-        firebaseFirestore.collection("userScore")
-                .whereEqualTo("user_id", auth.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(QueryDocumentSnapshot document : task.getResult()) {
-                            document.getReference().set(scoreValues);
-                        }
-                    }
-                });
+        firebaseFirestore.document("/userScore/"+auth.getUid()).set(scoreValues);
     }
 
 }
