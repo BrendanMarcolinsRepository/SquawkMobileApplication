@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.UserRewardModel;
+import com.example.a321projectprototype.User.UserScore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -35,7 +35,7 @@ public class RewardAchievementFragment extends Fragment {
     CardView bar1, bar2, bar3, bar4;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-    private UserRewardModel userRewardModel;
+    private UserScore userRewardModel;
     private final String complete = "Congrats, you achieved it!";
 
     public RewardAchievementFragment() {
@@ -73,7 +73,7 @@ public class RewardAchievementFragment extends Fragment {
             public void onEvent(@androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
                 for (DocumentChange documentChange : value.getDocumentChanges()) {
                     if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                        userRewardModel = documentChange.getDocument().toObject(UserRewardModel.class);
+                        userRewardModel = documentChange.getDocument().toObject(UserScore.class);
                     }
                 }
                 checkScore(userRewardModel);
@@ -81,7 +81,7 @@ public class RewardAchievementFragment extends Fragment {
         });
     }
     //load different card based on user scores and standard scores
-    public void checkScore(UserRewardModel userRewardModel){
+    public void checkScore(UserScore userRewardModel){
         DecimalFormat format = new DecimalFormat("##.0");
         if(userRewardModel.getTotalScore() >= standardTotal1){
             achievement1.setText(complete);

@@ -1,6 +1,6 @@
 package com.example.a321projectprototype.User;
 
-public class UserScore {
+public class UserScore  implements Comparable<UserScore>{
     private String userId;
     private int scoreThisWeek;
     private int scoreThisMonth;
@@ -8,11 +8,12 @@ public class UserScore {
     private int totalScore;
     private String created_at;
     private String updated_at;
+    private String username;
 
     public UserScore() {
     }
 
-    public UserScore(String userId, int scoreThisWeek, int scoreThisMonth, int scoreThisYear, int totalScore, String created_at, String updated_at) {
+    public UserScore(String userId, int scoreThisWeek, int scoreThisMonth, int scoreThisYear, int totalScore, String created_at, String updated_at, String username) {
         this.userId = userId;
         this.scoreThisWeek = scoreThisWeek;
         this.scoreThisMonth = scoreThisMonth;
@@ -20,6 +21,7 @@ public class UserScore {
         this.totalScore = totalScore;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.username = username;
     }
 
     public String getUserId() {
@@ -76,5 +78,24 @@ public class UserScore {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public int compareTo(UserScore o) {
+        if(this.getTotalScore() > o.getTotalScore()){
+            return 1;
+        }else if(this.getTotalScore() < o.getTotalScore()){
+            return -1;
+        }else{
+            return 0;
+        }
     }
 }

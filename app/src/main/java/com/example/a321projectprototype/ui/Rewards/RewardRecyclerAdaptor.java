@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.UserRewardModel;
+import com.example.a321projectprototype.User.UserScore;
 
 import java.util.ArrayList;
 
 public class RewardRecyclerAdaptor extends RecyclerView.Adapter<RewardRecyclerAdaptor.ViewHolder>
 {
-    private ArrayList<UserRewardModel> userRewardItems;
+    private ArrayList<UserScore> userRewardItems;
     private String dropDownItem;
 
-    public RewardRecyclerAdaptor(ArrayList<UserRewardModel> userRewardItems, String dropDownItem) {
+    public RewardRecyclerAdaptor(ArrayList<UserScore> userRewardItems, String dropDownItem) {
         this.userRewardItems = userRewardItems;
         this.dropDownItem = dropDownItem;
     }

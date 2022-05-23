@@ -25,7 +25,7 @@ import com.example.a321projectprototype.User.BirdIdentifyModel;
 import com.example.a321projectprototype.User.BirdRewardModel;
 import com.example.a321projectprototype.User.RewardPointModel;
 import com.example.a321projectprototype.User.RewardPointsModel;
-import com.example.a321projectprototype.User.UserRewardModel;
+import com.example.a321projectprototype.User.UserScore;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
@@ -55,7 +55,7 @@ public class RewardsFragment extends Fragment
     private ArrayList<RewardPointModel> birdRewardPoints = new ArrayList<>();
     private ArrayList<BirdRewardModel> birds = new ArrayList<>();
     private ArrayList<RewardPointsModel> rewardPoints = new ArrayList<>();
-    private ArrayList<UserRewardModel> userRewards = new ArrayList<>();
+    private ArrayList<UserScore> userRewards = new ArrayList<>();
     private ArrayList<BirdIdentifyModel> identifiedBirds = new ArrayList<>();
     private RecyclerView birdListRecycler;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -63,6 +63,7 @@ public class RewardsFragment extends Fragment
     private final String rewardContentWords = "Congradulations, your all time score is";
     private final String rewardDisplayWords = "Your score for ";
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rewardsViewModel = new ViewModelProvider(this).get(RewardsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_rewards, container, false);
@@ -83,6 +84,7 @@ public class RewardsFragment extends Fragment
         loadSpinner();
         //when the spinner date change
         rewardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String time = parent.getItemAtPosition(position).toString();
@@ -117,21 +119,17 @@ public class RewardsFragment extends Fragment
     };
     //load bird list from firebase
     private void loadBirds(){
-        firebaseFirestore.collection("bird").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                birds.clear();
-                for(DocumentChange documentChange : value.getDocumentChanges())
+        firebaseFirestore.collection("bird").addSnapshotListener((value, error) -> {
+            birds.clear();
+            for(DocumentChange documentChange : value.getDocumentChanges())
+            {
+                if(documentChange.getType() == DocumentChange.Type.ADDED)
                 {
-                    if(documentChange.getType() == DocumentChange.Type.ADDED)
-                    {
-                        BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
-                        birds.add(birdRewardModel);
-                    }
+                    BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
+                    birds.add(birdRewardModel);
                 }
-                generateList(birds,null);
             }
+            generateList(birds,null);
         });
     }
     //add bird status and reward points into birdRewardPoints
@@ -162,23 +160,20 @@ public class RewardsFragment extends Fragment
         }
     }
     //load user reward points data from firebase
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadUserRewardData()
     {
-        firebaseFirestore.collection("userScore").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                userRewards.clear();
-                for(DocumentChange documentChange : value.getDocumentChanges())
+        firebaseFirestore.collection("userScore").addSnapshotListener((value, error) -> {
+            userRewards.clear();
+            for(DocumentChange documentChange : value.getDocumentChanges())
+            {
+                if(documentChange.getType() == DocumentChange.Type.ADDED)
                 {
-                    if(documentChange.getType() == DocumentChange.Type.ADDED)
-                    {
-                        UserRewardModel userRewardModel = documentChange.getDocument().toObject(UserRewardModel.class);
-                        userRewards.add(userRewardModel);
-                    }
+                    UserScore userRewardModel = documentChange.getDocument().toObject(UserScore.class);
+                    userRewards.add(userRewardModel);
                 }
-                initializeContent("This Month");
             }
+            initializeContent("This Month");
         });
     }
     //load bird reward point data
@@ -231,6 +226,7 @@ public class RewardsFragment extends Fragment
         });
     }
     //add and sort bird name and count
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void sortBirdCount(ArrayList<BirdIdentifyModel> identifiedBirds){
 //        filter identified bird list by userid
 //        List<BirdIdentifyModel> filteredList = identifiedBirds.stream().
@@ -263,9 +259,10 @@ public class RewardsFragment extends Fragment
         rewardSpinner.setSelection(2); //set the default as this month
     }
     //initialize reward content
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initializeContent(String time)
     {
-        UserRewardModel userReward = userRewards.stream().
+        UserScore userReward = userRewards.stream().
                 filter(urm -> auth.getUid().equalsIgnoreCase(urm.getUserId())).findAny().orElse(null);
         String rewardText = rewardContentWords + " " + userReward.getTotalScore();
         rewardContent.setText(rewardText);

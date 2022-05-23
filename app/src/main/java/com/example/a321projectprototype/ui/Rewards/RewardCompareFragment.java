@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a321projectprototype.R;
-import com.example.a321projectprototype.User.UserRewardModel;
+import com.example.a321projectprototype.User.UserScore;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -37,7 +37,7 @@ public class RewardCompareFragment extends Fragment {
     private ArrayList<String> times;
     private ArrayAdapter<String> adaptor;
     private View root;
-    private ArrayList<UserRewardModel> userRewards = new ArrayList<>();
+    private ArrayList<UserScore> userRewards = new ArrayList<>();
     TextView rewardCompare1, rewardCompare2, rewardCompare3;
     private ArrayList<TextView> topThree;
     private RecyclerView userListRecycler;
@@ -101,7 +101,7 @@ public class RewardCompareFragment extends Fragment {
                 {
                     if(documentChange.getType() == DocumentChange.Type.ADDED)
                     {
-                        UserRewardModel userRewardModel = documentChange.getDocument().toObject(UserRewardModel.class);
+                        UserScore userRewardModel = documentChange.getDocument().toObject(UserScore.class);
                         userRewards.add(userRewardModel);
                     }
                 }
