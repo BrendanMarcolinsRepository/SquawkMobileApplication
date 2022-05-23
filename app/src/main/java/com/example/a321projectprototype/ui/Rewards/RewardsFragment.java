@@ -57,7 +57,6 @@ public class RewardsFragment extends Fragment
     private long monthlyScore;
     private long yearlyScore;
     private long allTimeScore;
-    int iteratorInt;
 
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
