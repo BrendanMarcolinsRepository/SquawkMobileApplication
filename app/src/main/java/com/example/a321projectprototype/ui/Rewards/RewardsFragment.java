@@ -58,6 +58,8 @@ public class RewardsFragment extends Fragment
     private long yearlyScore;
     private long allTimeScore;
 
+    int iteratorInt;
+
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
