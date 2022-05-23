@@ -8,13 +8,13 @@ android:layout_height="wrap_content">
     android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:id="@+id/game_id"
-    app:cardBackgroundColor="@color/grey"
+    app:cardBackgroundColor="@color/buttonColours"
     app:cardCornerRadius="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/grey_textbox"
+        android:background="@drawable/et_style"
         android:padding="10dp"
         android:orientation="horizontal">
 
@@ -24,10 +24,10 @@ android:layout_height="wrap_content">
             />
 
         <TextView
-            android:id="@+id/past_recording_dates_textview"
+            android:id="@+id/birds"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:gravity="center"
 
             />

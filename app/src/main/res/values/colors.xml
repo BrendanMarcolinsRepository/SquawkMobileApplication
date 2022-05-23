@@ -12,6 +12,7 @@
     <color name="darkerGreen">#2CCF23</color>
     <color name="red">#FF0000</color>
     <color name="grey">#C4C4C4</color>
+    <color name="transparent">#ff000000</color>
 
 
 </resources>

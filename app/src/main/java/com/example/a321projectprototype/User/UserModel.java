@@ -1,17 +1,21 @@
 package com.example.a321projectprototype.User;
 
-public class UserModel
+import java.io.Serializable;
+
+public class UserModel implements Serializable
 {
     private int id;
+    private String name;
+    private String username;
+    private String email;
 
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public UserModel() { }
+
+
+    public UserModel(String name, String username, String email) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
     }
 
     public int getId() {
@@ -30,14 +34,6 @@ public class UserModel
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -46,15 +42,11 @@ public class UserModel
         this.email = email;
     }
 
-    private String name;
-    private String username;
-    private String password;
-    private String email;
+    public String getUsername() {
+        return username;
+    }
 
-    public UserModel(int id, String name, String password, String email) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

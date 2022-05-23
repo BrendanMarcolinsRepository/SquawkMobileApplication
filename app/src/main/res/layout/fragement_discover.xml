@@ -5,19 +5,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/greenBackground"
     android:layout_width="match_parent"
+    android:id="@+id/discoverConstraintLayout"
     android:layout_height="match_parent">
 
     <SearchView
         android:id="@+id/discover_search_bar"
         android:layout_width="300dp"
         android:layout_height="40dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="88dp"
         android:background="@drawable/white_search"
         android:layoutDirection="rtl"
         android:queryHint="@string/DiscoverAustralianBirds"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/discoverFillterButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discover_search_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -39,6 +50,18 @@
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/viewDiscoverPage" />
+
+    <ProgressBar
+        android:id="@+id/discoverProgressBar"
+        android:layout_width="83dp"
+        android:layout_height="84dp"
+        android:layout_marginTop="320dp"
+        android:elevation="10dp"
+        android:outlineAmbientShadowColor="@color/white"
+        android:outlineSpotShadowColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
