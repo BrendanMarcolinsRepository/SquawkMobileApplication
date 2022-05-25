@@ -85,6 +85,7 @@ public class ForumFragment extends Fragment
 
 
 
+
         forumSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
             @Override
@@ -110,6 +111,7 @@ public class ForumFragment extends Fragment
         return root;
     }
 
+    //Navigator
     private final View.OnClickListener addForum = new View.OnClickListener()
     {
         @Override
@@ -120,12 +122,14 @@ public class ForumFragment extends Fragment
         }
     };
 
+    //Logic for popup
     private final View.OnClickListener filter = v -> {
         onButtonShowPopupWindowClick(v);
         Snackbar.make(v, s, Snackbar.LENGTH_LONG);
 
     };
 
+    //Logic for popup, similar to other filter method in discover section
 
     private void onButtonShowPopupWindowClick(View view)
     {
@@ -168,6 +172,7 @@ public class ForumFragment extends Fragment
 
     }
 
+    //sets the adaptor with data from firebase
     private void setAdaptor1()
     {
 
@@ -180,39 +185,27 @@ public class ForumFragment extends Fragment
         System.out.println("here ================> ");
 
 
-
+        //retrieves data of posts from firebase in recent order
         firebaseFirestore.collection("posts").orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
-
-
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(error != null)
-                        {
-                            System.out.println("Error ==========?>" +  error);
-                            return;
-                        }
 
-
-
-                        for(DocumentChange documentChange : value.getDocumentChanges())
-                        {
-                            if(documentChange.getType() == DocumentChange.Type.ADDED)
-                            {
+                        for(DocumentChange documentChange : value.getDocumentChanges()) {
+                            if(documentChange.getType() == DocumentChange.Type.ADDED) {
                                 ForumModel forumModel = documentChange.getDocument().toObject(ForumModel.class);
                                 forumList.add(forumModel);
                             }
                         }
 
                         setRecyclerView();
-                        //adapterForum.notifyDataSetChanged();
                     }
                 });
     }
 
 
-
+//Checks if reversed or not
     private void reverseOrder()
     {
         if(!reversed)
@@ -231,6 +224,7 @@ public class ForumFragment extends Fragment
         }
     }
 
+    //updates the changes of order to the recycle view
     private void theChange()
     {
         System.out.println("worked");
@@ -243,6 +237,7 @@ public class ForumFragment extends Fragment
         recyclerView.setAdapter(adapterForum);
     }
 
+    //sets the recycle view
     private void setRecyclerView(){
         adapterForum = new  AdapterForum(forumList,homePage,getContext(), root);
         recyclerView.setAdapter(adapterForum);

@@ -50,11 +50,13 @@ public class ResetPassword extends AppCompatActivity
         toolbar.setOnClickListener(returnToolBar);
 
     }
-
+    //process of updating the password
     private final View.OnClickListener confirmResetPassword = v -> updatePassword();
 
+    //returns user back to the homepage
     private final View.OnClickListener returnToolBar = v -> finish();
 
+    //process of updating the password
     private void updatePassword() {
         email = emailEditText.getText().toString();
 
@@ -74,6 +76,7 @@ public class ResetPassword extends AppCompatActivity
 
     }
 
+    //process to send email to user to update their password
     private void sendEmailToUpdatePassword(String email)
     {
 
@@ -99,6 +102,7 @@ public class ResetPassword extends AppCompatActivity
         });
     }
 
+    //checks input from the user
     private boolean checkEmail(String email) {
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {

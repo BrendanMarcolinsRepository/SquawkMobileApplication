@@ -113,6 +113,7 @@ public class PastRecordingsFragment extends Fragment {
         updateRecyclerView(new Date());
         recyclerView2.setAdapter(pastRecordingsCardviewAdpator);
 
+        //used to delete items on the recycle view
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
             @Override
@@ -123,6 +124,7 @@ public class PastRecordingsFragment extends Fragment {
 
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
+            //deletes items from either the database or phone
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 Toast.makeText(homePage, "File Deleted  ", Toast.LENGTH_SHORT).show();
                 if(cloud){
@@ -146,6 +148,7 @@ public class PastRecordingsFragment extends Fragment {
     }
 
 
+    //launches the calendar UI
     private final View.OnClickListener calendarLauncher = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -155,26 +158,23 @@ public class PastRecordingsFragment extends Fragment {
             mMonth = cal.get(Calendar.MONTH);
             mDay = cal.get(Calendar.DAY_OF_MONTH);
 
+            //
             DatePickerDialog datePickerDialog = new DatePickerDialog(homePage,
-                    new DatePickerDialog.OnDateSetListener() {
+                    (view, year, month, dayOfMonth) -> {
 
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                            Calendar c = Calendar.getInstance();
-                            c.set(Calendar.YEAR, year);
-                            c.set(Calendar.MONTH, month);
-                            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                            Date date = c.getTime();
-                            updateRecyclerView(date);
-                        }
-
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.YEAR, year);
+                        c.set(Calendar.MONTH, month);
+                        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        Date date = c.getTime();
+                        updateRecyclerView(date);
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
 
         }
     };
 
+    //button for cloud information
     private final View.OnClickListener onlineButtomMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -189,7 +189,7 @@ public class PastRecordingsFragment extends Fragment {
 
         }
     };
-
+    //button for phone information
     private final View.OnClickListener offlineButtomMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -205,13 +205,14 @@ public class PastRecordingsFragment extends Fragment {
         }
     };
 
+    //updates the recycle view with new information given from a specific date. information from phone
     private void updateRecyclerView(Date tempDate) {
 
 
         if (filesList.size() > 0)
             filesList.clear();
 
-
+        //gets data from a certain date created
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
 
         String stringDateTextView = simpleDateFormat(tempDate);
@@ -232,7 +233,7 @@ public class PastRecordingsFragment extends Fragment {
             pastRecordingsCardviewAdpator.notifyDataSetChanged();
     }
 
-
+    //updates the recycle view with new information given from a specific date. information from firebase
     private void updateRecyclerViewFirebase(Date tempDate) {
 
 
@@ -247,6 +248,7 @@ public class PastRecordingsFragment extends Fragment {
         date.setText(stringDateTextView);
 
 
+        //gets data from a certain date created by the user
         firebaseFirestore.collection("files")
                 .whereEqualTo("uploadedBy", userID)
                 .whereEqualTo("created_at", stringDateTextView)
@@ -271,12 +273,14 @@ public class PastRecordingsFragment extends Fragment {
                 });
     }
 
+    //used to format date
     private String simpleDateFormat(Date tempDate){
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
         String stringDate = ft.format(tempDate);
         return stringDate;
     }
 
+    //used to delete items from the phone database
     private void deleteRecordingFromSQLDatabase(Files file) {
 
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
@@ -285,9 +289,11 @@ public class PastRecordingsFragment extends Fragment {
 
     }
 
+    //used to delete items from firebase database
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void deleteRecordingFromCloud(Files file) {
 
+        //deletes a certain document from the files collection path
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         CollectionReference collectionReference = firebaseFirestore.collection("files");
         FirebaseAuth auth = FirebaseAuth.getInstance();

@@ -30,7 +30,6 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
 {
     protected List<UserModel> FullList;
     protected List<UserModel> dataSet;
-    protected List<String> userIds;
     private FlockModelData flockModelData;
     private UserModel userModel;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -56,6 +55,7 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
         }
 
     }
+
 
     AdapaterMemberFlock(List<UserModel> listItem, Context context, FlockModelData flockModelData,
                         int size, RecyclerView recyclerView, ProgressBar progressBar,TextView score)
@@ -100,6 +100,7 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
 
     }
 
+    //gets content from firebase
     private void getUserScores(UserModel userModel,MyViewHolder holder) {
 
 
@@ -132,6 +133,7 @@ public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321pr
     }
 
 
+    //Pop up for selecting members
     public void popUp()
     {
         final AlertDialog.Builder alert = new AlertDialog.Builder(context);

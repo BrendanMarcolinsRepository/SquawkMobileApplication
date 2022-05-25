@@ -96,6 +96,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
         holder.username.setText("Cherper: " + commentModel.getUsername());
         holder.description.setText(commentModel.getContent());
 
+        //checks if its the users comment
         if(commentModel.getUserId().matches(holder.firebaseAuth.getUid()))
         {
             holder.imageDeleteComment.setVisibility(View.VISIBLE);
@@ -106,37 +107,31 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
         }
 
 
+        //deletes the comment and updates the firebase database
 
-        holder.imageDeleteComment.setOnClickListener( new View.OnClickListener() {
+        holder.imageDeleteComment.setOnClickListener(v -> {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-            @Override
-            public void onClick(View v) {
-                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            String commentID = dataSet.get(position).getComment_id();
+            DocumentReference documentReference = firebaseFirestore.collection("comments").document(commentID);
+            documentReference.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                {
+                    dataSet.remove(position);
+                    updateData(dataSet);
+                    Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
 
-                String commentID = dataSet.get(position).getComment_id();
-                DocumentReference documentReference = firebaseFirestore.collection("comments").document(commentID);
-                documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful())
-                        {
-                            dataSet.remove(position);
-                            updateData(dataSet);
-                            System.out.println("worked =====================================================================");
-                            Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
-
-                        }
-                        else
-                        {
-                            Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
-                        }
-                    }
-                });
-            }
+                }
+                else
+                {
+                    Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
+                }
+            });
         });
 
     }
 
+    //updates the datase of the recycle view
     public void updateData(List dataSet) {
         this.dataSet = dataSet;
         notifyDataSetChanged();

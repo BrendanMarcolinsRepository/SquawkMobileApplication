@@ -21,6 +21,8 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
     protected List<Integer> flockScoreList;
     protected int position;
 
+    //Leaderboard adapter, nothing special happening here, just pushing data to the user interface
+
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView memberNameTextview, scoreTextview, positionTextview;

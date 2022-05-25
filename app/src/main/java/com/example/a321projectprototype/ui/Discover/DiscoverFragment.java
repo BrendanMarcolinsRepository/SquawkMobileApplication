@@ -2,6 +2,7 @@ package com.example.a321projectprototype.ui.Discover;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,20 +46,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DiscoverFragment extends Fragment
 {
 
+    //Variables Needed
     private DiscoverViewModel discoverViewModel;
     private SearchView discoverSearchView;
     private RecyclerView recyclerView;
-    private List<ItemDataModel> list;
     private List<BirdModel> birdList;
     private AdapterDiscover adapterDiscover;
-    private PopupWindow popupWindow;
-    private ConstraintLayout constraintLayout;
     private ImageView filterButton;
-    private TextView filterOkayTextView;
     private View root;
     private boolean reversed = false;
     private String s = "No Change", filterOrder = "o";
-    private DiscoverChoiceInterface discoverChoiceInterface;
     private HomePage homePage;
     private NavController navigation;
     private Retrofit retrofit;
@@ -68,6 +66,7 @@ public class DiscoverFragment extends Fragment
     @SuppressLint("RtlHardcoded")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        //Variables Initailised
         discoverViewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
         root = inflater.inflate(R.layout.fragement_discover, container, false);
 
@@ -86,18 +85,11 @@ public class DiscoverFragment extends Fragment
 
 
 
-
-
-
-
-
-        discoverSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-        {
+        //Search View Input from user
+        discoverSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query)
-            {
-                if(birdList.contains(query))
-                {
+            public boolean onQueryTextSubmit(String query) {
+                if(birdList.contains(query)) {
                     adapterDiscover.getFilter().filter(query);
                 }
                 else {
@@ -106,8 +98,7 @@ public class DiscoverFragment extends Fragment
                 return false;
             }
             @Override
-            public boolean onQueryTextChange(String newText)
-            {
+            public boolean onQueryTextChange(String newText) {
                 adapterDiscover.getFilter().filter(newText);
                 return false;
             }
@@ -116,8 +107,8 @@ public class DiscoverFragment extends Fragment
         return root;
     }
 
-    private void callApi()
-    {
+    //Runs the api request
+    private void callApi() {
         progressBar.setVisibility(View.VISIBLE);
         retrofit = new Retrofit
                 .Builder()
@@ -130,11 +121,11 @@ public class DiscoverFragment extends Fragment
 
         Call<List<BirdModel>> repos = service.listRepos();
 
+        //Retrieves the api data
         repos.enqueue(new Callback<List<BirdModel>>() {
             @Override
             public void onResponse(Call<List<BirdModel>> call, Response<List<BirdModel>> response) {
-                if(response.code() != 200)
-                {
+                if(response.code() != 200) {
                     return;
                 }
 
@@ -154,8 +145,10 @@ public class DiscoverFragment extends Fragment
 
     }
 
+    //Filter Button
     private final View.OnClickListener filterButtonMethod = new View.OnClickListener()
     {
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onClick(View v)
         {
@@ -163,6 +156,9 @@ public class DiscoverFragment extends Fragment
             Snackbar.make(v, s, Snackbar.LENGTH_LONG);
         }
     };
+
+    //Used to provide certain filters
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void onButtonShowPopupWindowClick(View view)
     {
 
@@ -206,36 +202,28 @@ public class DiscoverFragment extends Fragment
 
     }
 
-
+    //Alphabetical Algorithm
     private void orderAlgorithm()
     {
         System.out.println("worked");
-        Collections.sort(birdList, new Comparator<BirdModel>() {
-            @Override
-            public int compare(BirdModel o1, BirdModel o2) {
-                return o1.getComName().compareTo(o2.getComName());
-            }
-        });
+        Collections.sort(birdList, Comparator.comparing(BirdModel::getComName));
 
         recyclerViewMethod();
     }
 
-    private void reverseOrderAlgorithm()
-    {
+    //Reverse Alphabetical Algorithm
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void reverseOrderAlgorithm() {
         System.out.println("worked");
-        Collections.sort(birdList, new Comparator<BirdModel>() {
-            @Override
-            public int compare(BirdModel o1, BirdModel o2) {
-                return o1.getComName().compareTo(o2.getComName());
-            }
-        });
+        Collections.sort(birdList, Comparator.comparing(BirdModel::getComName));
 
         Collections.reverse(birdList);
         recyclerViewMethod();
     }
 
-    public void recyclerViewMethod()
-    {
+    //Recycle view  intialisation
+    public void recyclerViewMethod() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);

@@ -28,6 +28,10 @@
         <action
             android:id="@+id/action_nav_Profile_to_nav_Profile_Settings"
             app:destination="@id/nav_Profile_Settings" />
+
+        <action
+            android:id="@+id/action_nav_Profile_to_nav_Settings"
+            app:destination="@id/nav_Settings" />
     </fragment>
 
     <fragment

@@ -98,11 +98,10 @@ public class ForumPost extends Fragment {
         return root;
     }
 
+    //check if the user can delete a post
     private void checkIfCanDelete() {
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        System.out.println("post id ===============" + postIdString);
-
         DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
         documentReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -112,9 +111,6 @@ public class ForumPost extends Fragment {
 
                     String databaseName = documentSnapshot.getString("username");
 
-                    System.out.println("names ===============" + usernameString);
-                    System.out.println("names ===============" + databaseName);
-                    System.out.println(databaseName + "============================= names ===============" + usernameString);
                     if (usernameString.matches(databaseName)) {
                         deleteIcon.setVisibility(View.VISIBLE);
                     }
@@ -126,7 +122,7 @@ public class ForumPost extends Fragment {
     }
 
 
-
+// updates what the user can see on the user interface
     private void checker() {
         if (getArguments().getSerializable("topic") != null) {
 
@@ -144,6 +140,7 @@ public class ForumPost extends Fragment {
 
     }
 
+    //Navigator
     private final View.OnClickListener commentMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -156,10 +153,13 @@ public class ForumPost extends Fragment {
         }
     };
 
+    //delete post and comment from database
     private final View.OnClickListener deletePostMethod = new View.OnClickListener()
     {
         @Override
         public void onClick(View v) {
+
+            //deletes specific post from database
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
             DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
@@ -172,6 +172,7 @@ public class ForumPost extends Fragment {
             });
 
 
+            //deletes all comments associated with the post
             CollectionReference collectionReference = firebaseFirestore.collection("comments");
             Query query = collectionReference.whereEqualTo("post_id", postIdString);
 
@@ -195,36 +196,23 @@ public class ForumPost extends Fragment {
     };
 
 
+    //sets the adaptor for the recycle view
     private void setAdaptor1()
     {
 
 
+        //retrieves  data of all comments for the associate post
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-
-        System.out.println("here ================> ");
-
-
         firebaseFirestore.collection("comments").orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        System.out.println("Error ==========?>" + error);
-                        return;
-                    }
 
-                    for (DocumentChange documentChange : value.getDocumentChanges())
-                    {
-                        if (documentChange.getType() == DocumentChange.Type.ADDED)
-                        {
+                    for (DocumentChange documentChange : value.getDocumentChanges()) {
+                        if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
                             CommentModel commentModel = documentChange.getDocument().toObject(CommentModel.class);
-
-                            System.out.println(commentModel.getpost_id() + " ============== " + postIdString);
-                            System.out.println("Error ==========?>" + error);
-
-                            if(commentModel.getpost_id().equals(postIdString))
-                            {
+                            if(commentModel.getpost_id().equals(postIdString)) {
                                 commentList.add(commentModel);
                             }
                         }

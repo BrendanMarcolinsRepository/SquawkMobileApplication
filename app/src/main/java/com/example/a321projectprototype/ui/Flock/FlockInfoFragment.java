@@ -45,8 +45,7 @@ import java.util.List;
 
 public class FlockInfoFragment extends Fragment
 {
-    private FlockMembersModel flockMembersModel;
-    private List<FlockMembersModel> flockMembersModelList;
+
     private AdapaterMemberFlock adapaterMemberFlock;
     private RecyclerView recyclerView;
     private Button join,invite;
@@ -61,7 +60,6 @@ public class FlockInfoFragment extends Fragment
     private List<UserScore> userScoreList;
     private FirebaseFirestore firebaseFirestore;
     private FlockModelData flockModelData;
-    private UserScore userScore;
     private ProgressBar progressBar;
     private UserModel userModel;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -127,6 +125,7 @@ public class FlockInfoFragment extends Fragment
 
     }
 
+    //loads the flock score and flock members from the firebase
     public void loadData()
     {
         userIds = new ArrayList<>();
@@ -164,6 +163,7 @@ public class FlockInfoFragment extends Fragment
 
     }
 
+    //loads users information from that particular flock
     private void loadOtherData()
     {
         if(userIds != null)
@@ -188,6 +188,7 @@ public class FlockInfoFragment extends Fragment
 
 
 
+    //sets the recycle view
     private void setRecycleVeiw(List<UserModel> userModel)
     {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -200,6 +201,7 @@ public class FlockInfoFragment extends Fragment
         recyclerView.setAdapter(adapaterMemberFlock);
     }
 
+    //Navigators
     private final View.OnClickListener joinInfoButtonMethod = new View.OnClickListener()
     {
         @Override
@@ -220,6 +222,7 @@ public class FlockInfoFragment extends Fragment
         }
     };
 
+    //Pop up button
     private final View.OnClickListener inviteInfoMethod = new View.OnClickListener()
     {
         @Override
@@ -230,6 +233,7 @@ public class FlockInfoFragment extends Fragment
         }
     };
 
+    //pop up button for user wanting to join a flock
     private void onButtonShowPopupWindowClick(View view) {
 
 
@@ -261,6 +265,7 @@ public class FlockInfoFragment extends Fragment
         alertDialog.show();
     }
 
+    //invite pop for user in a group to invite another user
     private void invitePopUpWindow(View view) {
 
 
@@ -294,6 +299,7 @@ public class FlockInfoFragment extends Fragment
         alertDialog.show();
     }
 
+    //check to see if a user is in a flock
     private void checkFlockName() {
         FlockModelData flockModelData = homePage.getFlockModelData();
 

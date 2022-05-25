@@ -27,6 +27,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     private HomePage homePage;
     private NavController navigation;
 
+    //Inner Class for object in the recycle view
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView bird;
@@ -34,6 +35,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
 
 
+        //Constructor
         MyViewHolder(View itemView)
         {
             super(itemView);
@@ -43,6 +45,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
             itemView.setOnClickListener(choiceMethod);
         }
 
+        //Picked object in the recycle view and navigator
         private final View.OnClickListener choiceMethod = new View.OnClickListener()
         {
             @Override
@@ -69,13 +72,14 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
     }
 
+    //Constuctor of the class
     AdapterDiscover(List<BirdModel> listItem, HomePage homePage)
     {
         this.dataSet = listItem;
         FullList = new ArrayList<>(listItem);
         this.homePage = homePage;
     }
-
+    // creates the view
     @NonNull
     @Override
     public com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
@@ -85,6 +89,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         return new MyViewHolder(view);
     }
 
+    //Recycle view content for each data in the list
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position)
     {
@@ -107,6 +112,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         return dataSet.size();
     }
 
+    //Search view algorithm to update the list in the search view on the recycle view
     private Filter Searched_Filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -130,6 +136,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
             return results;
         }
 
+        // updates the list in the recycleview
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();

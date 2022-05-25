@@ -73,6 +73,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
     }
 
 
+
     @Override
     public void onBindViewHolder(@NonNull PastRecordingsCardviewAdpator.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
@@ -82,10 +83,12 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
         holder.name.setText(fileName);
         holder.time.setText(time);
 
+        //used to setup the media player
         holder.iconPlayer.setOnClickListener(v -> {
 
             System.out.println("worked1");
 
+            //determines if media player is active or not
             if(mediaPlayer != null){
                 if(mediaPlayer.isPlaying()){
                     stopPlayer(mediaPlayer,holder);
@@ -102,12 +105,15 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
         });
     }
 
+    //setups what type of media needs to be played
     public void setUpPlayer(MyViewHolder holder, int position){
+        //if its get data from the cloud or not
         if(cloud) {
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.seekBar.setVisibility(View.INVISIBLE);
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
+            //gets media from the cloud and starts the player
             firebaseStorage.getReference().child(files.get(position)
                     .getPath())
                     .getDownloadUrl()
@@ -121,6 +127,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
                         setUpSeekBar(holder);
                     });
         } else {
+            //gets media from the phone memeory and plays it
             String path = files.get(position).getPath();
             mediaPlayer = MediaPlayer.create(homePage, Uri.parse(path));
             setUpSeekBar(holder);
@@ -128,12 +135,13 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
     }
 
+    //used for the seekbar
     public void setUpSeekBar(MyViewHolder holder){
 
 
         progressBarHandler = new Handler();
         timeHandler = new Handler();
-        System.out.println("worked5");
+        //used to update the progress of the seek bar
         holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -150,20 +158,18 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        //starts the player
         mediaPlayer.setOnPreparedListener(mp -> {
             startPlayer(mp,holder);
         });
 
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                stopPlayer( mp,holder);
-            }
-        });
+        //stops the player
+        mediaPlayer.setOnCompletionListener(mp -> stopPlayer( mp,holder));
 
     }
 
+    //method logic for starting player
     public void startPlayer(MediaPlayer mp,MyViewHolder holder){
         holder.seekBar.setMax(mp.getDuration());
         mp.start();
@@ -174,7 +180,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
     }
 
-
+    //method logic for stopping player
     public void stopPlayer(MediaPlayer mp,MyViewHolder holder){
         mp.stop();
         mp.reset();
@@ -213,48 +219,44 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
         }
 
+        //method to update the time that is insync with the media playing
         public void updateTime(){
 
             int position;
             position = mediaPlayer.getCurrentPosition();
 
 
-            runnable = new Runnable() {
-                @Override
-                public void run() {
+            runnable = () -> {
 
-                    if(mediaPlayer == null){
-                        return;
-                    }
+                if(mediaPlayer == null){
+                    return;
+                }
 
-                    if(mediaPlayer.isPlaying()){
-                        start.setText(convertTimer(position));
-                        updateTime();
-                    }
+                if(mediaPlayer.isPlaying()){
+                    start.setText(convertTimer(position));
+                    updateTime();
                 }
             };
 
             timeHandler.postDelayed(runnable,0);
         }
 
+        //method to update the seekbar that is insync with the media playing
         public void upDateSeekBar(){
 
             int position;
             position = mediaPlayer.getCurrentPosition();
 
 
-            runnable = new Runnable() {
-                @Override
-                public void run() {
+            runnable = () -> {
 
-                    if(mediaPlayer == null){
-                        return;
-                    }
+                if(mediaPlayer == null){
+                    return;
+                }
 
-                    if(mediaPlayer.isPlaying()){
-                        seekBar.setProgress(position);
-                        upDateSeekBar();
-                    }
+                if(mediaPlayer.isPlaying()){
+                    seekBar.setProgress(position);
+                    upDateSeekBar();
                 }
             };
 
@@ -264,6 +266,7 @@ public class PastRecordingsCardviewAdpator  extends RecyclerView.Adapter<PastRec
 
 
 
+        // converts the media duration to time for the user interface
         public String convertTimer(long convert) {
             String audioTime;
             int minutes = (int) (convert % (1000 * 60 * 60)) / (1000 * 60);

@@ -63,6 +63,7 @@ public class ForumComments extends Fragment
         return root;
     }
 
+    //method to provide logic for adding comments to topics
     private final View.OnClickListener postCommentMethod = new View.OnClickListener()
     {
         @Override
@@ -78,6 +79,7 @@ public class ForumComments extends Fragment
             else
             {
 
+                //pushs the comments to the database in firebase
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -103,15 +105,10 @@ public class ForumComments extends Fragment
                 userMap.put("username", homePage.getUserModel().getUsername());
 
 
-                documentReference.set(userMap).addOnSuccessListener(new OnSuccessListener<Void>()
-                {
-                    @Override
-                    public void onSuccess(Void aVoid)
-                    {
-                        System.out.println("worked");
-                    }
+                documentReference.set(userMap).addOnSuccessListener(aVoid -> {
                 });
 
+                //Navigator
                 Bundle bundle = new Bundle();
                 bundle.putString("topic",topicString);
                 navController.popBackStack();

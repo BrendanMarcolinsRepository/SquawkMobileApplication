@@ -49,10 +49,6 @@ public class FlockCreationFragment extends Fragment
     private String flockNameString,flockDescriptionString;
     private HomePage homePage;
     private NavController navController;
-    private ArrayList<FlockModelData> flockModelDataArrayList;
-    private UserModel userModel;
-    private UserDatabase userDatabase;
-    private int flockCount;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private String ownerUsername;
@@ -68,14 +64,6 @@ public class FlockCreationFragment extends Fragment
         View root = inflater.inflate(R.layout.fragment_flock_create, container, false);
 
         homePage = (HomePage)getActivity();
-
-
-
-
-        userModel = homePage.getUserModel();
-        userDatabase = new UserDatabase(homePage);
-
-
 
         name = root.findViewById(R.id.flock_name_editText);
         description = root.findViewById(R.id.flock_description_TextView);
@@ -102,18 +90,15 @@ public class FlockCreationFragment extends Fragment
         return root;
     }
 
+    //Method to pick a photo from the phone
     private final View.OnClickListener selectPhotoMethod = v -> imageChooser();
 
     void imageChooser() {
 
-        // create an instance of the
-        // intent of the type image
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
 
-        // pass the constant to compare it
-        // with the returned requestCode
         startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     }
 
@@ -122,13 +107,9 @@ public class FlockCreationFragment extends Fragment
 
         if (resultCode == RESULT_OK) {
 
-            // compare the resultCode with the
-            // SELECT_PICTURE constant
             if (requestCode == SELECT_PICTURE) {
-                // Get the url of the image from data
                 selectedImageUri = data.getData();
                 if (null != selectedImageUri) {
-                    // update the preview image in the layout
 
                     Glide.with(homePage.getApplicationContext())
                             .load(selectedImageUri)
@@ -141,11 +122,13 @@ public class FlockCreationFragment extends Fragment
             }
         }
     }
+
+    //buttons methods to use logic
     private final View.OnClickListener createFlockMethod = v -> confirmNewFlock();
 
     private final View.OnClickListener updateFlockMethod = v -> updateFlockInformation();
 
-
+    //confirmed the new flock
     private void confirmNewFlock() {
         flockNameString = name.getText().toString();
         flockDescriptionString = name.getText().toString();
@@ -163,6 +146,7 @@ public class FlockCreationFragment extends Fragment
         }
     }
 
+    //updates the flock information
     private void updateFlockInformation() {
         flockNameString = name.getText().toString();
         flockDescriptionString = name.getText().toString();
@@ -183,6 +167,7 @@ public class FlockCreationFragment extends Fragment
         Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
     }
 
+    //file method extension type
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = homePage.getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -190,6 +175,7 @@ public class FlockCreationFragment extends Fragment
     }
 
 
+    //updates flcck name to the database
     private void updateFlockNameMethod() {
 
         firebaseFirestore.collection("flocks")
@@ -202,7 +188,7 @@ public class FlockCreationFragment extends Fragment
         });
     }
 
-
+    //updates flcck description to the database
         private void updateFlockDescriptionMethod(){
 
             firebaseFirestore.collection("flocks")
@@ -214,6 +200,8 @@ public class FlockCreationFragment extends Fragment
                 failure.onButtonShowPopupWindowClick(getContext());
             });
         }
+
+    //updates flcck image to the database
 
     private void updateImageMethod() {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
@@ -234,6 +222,7 @@ public class FlockCreationFragment extends Fragment
         });
     }
 
+    //method pushs data to firebase
     private void uploadFirebaseData(String storage, DocumentReference documentReference){
 
         ownerUsername = homePage.getName();
@@ -285,6 +274,7 @@ public class FlockCreationFragment extends Fragment
         });
     }
 
+    //uploads the image
     private void uploadImage(){
 
         DocumentReference documentReference = firebaseFirestore.collection("flocks").document();
@@ -301,6 +291,7 @@ public class FlockCreationFragment extends Fragment
                 });
     }
 
+    //check if a user is in a flock or not
     private void checkFlockName() {
 
         if(homePage.getFlockModelData() != null) {
@@ -315,6 +306,7 @@ public class FlockCreationFragment extends Fragment
         }
     }
 
+    //provides the date
     public String  getDate(){
 
         Date date = new Date();

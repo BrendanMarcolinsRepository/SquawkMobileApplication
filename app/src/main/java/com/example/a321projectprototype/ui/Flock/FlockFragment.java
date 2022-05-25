@@ -62,14 +62,11 @@ public class FlockFragment extends Fragment
     private RecyclerView recyclerView;
     private List<FlockModelData> flockList;
     private AdapterFlock adapterFlock;
-    private PopupWindow popupWindow;
     private ConstraintLayout constraintLayout;
-    private Button filterButton, createFlockButton,myflock,leaderboard;
-    private TextView filterOkayTextView, textViewFlockName;
+    private Button  createFlockButton,myflock,leaderboard;
+    private TextView textViewFlockName;
     private ImageView flockImage;
     private View root;
-    private boolean reversed = false;
-    private String s = "No Change", filterOrder = "o";
     private HomePage homePage;
     private NavController navController;
     private FirebaseFirestore firebaseFirestore;
@@ -116,7 +113,6 @@ public class FlockFragment extends Fragment
         checkFlockName();
 
 
-//        System.out.println("Flock name 1 " + flockModelData.getName());
 
 
 
@@ -151,15 +147,12 @@ public class FlockFragment extends Fragment
     }
 
 
+    //gets all the flock groups
     private void EventChangeListener()
     {
         firebaseFirestore.collection("flocks")
                 .orderBy("name", Query.Direction.ASCENDING)
                 .addSnapshotListener((value, error) -> {
-                    if(error != null)  {
-                        System.out.println("ERROR ================> " + error.getMessage());
-                    }
-
                     for(DocumentChange documentChange : value.getDocumentChanges()) {
 
                         if(documentChange.getType() == DocumentChange.Type.ADDED) {
@@ -167,7 +160,6 @@ public class FlockFragment extends Fragment
                             flockList.add(documentChange.getDocument().toObject(FlockModelData.class));
                         }
 
-                        //adapterFlock.notifyDataSetChanged();
                     }
                     setRecyclerView();
                 });
@@ -176,6 +168,7 @@ public class FlockFragment extends Fragment
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    //checks to see if user is in a flock
     private void checkFlockName() {
         String userID = auth.getCurrentUser().getUid();
 
@@ -207,6 +200,7 @@ public class FlockFragment extends Fragment
                 });
     }
 
+    //gets the flock if a user is in a flock
     private void getFlockName(String flockId) {
 
 
@@ -241,6 +235,7 @@ public class FlockFragment extends Fragment
                 });
 
     }
+    //Navigators
     private final View.OnClickListener createFlockFragement = new View.OnClickListener() {
         @Override
         public void onClick(View v)
@@ -269,6 +264,7 @@ public class FlockFragment extends Fragment
         }
     };
 
+    //Sets the recycle view
     private void setRecyclerView(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);

@@ -170,6 +170,7 @@ public class RewardsFragment extends Fragment
                 if(documentChange.getType() == DocumentChange.Type.ADDED)
                 {
                     UserScore userRewardModel = documentChange.getDocument().toObject(UserScore.class);
+                    System.out.println("USer " + userRewardModel.getUserId());
                     userRewards.add(userRewardModel);
                 }
             }
@@ -179,21 +180,17 @@ public class RewardsFragment extends Fragment
     //load bird reward point data
     public void loadBirdRewardData()
     {
-        firebaseFirestore.collection("rewardPoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                rewardPoints.clear();
-                for(DocumentChange documentChange : value.getDocumentChanges())
+        firebaseFirestore.collection("rewardPoint").addSnapshotListener((value, error) -> {
+            rewardPoints.clear();
+            for(DocumentChange documentChange : value.getDocumentChanges())
+            {
+                if(documentChange.getType() == DocumentChange.Type.ADDED)
                 {
-                    if(documentChange.getType() == DocumentChange.Type.ADDED)
-                    {
-                        RewardPointsModel rewardPointsModel = documentChange.getDocument().toObject(RewardPointsModel.class);
-                        rewardPoints.add(rewardPointsModel);
-                    }
+                    RewardPointsModel rewardPointsModel = documentChange.getDocument().toObject(RewardPointsModel.class);
+                    rewardPoints.add(rewardPointsModel);
                 }
-                generateList(null,rewardPoints);
             }
+            generateList(null,rewardPoints);
         });
     }
     //load list of identified bird

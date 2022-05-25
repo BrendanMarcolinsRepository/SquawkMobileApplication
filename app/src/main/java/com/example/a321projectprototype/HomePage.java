@@ -98,6 +98,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         logout.setOnClickListener(logoutMethod);
 
 
+        //setups drawer and navigation for main application
         drawer = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -114,6 +115,8 @@ public class HomePage extends AppCompatActivity implements Serializable
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
+        //setups drawer and navigation for profile section of the application
 
         drawerRight = findViewById(R.id.drawer_layout);
 
@@ -144,6 +147,7 @@ public class HomePage extends AppCompatActivity implements Serializable
         boolean widget = false;
 
 /*
+//future work for widget
         Intent intent1 = getIntent();
         if(savedInstanceState == null) {
 
@@ -171,6 +175,7 @@ public class HomePage extends AppCompatActivity implements Serializable
 
     }
 
+    //checks current session correct for user
     private void checkUserSession()
     {
         auth = FirebaseAuth.getInstance();
@@ -189,6 +194,8 @@ public class HomePage extends AppCompatActivity implements Serializable
     public String getName() {
         return userModel.getUsername();
     }
+
+    //navigation
 
     private final View.OnClickListener record = new View.OnClickListener()
     {
@@ -218,24 +225,23 @@ public class HomePage extends AppCompatActivity implements Serializable
     };
 
 
+    //gets the nav controller already setup
     public NavController getNav(){return navController;}
 
+    //gets the usermodel setup
     public UserModel getUserModel()
     {
         return userModel;
     }
 
 
-    private final View.OnClickListener logoutMethod = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(HomePage.this, Prototype.class));
-        }
+    //logs the user out of the account
+    private final View.OnClickListener logoutMethod = v -> {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(HomePage.this, Prototype.class));
     };
 
+    //gets user information that logged in from firebase database
     public void getUserInformation()
     {
         auth = FirebaseAuth.getInstance();
@@ -245,43 +251,31 @@ public class HomePage extends AppCompatActivity implements Serializable
 
         DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
 
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task)
-            {
-                task.addOnSuccessListener(documentSnapshot -> {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        userModel = new UserModel(auth.getUid(),document.getString("fullname"),document.getString("username")
-                                ,document.getString("email"),password,document.getString("photo_Url"));
+        documentReference.get().addOnCompleteListener(task -> {
+            task.addOnSuccessListener(documentSnapshot -> {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    userModel = new UserModel(auth.getUid(),document.getString("fullname"),document.getString("username")
+                            ,document.getString("email"),password,document.getString("photo_Url"));
 
-                        headName.setText(userModel.getUsername());
-                        headEmail.setText(userModel.getEmail());
-                        Glide.with(getApplicationContext())
-                                .load(userModel.getPhoto_url())
-                                .circleCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .placeholder(R.drawable.user_profile)
-                                .into(imageViewProfile);
+                    //setups ui for navigation menu of users information
+                    headName.setText(userModel.getUsername());
+                    headEmail.setText(userModel.getEmail());
+                    Glide.with(getApplicationContext())
+                            .load(userModel.getPhoto_url())
+                            .circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.user_profile)
+                            .into(imageViewProfile);
 
-                    } else {
-                        System.out.println("no document");
-                    }
-                });
-
-                task.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Failed Here ===================> " + e);
-                    }
-                });
-            }
+                }
+            });
         });
 
 
     }
 
+    //disables the menu item
     public void disableMenuItems() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
@@ -306,6 +300,8 @@ public class HomePage extends AppCompatActivity implements Serializable
 
 
 
+    //enables the menu item
+
     public void enableMenuItems() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
@@ -329,13 +325,14 @@ public class HomePage extends AppCompatActivity implements Serializable
     }
 
 
-
+    //gets drawer thaats been setup
     public DrawerLayout getDrawer(){
         return drawerRight;
     }
 
+    //sets the flock models
     public void setFlockModelData(FlockModelData flockModelData) { this.flockModelData = flockModelData; }
-
+    //gets the flock models
     public FlockModelData getFlockModelData() {
         return flockModelData;
     }

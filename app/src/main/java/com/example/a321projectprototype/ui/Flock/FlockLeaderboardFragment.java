@@ -73,6 +73,7 @@ public class FlockLeaderboardFragment  extends Fragment
     }
 
 
+    //spinner logic when user picks
     private final AdapterView.OnItemSelectedListener  spinnerLeaderBoardMethod = new AdapterView.OnItemSelectedListener (){
 
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -102,6 +103,7 @@ public class FlockLeaderboardFragment  extends Fragment
 
     };
 
+    //gets the flockscore from firebase
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void getData() {
 
@@ -125,6 +127,7 @@ public class FlockLeaderboardFragment  extends Fragment
                 });
     }
 
+    //sets recycle view
     private void setRecyclerViewMethod(){
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, timeFrame);
@@ -142,6 +145,7 @@ public class FlockLeaderboardFragment  extends Fragment
         progressBar.setVisibility(View.INVISIBLE);
     }
 
+    //sorts week in a list
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByWeek(){
         scoreList.clear();
@@ -151,7 +155,7 @@ public class FlockLeaderboardFragment  extends Fragment
 
     }
 
-
+    //sorts month  in a list
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByMonth(){
         scoreList.clear();
@@ -161,7 +165,7 @@ public class FlockLeaderboardFragment  extends Fragment
 
         updateAdapterFlock();
     }
-
+    //sorts year  in a list
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByYear(){
         scoreList.clear();
@@ -170,6 +174,7 @@ public class FlockLeaderboardFragment  extends Fragment
         updateAdapterFlock();
     }
 
+    //sorts all time in a list
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void sortDataByAllTime(){
         scoreList.clear();
@@ -178,6 +183,7 @@ public class FlockLeaderboardFragment  extends Fragment
         updateAdapterFlock();
     }
 
+    //updates the recycle view
     private void updateAdapterFlock() {
         if(adapterFlock != null){
             adapterFlock.notifyDataSetChanged();

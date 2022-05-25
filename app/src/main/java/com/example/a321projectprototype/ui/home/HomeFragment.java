@@ -51,8 +51,6 @@ public class HomeFragment extends Fragment
     private HomePage homePage;
     private String username;
     private NavController navController;
-    private FirebaseUser firebaseUser;
-    private DatabaseReference databaseReference;
     private String userID;
     private UserModel userModel;
     private Button logout;
@@ -103,7 +101,7 @@ public class HomeFragment extends Fragment
         System.out.println("jefesf");
         return root;
     }
-
+    //Navigators
     private final View.OnClickListener record = new View.OnClickListener() {
         @Override
         public void onClick(View v)
@@ -128,6 +126,7 @@ public class HomeFragment extends Fragment
         }
     };
 
+    //gets the current users information
     public void getUserInformation() {
         progressBar.setVisibility(View.VISIBLE);
 

@@ -82,6 +82,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -147,6 +148,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         return root;
     }
 
+    //used for the switch store either on the cloud or phone
     private final CompoundButton.OnCheckedChangeListener switched = new CompoundButton.OnCheckedChangeListener() {
 
         @Override
@@ -161,6 +163,8 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
             }
         }
     };
+
+    //used to record
     private final View.OnClickListener record = new View.OnClickListener() {
         @SuppressLint("ResourceAsColor")
         @Override
@@ -169,18 +173,19 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
            {
 
 
+               //checks security settings
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.RECORD_AUDIO)
                        != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},1);
                    return;
                }
-
+                //checks security settings
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.WRITE_EXTERNAL_STORAGE)
                        != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
                    return;
                }
-
+                //checks security settings
                if(ContextCompat.checkSelfPermission(homePage,Manifest.permission.INTERNET)
                        != PackageManager.PERMISSION_GRANTED) {
                    requestPermissions(new String[]{Manifest.permission.INTERNET},1);
@@ -203,6 +208,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
 
 
+    //starts the recording process
     public void startRecord() {
 
         disableMenuItems();
@@ -212,6 +218,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
             System.out.println("ready to be saved");
         }
 
+        //sets up the recording
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -232,6 +239,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     }
 
+    //stops the recording
     private void stopRecording() {
         System.out.println("it stopped");
         mediaRecorder.stop();
@@ -245,6 +253,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
 
 
+    //checks if to see network is allowed to be used
     private boolean haveNetwork() {
         ConnectivityManager cm = (ConnectivityManager)
                 context.getSystemService(context.CONNECTIVITY_SERVICE);
@@ -256,14 +265,15 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     }
 
 
+    //gets the recording path
     private String getRecordingFilePath() {
         date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy ");
         dateString = ft.format(date);
 
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        timeString = timeFormat.format(cal);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeString = timeFormat.format(cal.getTime());
 
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
         filePathFirebase = homePage.getExternalCacheDir().getAbsolutePath();
@@ -274,6 +284,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     }
 
 
+    //starts the animation for when the recording is in process
     private void startAlphaAnimation() {
         ObjectAnimator fadeOut = ObjectAnimator.ofFloat(recordImage, "alpha",  1f, .3f);
         fadeOut.setDuration(2000);
@@ -296,12 +307,15 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         mAnimationSet.start();
     }
 
+    //stops the animation
     private void stopAlphaAnimation() {
         mAnimationSet.removeAllListeners();
         mAnimationSet.end();
         System.out.println("stopping");
     }
 
+    //simulation of processing the audio recording
+    //provides a count down to mimick certain real time features in the user interface when processing the recording
     private void response() {
 
         recordImage.setVisibility(View.INVISIBLE);
@@ -310,6 +324,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
         recordingInformationTexview.setText("Identifing Your Chirps....");
 
+        //count down timer for the simulation
          CountDownTimer countDownTimer = new CountDownTimer(6000,5) {
             private boolean warned = false;
             @Override
@@ -320,6 +335,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
             }
 
 
+            //randomises between 1 and 2 . 1 for worked and 2 for error
             @Override
             public void onFinish() {
                 Random randomObject = new Random();
@@ -343,6 +359,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
          }.start();
     }
 
+    //provides an alert for an error when called
     public void errorOccured() {
 
 
@@ -366,6 +383,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     }
 
 
+    //stores audio location in phone into the applications database
     private void noSqlRecordingPath() {
         RecordingPathFileDatabase recordingPathFileDatabase = new RecordingPathFileDatabase(homePage);
         Files files = new Files(dateString,desciption,fileName,filePath,dateString,timeString);
@@ -375,7 +393,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
 
     }
-
+    //stores audio location in phone into the firebase  database
     private void storeRecordingFilePath() {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -384,13 +402,8 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         userID = auth.getCurrentUser().getUid();
 
         Uri uri = Uri.fromFile(new File(filePath));
-        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        storageReference.putFile(uri).addOnSuccessListener(taskSnapshot -> {
 
-
-
-            }
         });
 
 

@@ -120,6 +120,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         holder.username.setText("Chirper: " + currentItem.getUsername());
         holder.description.setText(currentItem.getDescription());
 
+        //checks if its users topic
         if(currentItem.getUserId().matches(holder.firebaseAuth.getUid()))
         {
             holder.imageDeleteComment.setVisibility(View.VISIBLE);
@@ -129,32 +130,25 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             holder.imageDeleteComment.setVisibility(View.GONE);
         }
 
-        holder.imageDeleteComment.setOnClickListener( new View.OnClickListener() {
+        //deletes and updates the database in firebase
+        holder.imageDeleteComment.setOnClickListener(v -> {
+            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-            @Override
-            public void onClick(View v) {
-                FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+            String commentID = dataSet.get(position).getPostId();
+            DocumentReference documentReference = firebaseFirestore.collection("forums").document(commentID);
+            documentReference.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    dataSet.remove(position);
+                    updateData(dataSet);
+                    System.out.println("worked =====================================================================");
+                    Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
 
-                String commentID = dataSet.get(position).getPostId();
-                DocumentReference documentReference = firebaseFirestore.collection("forums").document(commentID);
-                documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful())
-                        {
-                            dataSet.remove(position);
-                            updateData(dataSet);
-                            System.out.println("worked =====================================================================");
-                            Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
-
-                        }
-                        else
-                        {
-                            Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
-                        }
-                    }
-                });
-            }
+                }
+                else
+                {
+                    Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
+                }
+            });
         });
 
     }
@@ -174,20 +168,17 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         return dataSet.size();
     }
 
+    //Search view inputs and updates
     private Filter Searched_Filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<ForumModel> filteredList = new ArrayList<>();
             String s = constraint.toString();
-            System.out.println("worked 1");
             if (s.isEmpty()) {
                 filteredList.addAll(FullList);
-                System.out.println("worked 2");
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                System.out.println("worked 4" + FullList.size());
                 for (ForumModel item : FullList) {
-                    System.out.println("title: " + item.getTitle().toLowerCase());
                     if (item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
@@ -198,6 +189,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             return results;
         }
 
+        //Update the data list used in the recycleview and search view
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();

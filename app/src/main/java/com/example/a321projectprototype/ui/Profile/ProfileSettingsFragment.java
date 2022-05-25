@@ -68,7 +68,7 @@ public class ProfileSettingsFragment extends Fragment {
         userModel = homePage.getUserModel();
         navController = homePage.getNav();
 
-        setUpViewVariables();
+
         setUpCurrentProfileImage();
 
 
@@ -79,10 +79,9 @@ public class ProfileSettingsFragment extends Fragment {
         return root;
     }
 
-    private void setUpViewVariables() {
 
-    }
 
+    //displays current profile picture
     private void setUpCurrentProfileImage() {
 
         Glide.with(homePage.getApplicationContext())
@@ -94,33 +93,24 @@ public class ProfileSettingsFragment extends Fragment {
 
     }
 
-    private final View.OnClickListener getNewImage = new View.OnClickListener() {
-        @Override
-        public void onClick(View v)
-        {
-            Intent i = new Intent();
-            i.setType("image/*");
-            i.setAction(Intent.ACTION_GET_CONTENT);
+    //allows to pick photo from phone
+    private final View.OnClickListener getNewImage = v -> {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
 
-            // pass the constant to compare it
-            // with the returned requestCode
-            startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
-        }
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     };
 
+    //gets the photo picks and updates the UI
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
 
-            // compare the resultCode with the
-            // SELECT_PICTURE constant
             if (requestCode == SELECT_PICTURE) {
-                // Get the url of the image from data
                 selectedImageUri = data.getData();
                 if (null != selectedImageUri) {
-                    // update the preview image in the layout
-
                     Glide.with(homePage.getApplicationContext())
                             .load(selectedImageUri)
                             .circleCrop()
@@ -134,8 +124,8 @@ public class ProfileSettingsFragment extends Fragment {
         }
     }
 
-
-            private final View.OnClickListener profileUpdateMethod = new View.OnClickListener() {
+    //gets user input and checks if there are any errors when clicked to update
+    private final View.OnClickListener profileUpdateMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
@@ -183,6 +173,7 @@ public class ProfileSettingsFragment extends Fragment {
             Toast.makeText(homePage, "Update Complete!", Toast.LENGTH_LONG).show();
         }
 
+        //updates the image to firebase
         private void updateImageMethod() {
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             StorageReference storageReference = firebaseStorage.getReference("UserImages").child(auth.getUid());
@@ -207,6 +198,7 @@ public class ProfileSettingsFragment extends Fragment {
 
         }
 
+        //updates the password to firebase
         private void updatePasswordMethod() {
 
             AuthCredential credential = EmailAuthProvider
@@ -232,6 +224,7 @@ public class ProfileSettingsFragment extends Fragment {
 
         }
 
+        //updates the email to firebase
         private void updateEmailMethod() {
 
             AuthCredential credential = EmailAuthProvider
@@ -264,6 +257,7 @@ public class ProfileSettingsFragment extends Fragment {
 
         }
 
+        //updates the username to firebase
         private void updateUserNameMethod() {
 
             firebaseFirestore.collection("users")

@@ -44,20 +44,18 @@ import java.util.List;
 
 public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder> implements Filterable
 {
+    //Variables Needed
     List<FlockModelData> FullList;
     List<FlockModelData> dataSet;
 
     private HomePage homePage;
     private NavController navigation;
 
-    private int picked;
     private Context context;
     private FlockModelData flockModelData;
     private FlockModelData currentItem;
 
-    private UserModel userModel;
     private String name, countNumber;
-    private int count,position;
     private UserDatabase userDatabase;
     private ConstraintLayout registerLayout;
     private View view;
@@ -67,6 +65,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
+        //Variables Needed
+
         private Button joinButton, infoButton;
         private TextView groupName, groupCountNumber;
         ImageView image;
@@ -74,6 +74,8 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
         MyViewHolder(View itemView)
         {
+
+
             super(itemView);
             navigation = homePage.getNav();
             image = itemView.findViewById(R.id.flock_group_picture);
@@ -117,12 +119,15 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterFlock.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        //Assigning Variables
         currentItem = dataSet.get(position);
         holder.groupName.setText(currentItem.getName());
         name = currentItem.getName();
         holder.groupCountNumber.setText(currentItem.getMemberCount() + "/200");
 
 
+        //Used for images for UI
         Glide.with(homePage.getApplicationContext())
                 .load(currentItem.getImageUrl())
                 .circleCrop()
@@ -130,6 +135,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
                 .placeholder(R.drawable.user_profile)
                 .into(holder.image);
 
+        //Navigator
         holder.infoButton.setOnClickListener(v -> {
 
             Bundle bundle = new Bundle();
@@ -137,6 +143,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
             navigation.navigate(R.id.info_fragment_nav,bundle);
         });
 
+        //Join logic for user to join a flock
         holder.joinButton.setOnClickListener(v -> {
             if (dataSet.get(position).getMemberCount() <= 200) {
                 flockModelData = homePage.getFlockModelData();
@@ -162,6 +169,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
         return dataSet.size();
     }
 
+    //Search view algorithm
     private Filter Searched_Filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -182,6 +190,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
         }
 
 
+        //Updates Search view
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();
@@ -191,6 +200,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
 
     };
 
+    //Pop for joining flock
 
     public void popUp(int position)
     {

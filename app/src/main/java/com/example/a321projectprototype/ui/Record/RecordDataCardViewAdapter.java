@@ -63,8 +63,7 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
     @Override
     public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position)
     {
-
-        //this.position = holder.getAbsoluteAdapterPosition();
+        //setups the user interface data passed in the list in the constructor
         holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
         Glide.with(homePage.getApplicationContext())
@@ -113,15 +112,10 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         }
 
 
-        private final View.OnClickListener moreInfoClick = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                onBrowseClick(v);
-            }
-        };
+        //opens browser of the bird picked
+        private final View.OnClickListener moreInfoClick = v -> onBrowseClick(v);
 
+        //opens browser of the bird picked
         public void onBrowseClick(View v) {
 
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

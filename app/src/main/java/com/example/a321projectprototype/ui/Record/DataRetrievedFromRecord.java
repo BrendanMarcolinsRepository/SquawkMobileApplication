@@ -86,23 +86,14 @@ public class DataRetrievedFromRecord extends Fragment
 
     }
 
+    //loads the bird data from the firebase database
     private void setData()
     {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("bird").addSnapshotListener((value, error) -> {
 
-            System.out.println("Bird Section +++++++++++++++++++++++++++++++++++++");
-            if(error != null)
-            {
-                System.out.println("Error ==========?>" +  error);
-                return;
-            }
-
-
-            for(DocumentChange documentChange : value.getDocumentChanges())
-            {
-                if(documentChange.getType() == DocumentChange.Type.ADDED)
-                {
+            for(DocumentChange documentChange : value.getDocumentChanges()) {
+                if(documentChange.getType() == DocumentChange.Type.ADDED) {
 
                     BirdRewardModel birdRewardModel = documentChange.getDocument().toObject(BirdRewardModel.class);
                     birdRewardModelList.add(birdRewardModel);
@@ -115,40 +106,24 @@ public class DataRetrievedFromRecord extends Fragment
         });
     }
 
+    //loads the reward data from the firebase database
     public void loadRewardData() {
 
-        firebaseFirestore.collection("rewardPoint").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
+        firebaseFirestore.collection("rewardPoint").addSnapshotListener((value, error) -> {
 
+            for(DocumentChange documentChange : value.getDocumentChanges()) {
+                if(documentChange.getType() == DocumentChange.Type.ADDED) {
+                    RewardPointsModel rewardPointsModel = documentChange.getDocument().toObject(RewardPointsModel.class);
+                    rewardPoints.add(rewardPointsModel);
+                }
 
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                       System.out.println("Reward Section +++++++++++++++++++++++++++++++++++++");
-
-                        if(error != null)
-                        {
-                            System.out.println("Error ==========?>" +  error);
-                            return;
-                        }
-
-                        for(DocumentChange documentChange : value.getDocumentChanges())
-                        {
-                            if(documentChange.getType() == DocumentChange.Type.ADDED)
-                            {
-                                RewardPointsModel rewardPointsModel = documentChange.getDocument().toObject(RewardPointsModel.class);
-                                rewardPoints.add(rewardPointsModel);
-                            }
-
-                        }
-
-
-                        setRecyclerView();
-                    }
-                });
+            }
+            setRecyclerView();
+        });
 
     }
 
+    //randomise the amount of output of birds the user will get from the simulation
     public void generator(){
         Random randomObject = new Random();
         List<Integer> numberBirds = new ArrayList<>();
@@ -183,6 +158,7 @@ public class DataRetrievedFromRecord extends Fragment
 
     }
 
+    //sets the recycle view
     public void setRecyclerView() {
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -194,6 +170,7 @@ public class DataRetrievedFromRecord extends Fragment
         getFlockData();
     }
 
+    //gets the current user score
     public void getUserScore(){
         firebaseFirestore.collection("userScore")
             .document(auth.getUid())
@@ -208,6 +185,7 @@ public class DataRetrievedFromRecord extends Fragment
         });
     }
 
+    //updates the user score in the database
     public void setRewardPoints(){
 
 
@@ -261,6 +239,7 @@ public class DataRetrievedFromRecord extends Fragment
         }
     }
 
+    //updates the flock score in the database
     public void updateFlockScore(){
 
 
@@ -283,6 +262,7 @@ public class DataRetrievedFromRecord extends Fragment
 
     }
 
+    //updates the user score in the database
 
     public void updateUserScore(){
         Map<String, Object> userScoreUpdateHashMap =  new HashMap<>();
@@ -306,6 +286,7 @@ public class DataRetrievedFromRecord extends Fragment
                 });
     }
 
+    //gets the flock data information from the database
     public void getFlockData(){
 
         firebaseFirestore.collection("flockMembers")
@@ -334,7 +315,9 @@ public class DataRetrievedFromRecord extends Fragment
                 });
     }
 
-  public String  getDate(){
+
+    //provides a data in a format
+    public String  getDate(){
 
       Date date = new Date();
       SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");

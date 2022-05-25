@@ -33,8 +33,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 {
 
+    //Variables needed
     private View root;
-    private int bird;
     private TextView birdNameTextView,sciNameTextView,dateTextView,lngTextView,latTextView,visitTextView;
     private Button moreInfo;
     private HomePage homePage;
@@ -52,6 +52,7 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
                              ViewGroup container, Bundle savedInstanceState)
     {
 
+        //Variables initialised
         root = inflater.inflate(R.layout.fragment_discover_choice, container, false);
         homePage = (HomePage) getActivity();
         DrawerLayout drawerLayout = homePage.getDrawer();
@@ -63,11 +64,8 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
         lat = getArguments().getString("latitude");
         visit = getArguments().getString("visit");
         code = getArguments().getString("code");
-
-
-
-        latitude =Double.parseDouble(lat);
-        longitude =Double.parseDouble(lng);
+        latitude = Double.parseDouble(lat);
+        longitude = Double.parseDouble(lng);
 
         birdNameTextView = root.findViewById(R.id.BirdTextview);
         sciNameTextView = root.findViewById(R.id.birdScientificNameTextview);
@@ -81,19 +79,21 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
         visitTextView.setText("Recent Visit: " + visit);
 
 
+        //Institating Google Map
 
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapDiscover, mapFragment).commit();
         mapFragment.getMapAsync(this);
 
 
-
+        //User Inputs
         moreInfo.setOnClickListener(moreInfoClick);
 
         return root;
     }
 
 
+    //Setups the google map fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -108,6 +108,7 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
         }
     }
 
+    //Provides data for the googlemap and displays the details
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
@@ -121,6 +122,7 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 
     }
 
+    //Two methods below openeds a link from an api to provide futher information of the bird selected
 
     private final View.OnClickListener moreInfoClick = new View.OnClickListener()
     {

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -67,8 +68,10 @@ public class SignUp extends AppCompatActivity {
     }
 
 
+    //returns user back to the login page
     private final View.OnClickListener returnToolBar = v -> finish();
 
+    //check register  logic
     private final View.OnClickListener registerMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -82,6 +85,7 @@ public class SignUp extends AppCompatActivity {
             password2Input = password2EditText.getText().toString();
 
 
+            //check user input for any errors
             if (fullNameInput.isEmpty()) {
                 fullNameEditText.setError("First name is requried");
                 fullNameEditText.requestFocus();
@@ -132,6 +136,7 @@ public class SignUp extends AppCompatActivity {
 
             }
 
+            //password is correct then process for creating a user starts
             if (password1Input.matches(password2Input) && !password1Input.isEmpty()) {
 
                 auth = FirebaseAuth.getInstance();
@@ -141,9 +146,11 @@ public class SignUp extends AppCompatActivity {
                 SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
                 String dataString = ft.format(date);
 
+                //creates a user with firebase authentication and store their data on firebase firestore database
                 auth.createUserWithEmailAndPassword(emailInput,password2Input).addOnCompleteListener((task -> {
                     if(task.isSuccessful()) {
 
+                        //user data firebase information
                         userFirebaseId = auth.getCurrentUser().getUid();
                         DocumentReference documentReference = firebaseFirestore.collection("users").document(userFirebaseId);
                         HashMap<String,Object> userMap = new HashMap<>();
@@ -157,6 +164,7 @@ public class SignUp extends AppCompatActivity {
                         userMap.put("updated_at",dataString);
                         documentReference.set(userMap).addOnSuccessListener(aVoid -> {
 
+                            //user score data firebase information
                             DocumentReference documentReference1 = firebaseFirestore.collection("userScore").document(userFirebaseId);
                             HashMap<String,Object> scoreMap = new HashMap<>();
                             scoreMap.put("scoreThisMonth",0);
@@ -166,7 +174,8 @@ public class SignUp extends AppCompatActivity {
                             scoreMap.put("created_at",dataString);
                             scoreMap.put("updated_at",dataString);
                             scoreMap.put("userId", userFirebaseId);
-                            documentReference1.set(scoreMap).addOnSuccessListener(unused -> finish());
+                            scoreMap.put("username", usernameInput);
+                            documentReference1.set(scoreMap).addOnSuccessListener(unused -> returnToLogin());
 
 
                         });
@@ -179,7 +188,7 @@ public class SignUp extends AppCompatActivity {
                     }
 
                     if(task.isCanceled()){
-                        finish();
+                        returnToLogin();
                     }
 
                 })).addOnFailureListener(e -> {
@@ -197,9 +206,11 @@ public class SignUp extends AppCompatActivity {
 
     private final View.OnClickListener returnMethod = v -> returnToLogin();
 
+    //returns user back to the login
     private void returnToLogin()
     {
-        finish();
+        Intent login = new Intent(this, Prototype.class);
+        startActivity(login);
     }
 
     private void setProgress()
@@ -207,6 +218,7 @@ public class SignUp extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
+    //shows what UI is available during the current processes
     private void setInvisiable() {
         fullNameEditText.setVisibility(View.INVISIBLE);
         usernameEditText.setVisibility(View.INVISIBLE);

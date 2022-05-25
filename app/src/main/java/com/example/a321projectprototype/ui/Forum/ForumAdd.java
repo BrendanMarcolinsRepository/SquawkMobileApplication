@@ -66,6 +66,7 @@ public class ForumAdd extends Fragment
         return root;
     }
 
+    //logic to create a forum
     private final View.OnClickListener addForum = new View.OnClickListener()
     {
         @Override
@@ -89,6 +90,7 @@ public class ForumAdd extends Fragment
 
 
 
+                //logic to push data input to database in firebase and return back to previous fragment
                 auth = FirebaseAuth.getInstance();
                 firebaseFirestore = FirebaseFirestore.getInstance();
 

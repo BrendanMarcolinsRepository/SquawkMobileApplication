@@ -65,7 +65,6 @@ public class ProfileFragment extends Fragment
     private BirdRewardModel birdRewardModel;
     private RewardPointsModel rewardPointsModel;
     private IdentifiedBirds identifiedBirds;
-    private BirdScores birdScores;
     private List<BirdRewardModel> birdRewardModelList;
     private List<RewardPointsModel> rewardPointsModelList;
     private List<IdentifiedBirds> identifiedBirdsList;
@@ -88,7 +87,10 @@ public class ProfileFragment extends Fragment
         AssignVariables(root);
         retrieveFireBaseData();
 
+
+
         editProfileImage.setOnClickListener(updateProfileNavigatorMethod);
+        privacyProfileImage.setOnClickListener(updateProfileSettings);
 
 
 
@@ -96,6 +98,7 @@ public class ProfileFragment extends Fragment
         return root;
     }
 
+    //Navigators
     private final View.OnClickListener updateProfileNavigatorMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -103,6 +106,14 @@ public class ProfileFragment extends Fragment
         }
     };
 
+    private final View.OnClickListener updateProfileSettings = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.action_nav_Profile_to_nav_Settings);
+        }
+    };
+
+    //displays user information and starts the retrieval of the firebase identifed by the user
     private void retrieveFireBaseData() {
 
         auth = FirebaseAuth.getInstance();
@@ -121,6 +132,7 @@ public class ProfileFragment extends Fragment
                 .into(userImage);
 
 
+        //gets all the birds the user has identified
         firebaseFirestore.collection("identified_bird")
                 .whereEqualTo("recorded_by",auth.getUid())
                 .get()
@@ -133,6 +145,7 @@ public class ProfileFragment extends Fragment
                 });
     }
 
+    //gets all the birds and their status
     private void firebaseBirdData(){
 
         birdRewardModelList = new ArrayList<>();
@@ -150,6 +163,7 @@ public class ProfileFragment extends Fragment
                 });
     }
 
+    //gets the reward points for each bird
     private void firebaseRewardPointData(){
 
         rewardPointsModelList = new ArrayList<>();
@@ -159,7 +173,6 @@ public class ProfileFragment extends Fragment
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for(QueryDocumentSnapshot q : queryDocumentSnapshots) {
                         rewardPointsModel = q.toObject(RewardPointsModel.class);
-                        System.out.println("=================Status : " + rewardPointsModel.getBird_status());
                         scoreHashMap.put(rewardPointsModel.getBird_status(),0);
                         rewardPointsModelList.add(rewardPointsModel);
                     }
@@ -167,6 +180,7 @@ public class ProfileFragment extends Fragment
                 });
     }
 
+    //performs the calculation to identify how many of each bird status has been collected
     private void performCalculations() {
 
 
@@ -180,7 +194,7 @@ public class ProfileFragment extends Fragment
                             String status = r.getBird_status();
                             if(scoreHashMap.containsKey(status)){
                                 scoreHashMap.put(status,scoreHashMap.get(status) + 1 );
-                                System.out.println("SCORE UPDATE JERE ++++++++ " + scoreHashMap.get(status.toLowerCase()));
+
                             }
                         }
                     }
@@ -191,6 +205,7 @@ public class ProfileFragment extends Fragment
         loadDataToUI();
     }
 
+    //loads the data retrived into the UI
     private void loadDataToUI() {
 
         vulnerableTextView.setText(String.valueOf(scoreHashMap.get("vulnerable")));
@@ -211,6 +226,7 @@ public class ProfileFragment extends Fragment
 
     }
 
+    //assigning all the variables needed
     private void AssignVariables(View root){
         userImage = root.findViewById(R.id.profileImage);
         usersName = root.findViewById(R.id.profileNameEdittext);
