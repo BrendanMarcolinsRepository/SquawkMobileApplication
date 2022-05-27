@@ -263,8 +263,7 @@ public class RewardsFragment extends Fragment
         UserScore userReward = userRewards.stream().
                 filter(urm -> auth.getUid().equalsIgnoreCase(urm.getUserId())).findAny().orElse(null);
 
-        System.out.println("userrrrrrrrrrrrrrrrrr" + userReward.getUserId());
-        System.out.println("userrrrrrrrrrrrrrrrrr" + userReward.getTotalScore());
+       
 
         String rewardText = rewardContentWords + " " + String.valueOf(userReward.getTotalScore());
         rewardContent.setText(rewardText);
