@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
+//Code by Rui Cao
 public class RewardScoreCalculation extends Fragment
 {
     private RewardsViewModel rewardsViewModel;

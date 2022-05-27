@@ -41,7 +41,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-
+//Code by Brendan Marcolin
 public class HomeFragment extends Fragment
 {
 
@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment
     private ProgressBar progressBar;
 
 
+    //Intialise of variables
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -88,17 +89,8 @@ public class HomeFragment extends Fragment
 
 
         greetings = root.findViewById(R.id.homeTextView);
-
-
         getUserInformation();
 
-
-
-
-
-
-
-        System.out.println("jefesf");
         return root;
     }
     //Navigators
@@ -137,23 +129,16 @@ public class HomeFragment extends Fragment
 
         DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
 
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists()) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        greetings.setText("Welcome: " + document.getString("username"));
-
-                    } else {
-                        System.out.println("no document");
-                    }
-                } else {
-                    System.out.println("not successfull");
+        documentReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document != null && document.exists()) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    greetings.setText("Welcome: " + document.getString("username"));
 
                 }
             }
+
         });
     }
 

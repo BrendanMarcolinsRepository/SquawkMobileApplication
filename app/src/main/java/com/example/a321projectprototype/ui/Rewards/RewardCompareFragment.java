@@ -30,7 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
+//Code by Rui Cao
 public class RewardCompareFragment extends Fragment {
 
     private Spinner rewardSpinner;

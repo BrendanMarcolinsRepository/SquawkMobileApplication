@@ -29,7 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+//Coding Done By Brendan Marcolin
 public class DiscoverChoice extends Fragment implements OnMapReadyCallback
 {
 

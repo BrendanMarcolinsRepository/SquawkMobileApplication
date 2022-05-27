@@ -37,9 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-public class ForumFragment extends Fragment
-{
+//Coding Done By Neil Mediarito
+public class ForumFragment extends Fragment {
     private ForumViewModel forumViewModel;
     private SearchView forumSearchView;
     private RecyclerView recyclerView;
@@ -81,7 +80,7 @@ public class ForumFragment extends Fragment
         addButton.setOnClickListener(addForum);
         filterButton.setOnClickListener(filter);
 
-//        System.out.println("Flock name 1 " + flockModelData.getName());
+
 
 
 
@@ -173,17 +172,10 @@ public class ForumFragment extends Fragment
     }
 
     //sets the adaptor with data from firebase
-    private void setAdaptor1()
-    {
-
-
+    private void setAdaptor1() {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
-
-        System.out.println("here ================> ");
-
 
         //retrieves data of posts from firebase in recent order
         firebaseFirestore.collection("posts").orderBy("created_at", Query.Direction.DESCENDING)
@@ -206,27 +198,22 @@ public class ForumFragment extends Fragment
 
 
 //Checks if reversed or not
-    private void reverseOrder()
-    {
-        if(!reversed)
-        {
+    private void reverseOrder() {
+        if(!reversed) {
             reversed = true;
             theChange();
         }
     }
 
-    private void order()
-    {
-        if(reversed)
-        {
+    private void order() {
+        if(reversed) {
             reversed = false;
             theChange();
         }
     }
 
     //updates the changes of order to the recycle view
-    private void theChange()
-    {
+    private void theChange() {
         System.out.println("worked");
         Collections.reverse(forumList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

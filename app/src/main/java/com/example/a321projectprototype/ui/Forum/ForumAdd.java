@@ -29,8 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class ForumAdd extends Fragment
-{
+public class ForumAdd extends Fragment {
 
     private View root;
     private Button addPost;
@@ -43,8 +42,7 @@ public class ForumAdd extends Fragment
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_forum_add, container, false);
         topic = root.findViewById(R.id.forumAddTopic);
@@ -67,26 +65,19 @@ public class ForumAdd extends Fragment
     }
 
     //logic to create a forum
-    private final View.OnClickListener addForum = new View.OnClickListener()
-    {
+    private final View.OnClickListener addForum = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             String topicString = topic.getText().toString();
             String descriptionString = descritpion.getText().toString();
 
-            if(topicString.isEmpty())
-            {
+            if(topicString.isEmpty()) {
                 topic.setError("Please Enter A Topic");
                 topic.requestFocus();
-            }
-            else if(descriptionString.isEmpty())
-            {
+            } else if(descriptionString.isEmpty()) {
                 descritpion.setError("Please Enter A Description");
                 descritpion.requestFocus();
-            }
-            else
-            {
+            } else {
 
 
 

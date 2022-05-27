@@ -53,9 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class FlockFragment extends Fragment
-{
+//Coding Done By Brendan Marcolin
+public class FlockFragment extends Fragment {
     private FlockModelData flockModelData;
     private FlockViewModel flockViewModel;
     private SearchView flockSearchView;
@@ -79,8 +78,7 @@ public class FlockFragment extends Fragment
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
+                             ViewGroup container, Bundle savedInstanceState) {
         flockViewModel = new ViewModelProvider(this).get(FlockViewModel.class);
         root = inflater.inflate(R.layout.fragment_flock, container, false);
 
@@ -124,8 +122,7 @@ public class FlockFragment extends Fragment
 
         flockSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query)
-            {
+            public boolean onQueryTextSubmit(String query) {
                 for(int i = 0; i < flockList.size(); i++){
                     if(flockList.get(i).getName().contains(query)) {
                         adapterFlock.getFilter().filter(query);
@@ -148,8 +145,7 @@ public class FlockFragment extends Fragment
 
 
     //gets all the flock groups
-    private void EventChangeListener()
-    {
+    private void EventChangeListener() {
         firebaseFirestore.collection("flocks")
                 .orderBy("name", Query.Direction.ASCENDING)
                 .addSnapshotListener((value, error) -> {

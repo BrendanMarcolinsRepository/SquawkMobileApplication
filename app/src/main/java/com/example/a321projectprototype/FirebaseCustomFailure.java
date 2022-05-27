@@ -7,9 +7,10 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+//Code by Brendan Marcolin
 public class FirebaseCustomFailure extends AppCompatActivity {
 
+    //used for a pop window for errors
     public void onButtonShowPopupWindowClick(Context context) {
 
 

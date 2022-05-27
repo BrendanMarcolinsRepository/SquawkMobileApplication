@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-
+//Coding Done By Neil Mediarito
 public class ForumComments extends Fragment
 {
 
@@ -36,8 +36,7 @@ public class ForumComments extends Fragment
     String topicString, commentString,postId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_forum_comments, container, false);
         topic = root.findViewById(R.id.commentTopicTextview);
@@ -64,20 +63,15 @@ public class ForumComments extends Fragment
     }
 
     //method to provide logic for adding comments to topics
-    private final View.OnClickListener postCommentMethod = new View.OnClickListener()
-    {
+    private final View.OnClickListener postCommentMethod = new View.OnClickListener() {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             commentString = comment.getText().toString();
 
-            if(commentString.isEmpty())
-            {
+            if(commentString.isEmpty()) {
                 comment.setError("Last name is requried");
                 comment.requestFocus();
-            }
-            else
-            {
+            } else {
 
                 //pushs the comments to the database in firebase
                 FirebaseAuth auth = FirebaseAuth.getInstance();

@@ -12,7 +12,7 @@ import com.example.a321projectprototype.User.UserModel;
 
 import java.io.File;
 import java.util.ArrayList;
-
+//Coding Done By Brendan Marcolin
 public class RecordingPathFileDatabase extends SQLiteOpenHelper
 {
 
@@ -75,6 +75,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
 
     }
 
+    //retrieves the pariticular file
     public Files getFile(String path ) {
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -98,7 +99,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
 
     }
 
-    //checks if a user is in the database by using the email and password passed
+
 
 
     //returns all the users in the database
@@ -135,6 +136,7 @@ public class RecordingPathFileDatabase extends SQLiteOpenHelper
         return fileList;
     }
 
+    //deletes the file
     public void deleteFile(Files file){
         File myDir = new File(file.getPath());
         if (myDir.isDirectory()) {

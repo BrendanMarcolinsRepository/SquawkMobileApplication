@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Date;
-
+//Code by Rui Cao
 public class RewardsFragment extends Fragment
 {
     private RewardsViewModel rewardsViewModel;

@@ -30,7 +30,8 @@ import com.google.api.Backend;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-//random
+
+//Coding Done By Brendan Marcolin
 
 public class Prototype extends AppCompatActivity {
     private Button login;

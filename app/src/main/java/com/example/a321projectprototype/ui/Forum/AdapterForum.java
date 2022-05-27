@@ -30,9 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-
-public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder>
-{
+//Coding Done By Neil Mediarito
+public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder> {
     List<ForumModel> FullList;
     List<ForumModel> dataSet;
 
@@ -51,8 +50,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
     private View view;
     private ForumModel currentItem;
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView topic, description, username;
         ImageView imageDeleteComment;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

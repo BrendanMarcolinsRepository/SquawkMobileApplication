@@ -10,7 +10,8 @@ import com.example.a321projectprototype.User.FlockModelData;
 import com.example.a321projectprototype.User.UserModel;
 
 import java.util.ArrayList;
-
+//Coding Done By Brendan Marcolin
+//Code Just incase we need
 public class UserDatabase extends SQLiteOpenHelper
 {
 

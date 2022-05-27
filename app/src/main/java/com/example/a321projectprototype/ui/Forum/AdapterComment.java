@@ -30,9 +30,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
-
-public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHolder>
-{
+//Coding Done By Neil Mediarito
+public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHolder> {
 
     List<CommentModel> dataSet;
 
@@ -46,8 +45,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
     private View view;
     private CommentModel commentModel;
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView topic, description, username;
         ImageView imageDeleteComment;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -68,8 +66,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
 
     }
 
-    AdapterComment(List<CommentModel> listItem, HomePage homePage, Context context,  View view)
-    {
+    AdapterComment(List<CommentModel> listItem, HomePage homePage, Context context,  View view) {
         this.dataSet = listItem;
         this.homePage = homePage;
         this.context = context;
@@ -78,8 +75,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
 
     @NonNull
     @Override
-    public AdapterComment.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public AdapterComment.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_forum_comments, parent, false);
@@ -89,20 +85,16 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
 
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterComment.MyViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull AdapterComment.MyViewHolder holder, int position) {
 
         commentModel = dataSet.get(position);
         holder.username.setText("Cherper: " + commentModel.getUsername());
         holder.description.setText(commentModel.getContent());
 
         //checks if its the users comment
-        if(commentModel.getUserId().matches(holder.firebaseAuth.getUid()))
-        {
+        if(commentModel.getUserId().matches(holder.firebaseAuth.getUid())) {
             holder.imageDeleteComment.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             holder.imageDeleteComment.setVisibility(View.GONE);
         }
 
@@ -115,15 +107,12 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.MyViewHo
             String commentID = dataSet.get(position).getComment_id();
             DocumentReference documentReference = firebaseFirestore.collection("comments").document(commentID);
             documentReference.delete().addOnCompleteListener(task -> {
-                if (task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     dataSet.remove(position);
                     updateData(dataSet);
                     Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
 
-                }
-                else
-                {
+                } else {
                     Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
                 }
             });

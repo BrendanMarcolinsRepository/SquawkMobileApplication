@@ -14,21 +14,18 @@ import com.example.a321projectprototype.User.FlockScoreModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder>
-{
+//Coding Done By Brendan Marcolin
+public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder> {
     protected List<FlockScoreModel> flockList;
     protected List<Integer> flockScoreList;
     protected int position;
 
     //Leaderboard adapter, nothing special happening here, just pushing data to the user interface
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView memberNameTextview, scoreTextview, positionTextview;
 
-        MyViewHolder(View itemView)
-        {
+        MyViewHolder(View itemView) {
             super(itemView);
 
             memberNameTextview = itemView.findViewById(R.id.leaderboard_flock_name);
@@ -37,8 +34,7 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
         }
     }
 
-    AdapterLeaderboard(List<FlockScoreModel> flockList , List<Integer> flockScoreList)
-    {
+    AdapterLeaderboard(List<FlockScoreModel> flockList , List<Integer> flockScoreList) {
         this.flockList = flockList;
         this.flockScoreList = flockScoreList;
 
@@ -46,8 +42,7 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
 
     @NonNull
     @Override
-    public com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_content, parent, false);
@@ -57,8 +52,7 @@ public class AdapterLeaderboard  extends RecyclerView.Adapter<com.example.a321pr
 
 
     @Override
-    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Flock.AdapterLeaderboard.MyViewHolder holder, int position) {
         holder.memberNameTextview.setText(flockList.get(position).getFlockname());
         holder.scoreTextview.setText(flockScoreList.get(position).toString());
         int pos = position + 1;

@@ -52,6 +52,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.io.Serializable;
 import java.util.Objects;
 
+//Code by Brendan Marcolin
 public class HomePage extends AppCompatActivity implements Serializable
 {
 

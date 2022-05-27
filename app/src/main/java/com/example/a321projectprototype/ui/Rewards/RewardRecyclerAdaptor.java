@@ -12,7 +12,7 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.UserScore;
 
 import java.util.ArrayList;
-
+//Code by Rui Cao
 public class RewardRecyclerAdaptor extends RecyclerView.Adapter<RewardRecyclerAdaptor.ViewHolder>
 {
     private ArrayList<UserScore> userRewardItems;

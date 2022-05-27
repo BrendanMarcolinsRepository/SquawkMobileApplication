@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-
+//Coding Done By Brendan Marcolin
 public class AdapaterMemberFlock extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Flock.AdapaterMemberFlock.MyViewHolder>
 {
     protected List<UserModel> FullList;

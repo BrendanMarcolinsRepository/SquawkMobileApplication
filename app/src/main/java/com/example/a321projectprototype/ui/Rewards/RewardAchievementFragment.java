@@ -24,7 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
+//Code by Rui Cao
 public class RewardAchievementFragment extends Fragment {
     private final int standardTotal1 = 1000;
     private final int standardTotal2 = 5000;

@@ -42,7 +42,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
+//Coding Done By Brendan Marcolin
 public class DiscoverFragment extends Fragment
 {
 

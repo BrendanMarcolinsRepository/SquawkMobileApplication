@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
+//Coding Done By Brendan Marcolin
 public class FlockLeaderboardFragment  extends Fragment
 {
     private String[] timeFrame = { "This Week","This Month", "This Year","All Time Scores"};
@@ -47,8 +47,7 @@ public class FlockLeaderboardFragment  extends Fragment
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_flock_leaderboards, container, false);
 

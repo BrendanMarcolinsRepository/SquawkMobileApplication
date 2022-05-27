@@ -14,7 +14,7 @@ import androidx.navigation.NavController;
 import com.example.a321projectprototype.HomePage;
 import com.example.a321projectprototype.R;
 
-
+//Code by Rui Cao
 public class SettingsFragment extends Fragment
 {
     private SettingViewModel settingViewModel;

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.a321projectprototype.R;
-
+//Code by Rui Cao
 public class SettingsTermFragment extends Fragment {
 
     public SettingsTermFragment() {

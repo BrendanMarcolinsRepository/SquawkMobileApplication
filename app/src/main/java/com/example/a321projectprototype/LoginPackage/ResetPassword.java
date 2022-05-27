@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+//Coding Done By Brendan Marcolin
 public class ResetPassword extends AppCompatActivity
 {
     private FirebaseAuth firebaseAuth;

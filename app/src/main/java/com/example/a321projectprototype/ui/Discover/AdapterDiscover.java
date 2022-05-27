@@ -19,7 +19,7 @@ import com.example.a321projectprototype.User.BirdModel;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//Coding Done By Brendan Marcolin
 public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder> implements Filterable {
 
     List<BirdModel> FullList;

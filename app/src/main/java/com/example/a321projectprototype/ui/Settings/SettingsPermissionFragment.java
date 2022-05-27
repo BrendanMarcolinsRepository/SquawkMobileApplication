@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.a321projectprototype.R;
-
+//Code by Rui Cao
 public class SettingsPermissionFragment extends Fragment {
 
     private ImageView mediaImageView, fileImageView, storageImageView, audioImageView;

@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+//Coding Done By Brendan Marcolin
 public class SignUp extends AppCompatActivity {
     private String fullNameInput, usernameInput, emailInput, password1Input, password2Input;
     private EditText fullNameEditText, usernameEditText, emailEditText, password1EditText, password2EditText;

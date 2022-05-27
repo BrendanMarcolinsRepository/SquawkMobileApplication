@@ -95,9 +95,8 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 import static androidx.activity.result.contract.ActivityResultContracts.*;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.getExternalCacheDirs;
-
-public class RecordFragment<Switch> extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback
-{
+//Code by Brendan Marcolin
+public class RecordFragment<Switch> extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
 
 
     private View root;

@@ -12,7 +12,7 @@ import com.example.a321projectprototype.R;
 import com.example.a321projectprototype.User.RewardPointModel;
 
 import java.util.ArrayList;
-
+//Code by Rui Cao
 public class RewardPointAdapter extends RecyclerView.Adapter<RewardPointAdapter.RewardRecViewHolder>
 {
     private ArrayList<RewardPointModel> rewardPointList;

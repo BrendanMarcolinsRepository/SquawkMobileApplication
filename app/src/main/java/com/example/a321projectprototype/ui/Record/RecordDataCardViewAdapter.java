@@ -36,16 +36,15 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+//Code by Brendan Marcolin
 
-public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCardViewAdapter.MyViewHolder>
-{
+public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCardViewAdapter.MyViewHolder> {
     List<RewardPointsModel> rewardPointsModels ;
     List<BirdRewardModel> listItem;
     HomePage homePage;
     int position;
 
-    RecordDataCardViewAdapter(List<BirdRewardModel> listItem, HomePage homePage, List<RewardPointsModel> rewardPointsModels)
-    {
+    RecordDataCardViewAdapter(List<BirdRewardModel> listItem, HomePage homePage, List<RewardPointsModel> rewardPointsModels) {
         this.homePage = homePage;
         this.listItem = listItem;
         this.rewardPointsModels = rewardPointsModels;
@@ -53,16 +52,14 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
     }
     @NonNull
     @Override
-    public RecordDataCardViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public RecordDataCardViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.record_data_retrival_cardview,parent,false);
 
         return new RecordDataCardViewAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull RecordDataCardViewAdapter.MyViewHolder holder, int position) {
         //setups the user interface data passed in the list in the constructor
         holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
@@ -89,15 +86,13 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         return listItem.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         TextView identifiedBirdTexview, pointsTextView;
         ImageView imageViewBirds;
         Button moreInfo;
         String url;
 
-        public MyViewHolder(@NonNull View itemView)
-        {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             identifiedBirdTexview = itemView.findViewById(R.id.record_retrival_data_identified_texview);

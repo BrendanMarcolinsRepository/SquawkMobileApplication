@@ -42,7 +42,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//Coding Done By Brendan Marcolin
 public class FlockInfoFragment extends Fragment
 {
 
@@ -65,8 +65,7 @@ public class FlockInfoFragment extends Fragment
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState)
-    {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragement_flock_info, container, false);
 
@@ -125,8 +124,7 @@ public class FlockInfoFragment extends Fragment
     }
 
     //loads the flock score and flock members from the firebase
-    public void loadData()
-    {
+    public void loadData() {
         userIds = new ArrayList<>();
         userModelList = new ArrayList<>();
         userScoreList  = new ArrayList<>();
@@ -162,10 +160,8 @@ public class FlockInfoFragment extends Fragment
     }
 
     //loads users information from that particular flock
-    private void loadOtherData()
-    {
-        if(userIds != null)
-        {
+    private void loadOtherData() {
+        if(userIds != null) {
             firebaseFirestore.collection("users")
                     .get()
                     .addOnCompleteListener(task -> {
@@ -186,8 +182,7 @@ public class FlockInfoFragment extends Fragment
 
 
     //sets the recycle view
-    private void setRecycleVeiw(List<UserModel> userModel)
-    {
+    private void setRecycleVeiw(List<UserModel> userModel) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -201,8 +196,7 @@ public class FlockInfoFragment extends Fragment
     //Navigators
     private final View.OnClickListener joinInfoButtonMethod = v -> invitePopUpWindow(v);
 
-    private final View.OnClickListener settingsInfoMethod = new View.OnClickListener()
-    {
+    private final View.OnClickListener settingsInfoMethod = new View.OnClickListener() {
         @Override
         public void onClick(View v)
         {
