@@ -76,11 +76,18 @@ public class Prototype extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-       if(firebaseUser != null){
-           Intent homepage  = new Intent(Prototype.this, HomePage.class);
-           homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-           startActivity(homepage);
-           finish();
+
+        //checks if current user exit
+       if(firebaseUser != null && firebaseUser.isEmailVerified()){
+           //if that their email is verified
+           if(firebaseUser.isEmailVerified()){
+
+               //started home activity
+               Intent homepage  = new Intent(Prototype.this, HomePage.class);
+               homepage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+               startActivity(homepage);
+               finish();
+           }
        }
     }
 
@@ -189,8 +196,6 @@ public class Prototype extends AppCompatActivity {
     }
 
 
-    public void onBackPressed() {
-        moveTaskToBack(false);
-    }
+
 
 }

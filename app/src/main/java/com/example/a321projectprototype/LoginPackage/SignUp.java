@@ -207,8 +207,7 @@ public class SignUp extends AppCompatActivity {
     private final View.OnClickListener returnMethod = v -> returnToLogin();
 
     //returns user back to the login
-    private void returnToLogin()
-    {
+    private void returnToLogin() {
         Intent login = new Intent(this, Prototype.class);
         startActivity(login);
     }
