@@ -18,17 +18,12 @@ public class FirebaseCustomFailure extends AppCompatActivity {
         View mView = inflater.inflate(R.layout.failure_pop,null);
         alert.setView(mView);
 
-        Button yes  = (Button) mView.findViewById(R.id.popUpFailureButton);
+        Button yes  = mView.findViewById(R.id.popUpFailureButton);
 
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+        yes.setOnClickListener(v -> alertDialog.dismiss());
 
         alertDialog.show();
     }

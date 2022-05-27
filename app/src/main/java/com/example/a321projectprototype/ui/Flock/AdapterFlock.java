@@ -126,6 +126,7 @@ public class AdapterFlock extends RecyclerView.Adapter<com.example.a321projectpr
         name = currentItem.getName();
         holder.groupCountNumber.setText(currentItem.getMemberCount() + "/200");
 
+        System.out.println("flcok iamge =============== " + currentItem.getImageUrl());
 
         //Used for images for UI
         Glide.with(homePage.getApplicationContext())

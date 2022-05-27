@@ -77,7 +77,7 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         for(int i = 0; i < rewardPointsModels.size();i++) {
 
             if(rewardPointsModels.get(i).getBird_status().matches(listItem.get(position).getBird_status())){
-                holder.pointsTextView.setText("Congradulation You Have Earned: " + rewardPointsModels.get(i).getReward_points());
+                holder.pointsTextView.setText("Congratulations You Have Earned: " + rewardPointsModels.get(i).getReward_points());
             }
         }
 

@@ -148,7 +148,7 @@ public class PastRecordingsFragment extends Fragment {
     }
 
 
-    //launches the calendar UI
+    //method for picking date
     private final View.OnClickListener calendarLauncher = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -158,7 +158,7 @@ public class PastRecordingsFragment extends Fragment {
             mMonth = cal.get(Calendar.MONTH);
             mDay = cal.get(Calendar.DAY_OF_MONTH);
 
-            //
+            //launches the calendar UI
             DatePickerDialog datePickerDialog = new DatePickerDialog(homePage,
                     (view, year, month, dayOfMonth) -> {
 
@@ -167,7 +167,12 @@ public class PastRecordingsFragment extends Fragment {
                         c.set(Calendar.MONTH, month);
                         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         Date date = c.getTime();
-                        updateRecyclerView(date);
+
+                        if(cloud){
+                            updateRecyclerViewFirebase(date);
+                        }else{
+                            updateRecyclerView(date);
+                        }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
 

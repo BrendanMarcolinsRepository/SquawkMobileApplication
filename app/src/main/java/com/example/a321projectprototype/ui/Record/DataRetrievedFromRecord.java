@@ -225,8 +225,6 @@ public class DataRetrievedFromRecord extends Fragment
                         flockScoreModel.setScorethisyear(rewardPoint + flockScoreModel.getScorethisyear());
                         flockScoreModel.setTotalScore(rewardPoint + flockScoreModel.getTotalScore());
                     }
-
-                    System.out.println("Worked Finished");
                 }
             }
 
@@ -305,7 +303,6 @@ public class DataRetrievedFromRecord extends Fragment
                                         .get()
                                         .addOnCompleteListener(task -> {
                                             FlockExist = true;
-                                            System.out.println("Worked Finished 2");
                                             flockScoreModel = task.getResult().toObject(FlockScoreModel.class);
                                             getUserScore();
                                         }));

@@ -221,6 +221,7 @@ public class FlockFragment extends Fragment
                         {
 
                             flockModelData = documentChange.getDocument().toObject(FlockModelData.class);
+                            System.out.println("Image +++++++++++++++++++++++++++++++++++++ " + flockModelData.getImageUrl());
                             homePage.setFlockModelData(flockModelData);
                             textViewFlockName.setText(flockModelData.getName());
                             Glide.with(homePage.getApplicationContext())

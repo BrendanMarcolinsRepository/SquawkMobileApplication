@@ -105,15 +105,14 @@ public class FlockInfoFragment extends Fragment
     private void loadUsersFlock() {
         groupName.setText(flockModelData.getName());
 
-        System.out.println("woreked ");
+
         if(flockModelData.getUserId().equals(auth.getUid())){
-            System.out.println("woreked 1");
             settings.setVisibility(View.VISIBLE);
 
         }else{
             settings.setImageResource(0);
             settings.setEnabled(false);
-            System.out.println("woreked 2");
+
         }
 
         Glide.with(homePage.getApplicationContext())
@@ -152,7 +151,6 @@ public class FlockInfoFragment extends Fragment
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             if(flockModelData.getFlockId().equals(document.get("flockId").toString())) {
-                                System.out.println("User Here ==========================> worked 1" + document.get("userId").toString());
                                 userIds.add(document.get("userId").toString());
                             }
 
@@ -174,7 +172,6 @@ public class FlockInfoFragment extends Fragment
                         for(DocumentSnapshot documentSnapshot : task.getResult()){
                             if(userIds.contains(documentSnapshot.get("userId").toString())){
                                 userModel = documentSnapshot.toObject(UserModel.class);
-                                System.out.println("User Here ==========================> " + userModel.getUsername());
                                 userModelList.add(userModel);
 
                             }
@@ -202,15 +199,7 @@ public class FlockInfoFragment extends Fragment
     }
 
     //Navigators
-    private final View.OnClickListener joinInfoButtonMethod = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            invitePopUpWindow(v);
-
-        }
-    };
+    private final View.OnClickListener joinInfoButtonMethod = v -> invitePopUpWindow(v);
 
     private final View.OnClickListener settingsInfoMethod = new View.OnClickListener()
     {
@@ -223,15 +212,7 @@ public class FlockInfoFragment extends Fragment
     };
 
     //Pop up button
-    private final View.OnClickListener inviteInfoMethod = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            onButtonShowPopupWindowClick(v);
-
-        }
-    };
+    private final View.OnClickListener inviteInfoMethod = v -> onButtonShowPopupWindowClick(v);
 
     //pop up button for user wanting to join a flock
     private void onButtonShowPopupWindowClick(View view) {
@@ -255,13 +236,7 @@ public class FlockInfoFragment extends Fragment
                 alertDialog.dismiss();
             }
         });
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                alertDialog.dismiss();
-            }
-        });
+        no.setOnClickListener(v -> alertDialog.dismiss());
         alertDialog.show();
     }
 
@@ -280,22 +255,13 @@ public class FlockInfoFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapaterMemberFlock.notifyDataSetChanged();
-                alertDialog.dismiss();
-            }
+        yes.setOnClickListener(v -> {
+            adapaterMemberFlock.notifyDataSetChanged();
+            alertDialog.dismiss();
         });
 
 
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                alertDialog.dismiss();
-            }
-        });
+        no.setOnClickListener(v -> alertDialog.dismiss());
         alertDialog.show();
     }
 

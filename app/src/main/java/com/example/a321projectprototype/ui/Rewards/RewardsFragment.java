@@ -170,8 +170,9 @@ public class RewardsFragment extends Fragment
                 if(documentChange.getType() == DocumentChange.Type.ADDED)
                 {
                     UserScore userRewardModel = documentChange.getDocument().toObject(UserScore.class);
-                    System.out.println("USer " + userRewardModel.getUserId());
-                    userRewards.add(userRewardModel);
+                    if(userRewardModel != null){
+                        userRewards.add(userRewardModel);
+                    }
                 }
             }
             initializeContent("This Month");
@@ -261,7 +262,11 @@ public class RewardsFragment extends Fragment
     {
         UserScore userReward = userRewards.stream().
                 filter(urm -> auth.getUid().equalsIgnoreCase(urm.getUserId())).findAny().orElse(null);
-        String rewardText = rewardContentWords + " " + userReward.getTotalScore();
+
+        System.out.println("userrrrrrrrrrrrrrrrrr" + userReward.getUserId());
+        System.out.println("userrrrrrrrrrrrrrrrrr" + userReward.getTotalScore());
+
+        String rewardText = rewardContentWords + " " + String.valueOf(userReward.getTotalScore());
         rewardContent.setText(rewardText);
         String rewardContent = rewardDisplayWords;
         switch(time){
