@@ -164,8 +164,7 @@ public class ForumPost extends Fragment {
 
             DocumentReference documentReference = firebaseFirestore.collection("posts").document(postIdString);
             documentReference.delete().addOnCompleteListener(task -> {
-                if (task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     Toast.makeText(homePage,"Your Post Has Been Deleted",Toast.LENGTH_LONG);
                     System.out.println("worked 1");
                 }
@@ -178,10 +177,8 @@ public class ForumPost extends Fragment {
 
             query.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    for (DocumentSnapshot documentSnapshot : task.getResult())
-                    {
-                        if(documentSnapshot.getString("post_id").equals(postIdString))
-                        {
+                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                        if(documentSnapshot.getString("post_id").equals(postIdString)) {
                             collectionReference.document(documentSnapshot.getId()).delete();
                         }
 
@@ -197,8 +194,7 @@ public class ForumPost extends Fragment {
 
 
     //sets the adaptor for the recycle view
-    private void setAdaptor1()
-    {
+    private void setAdaptor1() {
 
 
         //retrieves  data of all comments for the associate post

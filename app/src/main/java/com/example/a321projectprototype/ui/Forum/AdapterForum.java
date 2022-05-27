@@ -71,26 +71,22 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
             imageDeleteComment = itemView.findViewById(R.id.deletePostForum);
 
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    picked = getLayoutPosition();
-                    System.out.println("worked");
-                    Bundle bundle = new Bundle();
-                    bundle.putString("topic",dataSet.get(getLayoutPosition()).getTitle());
-                    bundle.putString("name",dataSet.get(getLayoutPosition()).getUsername());
-                    bundle.putString("desc",dataSet.get(getLayoutPosition()).getDescription());
-                    bundle.putString("id",dataSet.get(getLayoutPosition()).getPostId());
-                    navigation.navigate(R.id.action_nav_forum_to_comment,bundle);
-                }
+            itemView.setOnClickListener(v -> {
+                picked = getLayoutPosition();
+                System.out.println("worked");
+                Bundle bundle = new Bundle();
+                bundle.putString("topic",dataSet.get(getLayoutPosition()).getTitle());
+                bundle.putString("name",dataSet.get(getLayoutPosition()).getUsername());
+                bundle.putString("desc",dataSet.get(getLayoutPosition()).getDescription());
+                bundle.putString("id",dataSet.get(getLayoutPosition()).getPostId());
+                navigation.navigate(R.id.action_nav_forum_to_comment,bundle);
             });
 
         }
 
     }
 
-    AdapterForum(List<ForumModel> listItem, HomePage homePage, Context context, View view)
-    {
+    AdapterForum(List<ForumModel> listItem, HomePage homePage, Context context, View view) {
         this.dataSet = listItem;
         this.homePage = homePage;
         FullList = new ArrayList<>(listItem);
@@ -101,8 +97,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
     @NonNull
     @Override
-    public AdapterForum.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public AdapterForum.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_forum_topic, parent, false);
@@ -112,8 +107,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, @SuppressLint("RecyclerView") int position)
-    {
+    public void onBindViewHolder(@NonNull AdapterForum.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         currentItem = dataSet.get(position);
 
         holder.topic.setText("Topic: " + currentItem.getTitle());
@@ -121,12 +115,10 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         holder.description.setText(currentItem.getDescription());
 
         //checks if its users topic
-        if(currentItem.getUserId().matches(holder.firebaseAuth.getUid()))
-        {
+        if(currentItem.getUserId().matches(holder.firebaseAuth.getUid())) {
             holder.imageDeleteComment.setVisibility(View.VISIBLE);
         }
-        else
-        {
+        else {
             holder.imageDeleteComment.setVisibility(View.GONE);
         }
 
@@ -140,7 +132,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
                 if (task.isSuccessful()) {
                     dataSet.remove(position);
                     updateData(dataSet);
-                    System.out.println("worked =====================================================================");
+
                     Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
 
                 }
