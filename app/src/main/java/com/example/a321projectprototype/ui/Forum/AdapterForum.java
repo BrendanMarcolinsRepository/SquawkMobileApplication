@@ -60,8 +60,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
 
 
-        MyViewHolder(View itemView)
-        {
+        MyViewHolder(View itemView) {
             super(itemView);
             navigation = homePage.getNav();
             topic = itemView.findViewById(R.id.forumTopicRv);
@@ -117,8 +116,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
         //checks if its users topic
         if(currentItem.getUserId().matches(holder.firebaseAuth.getUid())) {
             holder.imageDeleteComment.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             holder.imageDeleteComment.setVisibility(View.GONE);
         }
 
@@ -135,9 +133,7 @@ public class AdapterForum extends RecyclerView.Adapter<AdapterForum.MyViewHolder
 
                     Toast.makeText(homePage.getBaseContext(),"Comment Deleted",Toast.LENGTH_LONG);
 
-                }
-                else
-                {
+                } else {
                     Toast.makeText(homePage.getBaseContext(),"Please Try Again Later",Toast.LENGTH_LONG);
                 }
             });
