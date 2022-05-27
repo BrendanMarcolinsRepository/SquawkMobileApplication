@@ -63,6 +63,7 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
         //setups the user interface data passed in the list in the constructor
         holder.identifiedBirdTexview.setText("Identified: " + listItem.get(position).getBird_name());
 
+        //allows the image to load properly into the fire UI
         Glide.with(homePage.getApplicationContext())
                 .load(listItem.get(position).getBird_image())
                 .fitCenter()
@@ -71,8 +72,10 @@ public class RecordDataCardViewAdapter extends RecyclerView.Adapter<RecordDataCa
                 .into(holder.imageViewBirds);
 
 
+        //looping through reward points
         for(int i = 0; i < rewardPointsModels.size();i++) {
 
+            //if status matches than updates the ui
             if(rewardPointsModels.get(i).getBird_status().matches(listItem.get(position).getBird_status())){
                 holder.pointsTextView.setText("Congratulations You Have Earned: " + rewardPointsModels.get(i).getReward_points());
             }

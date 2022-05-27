@@ -89,16 +89,20 @@ public class DiscoverFragment extends Fragment
         discoverSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                //if the bird list contain the queries input
                 if(birdList.contains(query)) {
+                    //updates the recycler
                     adapterDiscover.getFilter().filter(query);
                 }
                 else {
+                    //other wise nothing will be found
                     Toast.makeText(getContext(), "No Match found",Toast.LENGTH_LONG).show();
                 }
                 return false;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
+                //if the bird list contain the queries input
                 adapterDiscover.getFilter().filter(newText);
                 return false;
             }
@@ -110,6 +114,7 @@ public class DiscoverFragment extends Fragment
     //Runs the api request
     private void callApi() {
         progressBar.setVisibility(View.VISIBLE);
+        //builds the request model from the url
         retrofit = new Retrofit
                 .Builder()
                 .baseUrl("https://api.ebird.org/")
@@ -125,10 +130,12 @@ public class DiscoverFragment extends Fragment
         repos.enqueue(new Callback<List<BirdModel>>() {
             @Override
             public void onResponse(Call<List<BirdModel>> call, Response<List<BirdModel>> response) {
+                //if no error occurs continues
                 if(response.code() != 200) {
                     return;
                 }
 
+                //retrieves data process it into the birdlist, which is birdmodel object list
                 birdList = response.body();
                 progressBar.setVisibility(View.INVISIBLE);
                 recyclerViewMethod();
@@ -174,6 +181,8 @@ public class DiscoverFragment extends Fragment
 
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(true);
+
+        //different type of filter button methods
 
         popular.setOnClickListener(v -> {
             s = "Populer Order";

@@ -54,10 +54,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
 
                 String birdName = bird.getText().toString();
 
-
-
-                System.out.println(birdName);
-
+                //bundles the object to push the data on the next fragment
                 Bundle bundle = new Bundle();
                 bundle.putString("birdName",birdName);
                 bundle.putString("latitude",latitude);
@@ -93,6 +90,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
     @Override
     public void onBindViewHolder(@NonNull com.example.a321projectprototype.ui.Discover.AdapterDiscover.MyViewHolder holder, int position)
     {
+        //sets all the variables
         BirdModel currentItem = dataSet.get(position);
         holder.bird.setText(currentItem.getComName());
         holder.latitude = dataSet.get(position).getLat();
@@ -117,20 +115,22 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             ArrayList<BirdModel> filteredList = new ArrayList<>();
-            System.out.println("worked 1");
+            //if initially empty
             if (constraint == null || constraint.length() == 0) {
+                //adds all the list
                 filteredList.addAll(FullList);
-                System.out.println("worked 2");
             } else {
+                //reduce the trim of the string
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                System.out.println("worked 3");
+                //loops through the list to see if the input matches
                 for (BirdModel item : FullList) {
                     if (item.getComName().toLowerCase().contains(filterPattern)) {
-                        System.out.println("worked 4");
+                        //if it does it will it it to the filter list
                         filteredList.add(item);
                     }
                 }
             }
+            //updates the results and returns it
             FilterResults results = new FilterResults();
             results.values = filteredList;
             return results;
@@ -139,6 +139,7 @@ public class AdapterDiscover  extends RecyclerView.Adapter<com.example.a321proje
         // updates the list in the recycleview
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
+            //updates the recycle view with the new list being searched
             dataSet.clear();
             dataSet.addAll((ArrayList) results.values);
             notifyDataSetChanged();

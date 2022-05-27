@@ -225,22 +225,21 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         filePath = getRecordingFilePath();
         mediaRecorder.setOutputFile(filePath);
 
+        //try and catch in case it cant be prepared or start
         try {
             mediaRecorder.prepare();
             mediaRecorder.start();
             recordingInformationTexview.setText("Now Recording Your Chirps....");
 
-
-            System.out.println("Recording Started...");
         } catch (IOException e) {
-            System.out.println("Didnt work" + e);
+
         }
 
     }
 
     //stops the recording
     private void stopRecording() {
-        System.out.println("it stopped");
+
         mediaRecorder.stop();
         mediaRecorder.reset();
         mediaRecorder.release();
@@ -266,6 +265,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     //gets the recording path
     private String getRecordingFilePath() {
+        //data and time needed for recording file when saved
         date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd-MM-yyyy ");
         dateString = ft.format(date);
@@ -274,7 +274,9 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         timeString = timeFormat.format(cal.getTime());
 
+
         ContextWrapper contextWrapper = new ContextWrapper(getContext());
+        //file path for storing
         filePathFirebase = homePage.getExternalCacheDir().getAbsolutePath();
         filePathFirebase +=  "/" + UUID.randomUUID()+"_bird_recording"+".3gp";
 
@@ -285,13 +287,14 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
 
     //starts the animation for when the recording is in process
     private void startAlphaAnimation() {
+        //animation for fading in and out
         ObjectAnimator fadeOut = ObjectAnimator.ofFloat(recordImage, "alpha",  1f, .3f);
         fadeOut.setDuration(2000);
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(recordImage, "alpha", .3f, 1f);
         fadeIn.setDuration(2000);
 
+        //prepares and starts the animation
         mAnimationSet = new AnimatorSet();
-
         mAnimationSet.play(fadeIn).after(fadeOut);
 
         mAnimationSet.addListener(new AnimatorListenerAdapter()
@@ -362,18 +365,15 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     public void errorOccured() {
 
 
+        //code to build the alert dialog
         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
         alertDialog.setTitle("Error Occured");
         alertDialog.setMessage("We had a problem trying to identify your recording, please try again");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Okay",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        alertDialog.dismiss();
-                    }
-                });
+                (dialog, which) -> alertDialog.dismiss());
         alertDialog.show();
 
+        //updates what the user can see
         recordImage.setVisibility(View.VISIBLE);
         recordSwitch.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
@@ -394,6 +394,8 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
     }
     //stores audio location in phone into the firebase  database
     private void storeRecordingFilePath() {
+
+        //stores audio file in firebase storage under "BirdRecordings"
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference().child("BirdRecordings").child(filePath);
@@ -406,12 +408,12 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         });
 
 
+        //updates firebase firestorage files with details needed for the recording
         DocumentReference documentReference = firebaseFirestore.collection("files").document();
 
+        //hash map used to hold the data
         HashMap<String,Object> userMap = new HashMap<>();
-
         String time = dateString.substring(0,10);
-
         userMap.put("created_at",time);
         userMap.put("description",desciption);
         userMap.put("filename",fileName);
@@ -421,6 +423,7 @@ public class RecordFragment<Switch> extends Fragment implements ActivityCompat.O
         userMap.put("uploadedBy", userID);
 
 
+        //process to firebase
         documentReference.set(userMap).addOnSuccessListener(aVoid -> {
             enableMenuItems();
             navController.navigate(R.id.action_nav_record_data);

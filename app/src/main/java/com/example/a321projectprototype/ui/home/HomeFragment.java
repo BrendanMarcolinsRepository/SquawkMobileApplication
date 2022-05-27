@@ -69,6 +69,7 @@ public class HomeFragment extends Fragment
         homePage = (HomePage) getActivity();
         navController = homePage.getNav();
 
+        //makes sure drawer for profile does activate
         DrawerLayout drawerLayout = homePage.getDrawer();
         if(drawerLayout != null){
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -127,6 +128,7 @@ public class HomeFragment extends Fragment
 
         userID = auth.getCurrentUser().getUid();
 
+        //gets the user who logged in from firebase collection "user"
         DocumentReference documentReference = firebaseFirestore.collection("users").document(userID);
 
         documentReference.get().addOnCompleteListener(task -> {

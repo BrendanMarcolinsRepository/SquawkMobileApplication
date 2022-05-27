@@ -114,6 +114,7 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
         this.map = googleMap;
         LatLng birdPosition = new LatLng(latitude,longitude);
 
+        //setups the marker on the map
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(birdPosition).title("Last Chirp");
         map.clear();
@@ -134,6 +135,7 @@ public class DiscoverChoice extends Fragment implements OnMapReadyCallback
     };
 
     public void onBrowseClick(View v) {
+        //links to for intent to open in a browser
         String url = "https://ebird.org/species/"+code;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         homePage.startActivity(intent);

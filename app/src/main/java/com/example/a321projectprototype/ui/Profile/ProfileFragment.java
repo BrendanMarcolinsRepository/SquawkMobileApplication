@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment
                 new ViewModelProvider(this).get(ProfileViewModel.class);
         root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-
+        //makes sure drawer for profile does activate
         DrawerLayout drawerLayout = homePage.getDrawer();
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         AssignVariables(root);
