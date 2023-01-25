@@ -3,4 +3,10 @@
     <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/white</item>
     </style>
+
+    <style name="MySwitchStyle">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 </resources>

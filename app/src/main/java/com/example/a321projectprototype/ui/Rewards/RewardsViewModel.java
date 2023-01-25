@@ -11,7 +11,7 @@ public class RewardsViewModel extends ViewModel
     public RewardsViewModel()
     {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("Rewards");
     }
 
     public LiveData<String> getText() {

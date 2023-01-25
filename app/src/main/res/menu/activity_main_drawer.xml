@@ -7,39 +7,40 @@
         <group android:checkableBehavior="single" android:id="@+id/group1">
             <item
                 android:id="@+id/nav_home"
-                android:icon="@drawable/ic_menu_camera"
+                android:icon="@drawable/logo"
                 android:title="@string/menu_home" />
             <item
                 android:id="@+id/nav_Record"
-                android:icon="@drawable/ic_menu_camera"
+                android:icon="@drawable/ic_microphone_icon"
                 android:title="@string/menu_record" />
             <item
                 android:id="@+id/nav_PastRecording"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/ic_past_recordings"
                 android:title="@string/menu_PastRecordings" />
         </group>
         
         <group android:checkableBehavior="single" android:id="@+id/group2">
             <item
                 android:id="@+id/nav_Discover"
-                android:icon="@drawable/ic_menu_camera"
+                android:icon="@drawable/ic_bird"
                 android:title="@string/menu_Discover" />
             <item
                 android:id="@+id/nav_Forum"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/ic_forum"
                 android:title="@string/menu_Forum" />
             <item
                 android:id="@+id/nav_Flock"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/ic_flock"
                 android:title="@string/menu_Flocks" />
             <item
                 android:id="@+id/nav_Reward"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/ic_peng"
                 android:title="@string/menu_Reward" />
             <item
                 android:id="@+id/nav_Settings"
-                android:icon="@drawable/ic_menu_gallery"
+                android:icon="@drawable/ic_settings"
                 android:title="@string/menu_Settings" />
         </group>
+
 
 </menu>
