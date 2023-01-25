@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flock_info_fragment"
+    android:background="@color/greenBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/viewInfoFlock1"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="92dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/flock_group_info_picture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_account_profile_picture"
+        app:layout_constraintEnd_toStartOf="@+id/flockInfoGroupName"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
+
+    <TextView
+        android:id="@+id/flockInfoGroupName"
+        android:layout_width="150dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="44dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flockInfoSettings"
+        android:layout_width="98dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/green"
+        android:text="Settings"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/flockInfoGroupName"
+        app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock1" />
+
+    <View
+        android:id="@+id/viewInfoFlock2"
+        android:layout_width="375dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flockInfoGroupName" />
+
+    <TextView
+        android:id="@+id/flock_groupmember_info_textview"
+        android:layout_width="150dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Members:"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewInfoFlock2" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleFlockInfo"
+        android:layout_width="355dp"
+        android:layout_height="312dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flock_groupmember_info_textview" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flock_info_join"
+        android:layout_width="178dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="68dp"
+        android:background="@drawable/green"
+        android:text="join"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flock_info_invite"
+        android:layout_width="178dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="68dp"
+        android:background="@drawable/green"
+        android:text="Invite"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
+
+    <TextView
+        android:id="@+id/flock_info_score"
+        android:layout_width="205dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="20dp"
+        android:text="Total Points: "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleFlockInfo" />
+
+    <ProgressBar
+        android:id="@+id/flockMemebersListProgressBar"
+        android:layout_width="103dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="384dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

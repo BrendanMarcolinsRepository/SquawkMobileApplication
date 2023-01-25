@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/greenBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <EditText
+        android:id="@+id/flock_name_editText"
+        android:layout_width="232dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:hint="Flock Name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewEditTextFlockCreation"
+        android:layout_width="376dp"
+        android:layout_height="326dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/et_style"
+        android:backgroundTint="@color/white"
+        android:elevation="10dp"
+        android:ems="10"
+        android:gravity="top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flock_name_editText">
+
+
+        <EditText
+            android:id="@+id/flock_description_TextView"
+            android:layout_width="347dp"
+            android:layout_height="285dp"
+            android:hint="Enter Description"
+            android:inputType="text|textMultiLine"
+            android:gravity="top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/flock_create_image"
+        android:layout_width="96dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="32dp"
+        android:src="@drawable/ic_account_profile_picture"
+        app:layout_constraintEnd_toStartOf="@+id/flock_name_editText"
+        app:layout_constraintHorizontal_bias="0.842"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flock_Create_Button"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/green"
+        android:text="Create Flock"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewEditTextFlockCreation" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/flock_update_Button"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/green"
+        android:text="Update Flock"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewEditTextFlockCreation" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

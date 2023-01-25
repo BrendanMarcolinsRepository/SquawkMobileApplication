@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/greenBackground"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/BirdTextview"
+        android:layout_width="320dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="72dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/discoverCHoiceCOnstraint"
+        android:layout_width="312dp"
+        android:layout_height="173dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/BirdTextview">
+
+        <TextView
+            android:id="@+id/birdScientificNameTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/birdVisitTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birdScientificNameTextview" />
+
+        <TextView
+            android:id="@+id/birdDateTextview"
+            android:layout_width="254dp"
+            android:layout_height="46dp"
+            android:gravity="center"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/birdVisitTextview" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/moreInfoDiscover"
+        android:layout_width="232dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/et_style"
+        android:text="More Information"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/discoverCHoiceCOnstraint" />
+
+    <fragment
+        android:layout_width="368dp"
+        android:layout_height="335dp"
+        android:layout_marginTop="24dp"
+        android:id="@+id/mapDiscover"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoDiscover" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

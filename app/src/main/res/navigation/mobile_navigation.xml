@@ -25,38 +25,238 @@
         android:id="@+id/nav_Record"
         android:name="com.example.a321projectprototype.ui.Record.RecordFragment"
         android:label="@string/menu_record"
-        tools:layout="@layout/fragment_record" />
+        tools:layout="@layout/fragment_record" >
+
+        <action
+            android:id="@+id/action_nav_record_data"
+            app:destination="@id/nav_RecordData" />
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_RecordData"
+        android:name="com.example.a321projectprototype.ui.Record.DataRetrievedFromRecord"
+        android:label="@string/menu_record_processing"
+        tools:layout="@layout/fragement_record_retrieved_data">
+
+        <action
+            android:id="@+id/action_nav_discover_to_bird"
+            app:destination="@id/nav_Discover_Choice" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_PastRecording"
         android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsFragment"
         android:label="@string/menu_PastRecordings"
-        tools:layout="@layout/fragment_pastrecordings" />
+        tools:layout="@layout/fragment_pastrecordings" >
+
+        <action
+            android:id="@+id/action_nav_online"
+            app:destination="@id/nav_PastRecording_Online" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_PastRecording_Online"
+        android:name="com.example.a321projectprototype.ui.Past_Recordings.PastRecordingsOnlineFragment"
+        android:label="@string/menu_PastRecordings_Online"
+        tools:layout="@layout/fragment_pastrecordings_online" >
+
+        <action
+            android:id="@+id/action_nav_online"
+            app:destination="@id/nav_PastRecording" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_Discover"
         android:name="com.example.a321projectprototype.ui.Discover.DiscoverFragment"
         android:label="@string/menu_Discover"
-        tools:layout="@layout/fragement_discover" />
+        tools:layout="@layout/fragement_discover">
+
+        <action
+            android:id="@+id/action_nav_discover_to_bird"
+            app:destination="@id/nav_Discover_Choice" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Discover_Choice"
+        android:name="com.example.a321projectprototype.ui.Discover.DiscoverChoice"
+        android:label="DiscoverChoice"
+        tools:layout="@layout/fragment_discover_choice" />
+
     <fragment
         android:id="@+id/nav_Forum"
         android:name="com.example.a321projectprototype.ui.Forum.ForumFragment"
         android:label="@string/menu_Forum"
-        tools:layout="@layout/fragment_forum" />
+        tools:layout="@layout/fragment_forum" >
+
+        <action
+            android:id="@+id/action_nav_forum_to_add"
+            app:destination="@id/nav_Forum_Add" />
+
+        <action
+            android:id="@+id/action_nav_forum_to_comment"
+            app:destination="@id/nav_Forum_Comment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Forum_Add"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumAdd"
+        android:label="ForumAdd"
+        tools:layout="@layout/fragment_forum_add" >
+
+        <action
+            android:id="@+id/action_nav_add_to_forum"
+            app:destination="@id/nav_Forum" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/nav_Forum_Comment"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumPost"
+        android:label="ForumComment"
+        tools:layout="@layout/fragment_forum_post" >
+
+        <action
+            android:id="@+id/action_nav_comment_to_forum"
+            app:destination="@id/nav_Forum" />
+
+        <action
+            android:id="@+id/action_nav_comment_to_commentsPost"
+            app:destination="@id/nav_Forum_Comment_Post" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Forum_Comment_Post"
+        android:name="com.example.a321projectprototype.ui.Forum.ForumComments"
+        android:label="ForumCommentPost"
+        tools:layout="@layout/fragment_forum_comments" >
+
+        <action
+            android:id="@+id/action_nav_commentPost_to_comment"
+            app:destination="@id/nav_Forum_Comment" />
+
+    </fragment>
+
     <fragment
         android:id="@+id/nav_Flock"
         android:name="com.example.a321projectprototype.ui.Flock.FlockFragment"
         android:label="@string/menu_Flocks"
-        tools:layout="@layout/fragment_flock" />
+        tools:layout="@layout/fragment_flock">
+        <action
+            android:id="@+id/info_fragment_nav"
+            app:destination="@id/nav_Flock_Info" >
+            <argument
+                android:name="myArg"
+                app:argType="integer"
+                android:defaultValue="1"/>
+        </action>
+        <action
+            android:id="@+id/create_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
+        <action
+            android:id="@+id/leaderboards_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
+        <action
+            android:id="@+id/settings_fragment_nav"
+            app:destination="@id/nav_Flock_Create" >
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_Flock_Info"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockInfoFragment"
+        android:label="@string/menu_Flocks_Info"
+        tools:layout="@layout/fragement_flock_info"/>
+    <fragment
+        android:id="@+id/nav_Flock_Create"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockCreationFragment"
+        android:label="@string/menu_Flocks_Create"
+        tools:layout="@layout/fragment_flock_create">
+
+        <action
+            android:id="@+id/flock_fragment_nav_return"
+            app:destination="@id/nav_Flock" >
+            <argument
+                android:name="myArg"
+                app:argType="integer"
+                android:defaultValue="1"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_Flock_Leaderboards"
+        android:name="com.example.a321projectprototype.ui.Flock.FlockLeaderboardFragment"
+        android:label="@string/menu_Flocks_LeaderBoard"
+        tools:layout="@layout/fragment_flock_leaderboards">
+
+        <action
+            android:id="@+id/flock_fragment_nav_return"
+            app:destination="@id/nav_Flock" >
+        </action>
+    </fragment>
+
     <fragment
         android:id="@+id/nav_Reward"
         android:name="com.example.a321projectprototype.ui.Rewards.RewardsFragment"
         android:label="@string/menu_Reward"
-        tools:layout="@layout/fragment_rewards" />
+        tools:layout="@layout/fragment_rewards" >
+        <action
+            android:id="@+id/action_nav_Reward_to_rewardAchievementFragment"
+            app:destination="@id/rewardAchievementFragment" />
+        <action
+            android:id="@+id/action_nav_Reward_to_rewardCompareFragment"
+            app:destination="@id/rewardCompareFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_Settings"
         android:name="com.example.a321projectprototype.ui.Settings.SettingsFragment"
         android:label="@string/menu_Settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_nav_Settings_to_settingsPermissionFragment"
+            app:destination="@id/settingsPermissionFragment" />
+        <action
+            android:id="@+id/action_nav_Settings_to_settingsTermFragment"
+            app:destination="@id/settingsTermFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rewardAchievementFragment"
+        android:name="com.example.a321projectprototype.ui.Rewards.RewardAchievementFragment"
+        android:label="RewardAchievementFragment" >
+        <action
+            android:id="@+id/action_rewardAchievementFragment_to_nav_Reward"
+            app:destination="@id/nav_Reward" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPermissionFragment"
+        android:name="com.example.a321projectprototype.ui.Settings.SettingsPermissionFragment"
+        android:label="SettingsPermissionFragment" >
+        <action
+            android:id="@+id/action_settingsPermissionFragment_to_nav_Settings"
+            app:destination="@id/nav_Settings" />
+    </fragment>
+    <fragment
+        android:id="@+id/rewardCompareFragment"
+        android:name="com.example.a321projectprototype.ui.Rewards.RewardCompareFragment"
+        android:label="RewardCompareFragment" >
+        <action
+            android:id="@+id/action_rewardCompareFragment_to_nav_Reward"
+            app:destination="@id/nav_Reward" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsTermFragment"
+        android:name="com.example.a321projectprototype.ui.Settings.SettingsTermFragment"
+        android:label="SettingsTermFragment" >
+        <action
+            android:id="@+id/action_settingsTermFragment_to_nav_Settings"
+            app:destination="@id/nav_Settings" />
+    </fragment>
 
 </navigation>
